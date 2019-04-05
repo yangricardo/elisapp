@@ -1,12 +1,18 @@
 {
-    "AWSEBDockerrunVersion": "1",
-    "Image": {
-      "Name": "yangricardo/elisapp:latest",
-      "Update": "true"
-    },
-    "Ports": [
-      {
-        "ContainerPort": "8000"
-      }
-    ]
-   }
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "yangricardo/elisapp:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "8000"
+    }
+  ],
+  "Volumes": [
+    {
+      "HostDirectory": "/srv",
+      "ContainerDirectory": "/srv"
+    }
+  ]
+}

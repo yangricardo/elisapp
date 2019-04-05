@@ -1,3 +1,5 @@
+python manage.py collectstatic
+
 # Create migrations based on django models
 python manage.py makemigrations
 

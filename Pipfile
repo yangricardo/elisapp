@@ -16,6 +16,7 @@ numpy = "*"
 django-rest-knox = "*"
 psycopg2-binary = "*"
 pylint = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"

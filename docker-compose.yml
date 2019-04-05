@@ -4,22 +4,40 @@ version: '3'
 services:
   # Database based on official postgres image
   db:
+    restart: always
     image: postgres
     hostname: db
+    ports:
+      - 15432:5432
+    env_file:  # <-- we use the previously defined values
+      - config/db/.env
+    networks:  # <-- connect to the bridge
+      - db_network
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+
 
   # Our django application
   # Build from remote dockerfile
   # Connect local app folder with image folder, so changes will be pushed to image instantly
   # Open port 8000
   app:
+    restart: always
     build:
       context: .
-      dockerfile: config/app/Dockerfile
+    image: yangricardo/elisapp:latest
     hostname: app
+    env_file:
+      - config/app/.env
     volumes:
       - ./app:/app
+      - static:/srv
+      - media:/srv
     expose:
       - "8000"
+    networks:  # <-- here
+      - nginx_network
+      - db_network  # <-- connect to the bridge
     depends_on:
       - db
 
@@ -34,5 +52,33 @@ services:
       - "8000:8000"
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
+      - static:/srv:ro
+      - media:/srv:ro
     depends_on:
       - app
+    networks:
+      - nginx_network
+  pgadmin:
+    image: dpage/pgadmin4
+    restart:  always
+    hostname: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'yangricardo17@gmail.com'
+      PGADMIN_DEFAULT_PASSWORD: 'elisdbpassword'
+    ports:
+      - 8001:80
+    depends_on:
+      - db
+    networks: 
+      - db_network
+
+networks:  # <-- and here
+  nginx_network:
+    driver: bridge
+  db_network:  # <-- add the bridge
+    driver: bridge
+
+volumes:
+  db_volume:
+  static:
+  media:

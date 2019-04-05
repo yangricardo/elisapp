@@ -3,10 +3,11 @@
 all: build push deploy
 
 build:
+	pipenv run pip freeze > config/app/requirements.txt
 	docker build -t yangricardo/elisapp:latest -f config/app/Dockerfile .
 
 push:
-	docker yangricardo/elisapp:latest
+	docker push yangricardo/elisapp:latest
 
 deploy:
 	eb deploy
@@ -16,3 +17,5 @@ run:
 
 stop:
 	docker-compose down
+
+local: build run
