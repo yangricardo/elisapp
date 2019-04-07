@@ -52,7 +52,9 @@ services:
     image: nginx
     hostname: nginx
     ports:
-      - 8000:8000
+      - 80:80
+      - 443:443
+
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
       - static:/srv:ro
