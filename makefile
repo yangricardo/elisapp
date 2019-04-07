@@ -27,8 +27,9 @@ bash:
 app-logs:
 	docker-compose logs app
 
-notebook:
-	docker-compose exec -d app python manage.py shell_plus --notebook
+collectstatic:
+	docker-compose exec app python manage.py collectstatic
 
-add-jupyter:
-	docker-compose exec app pip install jupyter
+migrate:
+	docker-compose exec app python manage.py makemigrations
+	docker-compose exec app python manage.py migrate

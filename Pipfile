@@ -18,6 +18,7 @@ psycopg2-binary = "*"
 pylint = "*"
 gunicorn = "*"
 django-extensions = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.7"
