@@ -16,6 +16,19 @@ run:
 	docker-compose up -d
 
 stop:
+	docker-compose stop
+
+down:
 	docker-compose down
 
-local: build run
+bash:
+	docker-compose exec app /bin/bash
+
+app-logs:
+	docker-compose logs app
+
+notebook:
+	docker-compose exec -d app python manage.py shell_plus --notebook
+
+add-jupyter:
+	docker-compose exec app pip install jupyter

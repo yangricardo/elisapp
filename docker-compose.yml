@@ -31,10 +31,13 @@ services:
       - config/app/.env
     volumes:
       - ./app:/app
+      - /home/yang/tj_files/:/tj_files
       - static:/srv
       - media:/srv
     expose:
-      - "8000"
+      - 8000
+    ports:
+      - 8888:8888
     networks:  # <-- here
       - nginx_network
       - db_network  # <-- connect to the bridge
@@ -49,7 +52,7 @@ services:
     image: nginx
     hostname: nginx
     ports:
-      - "8000:8000"
+      - 8000:8000
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
       - static:/srv:ro
@@ -58,6 +61,7 @@ services:
       - app
     networks:
       - nginx_network
+
   pgadmin:
     image: dpage/pgadmin4
     restart:  always

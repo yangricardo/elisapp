@@ -17,6 +17,7 @@ django-rest-knox = "*"
 psycopg2-binary = "*"
 pylint = "*"
 gunicorn = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.7"

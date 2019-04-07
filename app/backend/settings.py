@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'rest_framework.authtoken',
     'knox',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +157,11 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     )
 }
+
+# django settings - jupyter notebooks
+NOTEBOOK_ARGUMENTS = [
+    '--ip=0.0.0.0', # reach notebooks from outside
+    '--port=8888',  # std port
+    '--no-browser', # don't start browser on start
+    '--allow-root',
+]
