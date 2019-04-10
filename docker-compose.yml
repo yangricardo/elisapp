@@ -50,11 +50,11 @@ services:
   # Connect local nginx configuration with image configuration
   nginx:
     image: nginx
+    restart:  always
     hostname: nginx
     ports:
       - 80:80
       - 443:443
-
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
       - static:/srv:ro

@@ -33,3 +33,9 @@ collectstatic:
 migrate:
 	docker-compose exec app python manage.py makemigrations
 	docker-compose exec app python manage.py migrate
+
+notebook:
+	docker-compose exec -d app python manage.py shell_plus --notebook
+	
+notebook-token:
+	docker-compose exec app jupyter notebook list
