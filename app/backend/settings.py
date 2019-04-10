@@ -89,8 +89,8 @@ DATABASES = {
         'NAME': 'elisdb',
         'USER': 'elisdbadmin',
         'PASSWORD':'elisdbpassword',
-        'HOST': 'db',
-        'PORT': 5432,
+        'HOST': '192.168.0.187',
+        'PORT': 15432,
     }
 }
 
