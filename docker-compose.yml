@@ -54,25 +54,15 @@ services:
     hostname: nginx
     ports:
       - 80:80
-      - 443:443
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
-      - ./config/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
       - static:/srv/static:ro
       - media:/srv/media:ro
     depends_on:
       - app
-    networks:
+    networks: 
       - nginx_network
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./config/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-
-
+ 
   pgadmin:
     image: dpage/pgadmin4
     restart:  always

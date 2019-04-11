@@ -27,6 +27,12 @@ bash:
 app-logs:
 	docker-compose logs app
 
+db-logs:
+	docker-compose logs db
+
+nginx-logs:
+	docker-compose logs nginx
+
 collectstatic:
 	docker-compose exec app python manage.py collectstatic
 
