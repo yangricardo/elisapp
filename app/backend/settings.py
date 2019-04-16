@@ -27,7 +27,7 @@ SECRET_KEY = 'tv4!=t*7wb_t@q0tebo9f3389uz1pw9-nbj*&l-ta4baj&5g%$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'elisapp-dev.sa-east-1.elasticbeanstalk.com','192.168.0.187']
+ALLOWED_HOSTS = ['0.0.0.0','127.0.0.2' ,'elisapp.dev','192.168.0.187','172.31.252.172']
 
 
 # Application definition
