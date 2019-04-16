@@ -27,11 +27,11 @@ services:
       context: .
     image: yangricardo/elisapp:latest
     hostname: app
-    environment:
-      VIRTUAL_HOST: elisapp.dev
-      VIRTUAL_PORT: 8000
-      LETSENCRYPT_HOST: elisapp.dev
-      LETSENCRYPT_EMAIL: yangricardo17@gmail.com
+    # environment:
+    #   VIRTUAL_HOST: elisapp.dev
+    #   VIRTUAL_PORT: 8000
+    #   LETSENCRYPT_HOST: elisapp.dev
+    #   LETSENCRYPT_EMAIL: yangricardo17@gmail.com
     env_file:
       - config/app/.env
     volumes:
@@ -44,7 +44,8 @@ services:
     ports:
       - 8888:8888
     networks:  # <-- here
-      - default
+      # - default
+      - nginx_network
       - db_network  # <-- connect to the bridge
     depends_on:
       - db
@@ -53,20 +54,20 @@ services:
   # Connect external 8000 (which you can access from browser)
   # with internal port 8000(which will be linked to app port 8000 in configs)
   # Connect local nginx configuration with image configuration
-  # nginx:
-  #   image: nginx
-  #   restart:  always
-  #   hostname: nginx
-  #   ports:
-  #     - 80:80
-  #   volumes:
-  #     - ./config/nginx:/etc/nginx/conf.d
-  #     - static:/srv/static:ro
-  #     - media:/srv/media:ro
-  #   depends_on:
-  #     - app
-  #   networks: 
-  #     - nginx_network
+  nginx:
+    image: nginx
+    restart:  always
+    hostname: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - static:/srv/static:ro
+      - media:/srv/media:ro
+    depends_on:
+      - app
+    networks: 
+      - nginx_network
  
   pgadmin:
     image: dpage/pgadmin4
@@ -83,11 +84,11 @@ services:
       - db_network
 
 networks:  # <-- and here
-  default:
-    external:
-      name: nginx-proxy
-  # nginx_network:
-  #   driver: bridge
+  # default:
+  #   external:
+  #     name: nginx-proxy
+  nginx_network:
+    driver: bridge
   db_network:  # <-- add the bridge
     driver: bridge
 
