@@ -38,6 +38,25 @@ csv = {
     'personagem_especial_original' : '/PersonagemEspecialOriginal/Personagem_especialOriginal_2015_2017.csv.gz',
     'personagem_processo' : '/PersonagemProcesso/DCP_PERSONAGEMPROCESSO_2013-2017.csv.gz',
     'processo_unico' : '/ProcessoUnico/ProcessoUnico.csv.gz',
+    'competencia' : '/Parameters/DCP_Competencia.csv',
+    'assunto_novo' : '/Parameters/ASSUNTO.csv',
+    'atojuiz_novo' : '/Parameters/ATOJUIZ.csv',
+    'classe_novo' : '/Parameters/cLASSE.csv',
+    'comarca_novo' : '/Parameters/DCP_Comarca.csv',
+    'tipopedidomp' : '/Parameters/DCP_DCP_TIPOPEDIDOMP.csv',
+    'destinatario' : '/Parameters/DCP_DESTINATARIO.CSV',
+    'orgaomp' : '/Parameters/DCP_ORGAOMP.CSV',
+    'tipocategoriaserventia' : '/Parameters/DCP_TIPOCATEGORIASERVENTIA.csv',
+    'tiporemessa' : '/Parameters/DCP_TIPOREMESSA.csv',
+    'tipovinculo' : '/Parameters/DCP_TIPOVINCULO.CSV',
+    'tipovinculoprocesso' : '/Parameters/DCP_TIPOVINCULOPROCESSO.csv',
+    'grupoprocessamento' : '/Parameters/GRUPOPROCESSAMENTO.csv',
+    'tipodestinatario' : '/Parameters/proccorp_tipodestinatario.csv',
+    'rito_novo' : '/Parameters/RITO.csv',
+    'serventia_novo' : '/Parameters/serventias_full.csv',
+    'tipoandamento_novo' : '/Parameters/tipoandamento.csv',
+    'tipoatojuiz_novo' : '/Parameters/TIPOATOJUIZ.csv',
+
 }
 
 def setup_env():
