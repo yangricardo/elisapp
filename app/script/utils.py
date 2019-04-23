@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import requests
 
+
 class TJData:
 
     csv = {
@@ -67,7 +68,6 @@ class TJData:
         'processo_unico': 'ProcessoUnico.csv.gz',
     }
 
-
     @staticmethod
     def andamento_processo_clob(serventia, ano):
         return f'AndamentoProcessoClobServAno/AndamentoProcesso_Cod_Serv_{serventia}_ano_{ano}.csv.gz'
@@ -119,10 +119,18 @@ class APIHandler:
     def get(self, resource):
         response = requests.get(self.resources[resource],
                                 headers={'Authorization': f'token {self.token}'})
-        return response
+        return json.loads(response.text), response
 
     def post(self, resource, data):
-        response = requests.get(self.resources[resource],
-                                json=data,
-                                headers={'Authorization': f'token {self.token}'})
+        response = requests.post(self.resources[resource],
+                                 json=data,
+                                 headers={'Authorization': f'token {self.token}'})
         return response
+
+
+def nan_to_int(df, col):
+    df[col] = df[col].fillna(-1)
+    df[col] = df[col].astype(int)
+    df[col] = df[col].astype(str)
+    df[col] = df[col].replace('-1', np.nan)
+    return df[col]

@@ -76,6 +76,7 @@ wrapt = "==1.11.1"
 prometheus_client = "==0.6.0"
 ptvsd = "*"
 requests = "*"
+djangorestframework-bulk = "*"
 
 [requires]
 python_version = "3.7"

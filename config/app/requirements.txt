@@ -16,6 +16,7 @@ django-extensions==2.1.6
 django-rest-knox==4.0.0
 django-webpack-loader==0.6.0
 djangorestframework==3.9.2
+djangorestframework-bulk==0.2.1
 entrypoints==0.3
 gunicorn==19.9.0
 idna==2.8
