@@ -116,13 +116,25 @@ class APIHandler:
         resources = requests.get(self.host+'/api')
         self.resources = json.loads(resources.text)
 
-    def get(self, resource):
-        response = requests.get(self.resources[resource],
+    def get(self, resource, detail=""):
+        response = requests.get(f'{self.resources[resource]}{str(detail)}',
                                 headers={'Authorization': f'token {self.token}'})
         return json.loads(response.text), response
 
     def post(self, resource, data):
         response = requests.post(self.resources[resource],
+                                 json=data,
+                                 headers={'Authorization': f'token {self.token}'})
+        return response
+
+    def put(self, resource, detail ,data):
+        response = requests.put(f'{self.resources[resource]}{str(detail)}/',
+                                 json=data,
+                                 headers={'Authorization': f'token {self.token}'})
+        return response
+
+    def patch(self, resource, detail ,data):
+        response = requests.patch(f'{self.resources[resource]}{str(detail)}/',
                                  json=data,
                                  headers={'Authorization': f'token {self.token}'})
         return response
@@ -134,3 +146,17 @@ def nan_to_int(df, col):
     df[col] = df[col].astype(str)
     df[col] = df[col].replace('-1', np.nan)
     return df[col]
+
+
+# def handle_assunto_pai_error(r):
+#     # processa cod_assunto_pai que ocorreu erro
+#     r_error = json.loads(r.text)
+#     r_error = pd.DataFrame(r_error)
+#     r_error.assunto_pai = r_error.assunto_pai.astype(str)
+#     r_error.assunto_pai = r_error.assunto_pai.str.extract(r'([0-9]+)')
+#     r_error = r_error[~pd.isna(r_error.assunto_pai)]
+#     r_error.assunto_pai = r_error.assunto_pai.astype(int)
+#     error_set = set()
+#     r_error.assunto_pai.apply(lambda x : error_set.add(x))
+#     error_set = list(error_set)
+#     return error_set

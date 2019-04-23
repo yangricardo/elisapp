@@ -22,9 +22,8 @@ class TipoPersonagem(models.Model):
     cod_tip_pers = models.IntegerField(primary_key=True)
     cod_tip_pers_inv = models.ForeignKey(
         'api.TipoPersonagem', on_delete=models.DO_NOTHING)
-    desc_pers = models.CharField(max_length=20)
-    desc_abre = models.CharField(max_length=10)
-    desc_redu = models.CharField(max_length=3)
+    desc_pers = models.CharField(max_length=25)
+    tipo_part = models.CharField(max_length=1)
     objects = models.Manager
 
 
