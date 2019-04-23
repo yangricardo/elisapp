@@ -1,6 +1,6 @@
 .PHONY: all build push deploy run stop
 
-all: build push deploy
+all: build run
 
 build:
 	pipenv run pip freeze > config/app/requirements.txt
@@ -42,6 +42,10 @@ migrate:
 
 notebook:
 	docker-compose exec -d app python manage.py shell_plus --notebook
+	docker-compose exec app jupyter notebook list
 	
 notebook-token:
 	docker-compose exec app jupyter notebook list
+
+run-debug:
+	docker-compose exec app python manage.py runserver --noreload 0.0.0.0:8002

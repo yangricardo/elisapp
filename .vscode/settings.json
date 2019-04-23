@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "/home/yang/.local/share/virtualenvs/elisapp-TQI74gXq/bin/python"
+    "python.pythonPath": "/home/yang/.local/share/virtualenvs/elisapp-TQI74gXq/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true
 }

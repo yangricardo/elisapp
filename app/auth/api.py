@@ -21,6 +21,7 @@ class RegisterAPI(generics.GenericAPIView):
 
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    queryset = ''
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

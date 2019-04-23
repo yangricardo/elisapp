@@ -3,7 +3,6 @@
 import os
 import sys
 
-
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
     try:
@@ -18,4 +17,8 @@ def main():
 
 
 if __name__ == '__main__':
+    # import ptvsd
+    # # 5678 is the default attach port in the VS Code debug configurations
+    # print("Waiting for debugger attach")
+    # ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True)
     main()

@@ -29,6 +29,7 @@ services:
     hostname: app
     # environment:
     #   VIRTUAL_HOST: elisapp.dev
+    #   VIRTUAL_NETWORK: nginx-proxy
     #   VIRTUAL_PORT: 8000
     #   LETSENCRYPT_HOST: elisapp.dev
     #   LETSENCRYPT_EMAIL: yangricardo17@gmail.com
@@ -36,16 +37,20 @@ services:
       - config/app/.env
     volumes:
       - ./app:/app
-      - /home/yang/tj_files/:/tj_files
+      - /home/yang/TJ_FILES/:/tj_files
       - static:/srv/static
       - media:/srv/media
     expose:
       - 8000
     ports:
       - 8888:8888
-    networks:  # <-- here
-      # - default
+      - 5678:5678
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
       - nginx_network
+      # - nginx-proxy
       - db_network  # <-- connect to the bridge
     depends_on:
       - db
@@ -60,6 +65,9 @@ services:
     hostname: nginx
     ports:
       - 80:80
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     volumes:
       - ./config/nginx:/etc/nginx/conf.d
       - static:/srv/static:ro
@@ -83,10 +91,10 @@ services:
     networks: 
       - db_network
 
-networks:  # <-- and here
-  # default:
+networks:
+  # nginx-proxy:
   #   external:
-  #     name: nginx-proxy
+  #     name: "nginx-proxy"
   nginx_network:
     driver: bridge
   db_network:  # <-- add the bridge

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -27,7 +28,7 @@ SECRET_KEY = 'tv4!=t*7wb_t@q0tebo9f3389uz1pw9-nbj*&l-ta4baj&5g%$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0','127.0.0.2' ,'elisapp.dev','192.168.0.187','172.31.252.172']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1','localhost', 'elisapp.dev', '192.168.0.27','192.168.1.105']
 
 
 # Application definition
@@ -44,7 +45,6 @@ INSTALLED_APPS = [
     'frontend',
     'rest_framework',
     'webpack_loader',
-    'rest_framework.authtoken',
     'knox',
     'django_extensions',
 ]
@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'elisdb',
         'USER': 'elisdbadmin',
-        'PASSWORD':'elisdbpassword',
+        'PASSWORD': 'elisdbpassword',
         'HOST': 'db',
         'PORT': 5432,
     }
@@ -139,7 +139,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'srv/media')
 
 
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
@@ -160,8 +159,8 @@ REST_FRAMEWORK = {
 
 # django settings - jupyter notebooks
 NOTEBOOK_ARGUMENTS = [
-    '--ip=0.0.0.0', # reach notebooks from outside
+    '--ip=0.0.0.0',  # reach notebooks from outside
     '--port=8888',  # std port
-    '--no-browser', # don't start browser on start
+    '--no-browser',  # don't start browser on start
     '--allow-root',
 ]

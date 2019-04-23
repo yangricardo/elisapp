@@ -15,20 +15,31 @@ Including another URLconf
 """
 
 from django.conf import settings
-from django.conf.urls.static import static
 from django.conf.urls import include
-from rest_framework import routers
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from api import views as api_views
-from leads.api import LeadViewSet
-from frontend import urls as frontend_urls
-from auth import urls as auth_urls
+from rest_framework import routers
 from rest_framework.authtoken import views as rest_views
+
+from api import views as api_views
+from auth import urls as auth_urls
+from frontend import urls as frontend_urls
+from leads.api import LeadViewSet
+
 from . import settings
 
 router = routers.DefaultRouter()
 router.register('users', api_views.UserViewSet)
+router.register('assuntos', api_views.AssuntoViewSet)
+router.register('classes', api_views.ClasseViewSet)
+router.register('comarcas', api_views.ComarcaViewSet)
+router.register('competencias', api_views.CompetenciaViewSet)
+router.register('serventias', api_views.ServentiaViewSet)
+router.register('serventias', api_views.ServentiaViewSet)
+router.register('classesassuntos', api_views.ClasseAssuntoViewSet)
+router.register('processosunicos', api_views.ProcessoUnicoViewSet)
+router.register('processos', api_views.ProcessoViewSet)
 router.register('leads', LeadViewSet, 'leads')
 
 urlpatterns = [
