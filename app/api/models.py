@@ -30,6 +30,7 @@ class TipoPersonagem(models.Model):
 
 class Assunto(models.Model):
     cod_assunto = models.IntegerField(primary_key=True)
+    # TO DO PROCESSAR DUAS VEZES< com campo assunto_pai nulo e depois atualizando quando tiver as chaves cadastradas
     assunto_pai = models.ForeignKey('api.Assunto', null=True, blank=True, on_delete=models.DO_NOTHING)
     descr = models.TextField()
     objects = models.Manager
