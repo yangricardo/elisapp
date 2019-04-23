@@ -40,6 +40,7 @@ router.register('serventias', api_views.ServentiaViewSet)
 router.register('classesassuntos', api_views.ClasseAssuntoViewSet)
 router.register('processosunicos', api_views.ProcessoUnicoViewSet)
 router.register('processos', api_views.ProcessoViewSet)
+router.register('tipospersonagem', api_views.TipoPersonagemViewSet)
 router.register('leads', LeadViewSet, 'leads')
 
 urlpatterns = [

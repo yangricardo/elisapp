@@ -21,7 +21,7 @@ class Serventia(models.Model):
 class TipoPersonagem(models.Model):
     cod_tip_pers = models.IntegerField(primary_key=True)
     cod_tip_pers_inv = models.ForeignKey(
-        'api.TipoPersonagem', on_delete=models.DO_NOTHING)
+        'api.TipoPersonagem',  blank=True, null=True, on_delete=models.DO_NOTHING)
     desc_pers = models.CharField(max_length=25)
     tipo_part = models.CharField(max_length=1)
     objects = models.Manager
@@ -30,20 +30,20 @@ class TipoPersonagem(models.Model):
 class Assunto(models.Model):
     cod_assunto = models.IntegerField(primary_key=True)
     # TO DO PROCESSAR DUAS VEZES< com campo assunto_pai nulo e depois atualizando quando tiver as chaves cadastradas
-    assunto_pai = models.ForeignKey('api.Assunto', null=True, blank=True, on_delete=models.DO_NOTHING)
+    assunto_pai = models.ForeignKey(
+        'api.Assunto', null=True, blank=True, on_delete=models.DO_NOTHING)
     descr = models.TextField()
     objects = models.Manager
 
 
 class Classe(models.Model):
-    cod_assunto = models.IntegerField(primary_key=True)
-    classe_pai = models.ForeignKey('api.Classe', on_delete=models.DO_NOTHING)
+    cod_classe = models.IntegerField(primary_key=True)
+    classe_pai = models.ForeignKey('api.Classe', blank=True, null=True ,on_delete=models.DO_NOTHING)
     descr = models.TextField()
-    descr_tj = models.TextField()
     cod_pers_passivo = models.ForeignKey(
-        TipoPersonagem, related_name="personagem_passivo", on_delete=models.DO_NOTHING, default=None)
+        TipoPersonagem, related_name="personagem_passivo", blank=True, null=True, on_delete=models.DO_NOTHING, default=None)
     cod_pers_ativo = models.ForeignKey(
-        TipoPersonagem, related_name="personagem_ativo", on_delete=models.DO_NOTHING, default=None)
+        TipoPersonagem, related_name="personagem_ativo", blank=True, null=True, on_delete=models.DO_NOTHING, default=None)
     objects = models.Manager
 
 
