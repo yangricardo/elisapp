@@ -84,3 +84,6 @@ class TipoMovimento(models.Model):
     cod_tip_mov = models.IntegerField(primary_key=True)
     descr = models.CharField(max_length=100)
     cod_tip_mov_pai = ForeignKey('api.TipoMovimento',blank=True, null=True, on_delete=models.DO_NOTHING, default=None)
+
+
+    #FAZER MAKE MIGRATE, ESCREVER MODELOS, SERIALIZERS , VIEWSETS E ROTAS
