@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.fields.related import ForeignKey
 
 # Create your models here.
 
@@ -75,3 +76,11 @@ class ProcessoUnico(models.Model):
     cod_cnj = models.CharField(max_length=25, unique=True)
     id_proc = models.IntegerField(unique=True)
     objects = models.Manager
+
+    class Meta:
+        unique_together = (('processo', 'cod_cnj','id_proc'),)
+
+class TipoMovimento(models.Model):
+    cod_tip_mov = models.IntegerField(primary_key=True)
+    descr = models.CharField(max_length=100)
+    cod_tip_mov_pai = ForeignKey('api.TipoMovimento',blank=True, null=True, on_delete=models.DO_NOTHING, default=None)
