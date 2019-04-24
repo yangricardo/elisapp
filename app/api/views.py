@@ -119,14 +119,20 @@ class ClasseViewSet(viewsets.ModelViewSet):
 
 
 class ClasseAssuntoViewSet(viewsets.ModelViewSet):
-    authentication_classes = [
-        TokenAuthentication
-    ]
-    permission_classes = [
-        permissions.IsAuthenticated
-    ]
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = tj_models.ClasseAssunto.objects.all()
     serializer_class = serializer.ClasseAssuntoSerializer
+
+    def create(self, request, *args, **kwargs):
+        classeassunto_serializer = serializer.ClasseAssuntoSerializer(
+            data=request.data, many=True)
+        classeassunto_serializer.is_valid(raise_exception=True)
+        classeassunto_serializer.save()
+        logger.info('Classes salvas: \n {classeassunto_serializer}')
+        headers = self.get_success_headers(classeassunto_serializer.data)
+        return Response(classeassunto_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 class ProcessoViewSet(viewsets.ModelViewSet):

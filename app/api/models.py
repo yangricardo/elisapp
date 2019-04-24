@@ -52,6 +52,9 @@ class ClasseAssunto(models.Model):
     classe = models.ForeignKey(Classe, on_delete=models.DO_NOTHING)
     objects = models.Manager
 
+    class Meta:
+        unique_together = (('classe', 'assunto'),)
+
 
 class Competencia(models.Model):
     cod_comp = models.IntegerField(primary_key=True)
