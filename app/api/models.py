@@ -39,7 +39,8 @@ class Assunto(models.Model):
 
 class Classe(models.Model):
     cod_classe = models.IntegerField(primary_key=True)
-    classe_pai = models.ForeignKey('api.Classe', blank=True, null=True ,on_delete=models.DO_NOTHING)
+    classe_pai = models.ForeignKey(
+        'api.Classe', blank=True, null=True, on_delete=models.DO_NOTHING)
     descr = models.TextField()
     cod_pers_passivo = models.ForeignKey(
         TipoPersonagem, related_name="personagem_passivo", blank=True, null=True, on_delete=models.DO_NOTHING, default=None)
@@ -78,12 +79,26 @@ class ProcessoUnico(models.Model):
     objects = models.Manager
 
     class Meta:
-        unique_together = (('processo', 'cod_cnj','id_proc'),)
+        unique_together = (('processo', 'cod_cnj', 'id_proc'),)
+
 
 class TipoMovimento(models.Model):
     cod_tip_mov = models.IntegerField(primary_key=True)
     descr = models.CharField(max_length=100)
-    cod_tip_mov_pai = ForeignKey('api.TipoMovimento',blank=True, null=True, on_delete=models.DO_NOTHING, default=None)
+    cod_tip_mov_pai = ForeignKey(
+        'api.TipoMovimento', blank=True, null=True, on_delete=models.DO_NOTHING, default=None)
+    objects = models.Manager
 
 
-    #FAZER MAKE MIGRATE, ESCREVER MODELOS, SERIALIZERS , VIEWSETS E ROTAS
+class TipoAndamento(models.Model):
+    cod_tip_and = models.IntegerField(primary_key=True)
+    descr = models.CharField(max_length=60)
+    cod_tip_mov = ForeignKey(TipoMovimento, blank=True,
+                             null=True, on_delete=models.DO_NOTHING, default=None)
+    objects = models.Manager
+
+
+class Cargo(models.Model):
+    cod_carg = models.IntegerField(primary_key=True)
+    descr = models.CharField(max_length=50)
+    objects = models.Manager

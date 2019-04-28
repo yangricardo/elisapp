@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'leads',
+    'backend',
     'frontend',
     'rest_framework',
     'webpack_loader',
@@ -117,9 +118,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -153,7 +154,11 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+        'backend.renders.Latin1JSONRender',
         'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
     )
 }
 
@@ -164,3 +169,95 @@ NOTEBOOK_ARGUMENTS = [
     '--no-browser',  # don't start browser on start
     '--allow-root',
 ]
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'debug': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/debug.log'
+        },
+        'request': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/request.log'
+        },
+        'server': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/server.log'
+        },
+        'template': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/template.log'
+        },
+        'db': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/db.log'
+        },
+        'security': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/security.log'
+        },
+        'csrf': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/csrf.log'
+        }
+    },
+    'loggers': {
+        '': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'debug']
+        },
+        'django.request': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'request']
+        },
+        'django.server': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'server']
+        },
+        'django.template': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'template']
+        },
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'db']
+        },
+        'django.security.*': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'security']
+        },
+        'django.security.csrf': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'csrf']
+        }
+    }
+}

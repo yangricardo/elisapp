@@ -10,6 +10,7 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -33,8 +34,6 @@ class ComarcaViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(comarca_serializer.data)
         return Response(comarca_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    
-
 
 class ServentiaViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -50,7 +49,6 @@ class ServentiaViewSet(viewsets.ModelViewSet):
         logger.info(f'Serventias Salvas: \n{serventia_serializer}')
         headers = self.get_success_headers(serventia_serializer.data)
         return Response(serventia_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 
 class CompetenciaViewSet(viewsets.ModelViewSet):
@@ -74,13 +72,13 @@ class AssuntoViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = tj_models.Assunto.objects.all()
     serializer_class = serializer.AssuntoSerializer
-    
+
     def create(self, request, *args, **kwargs):
         assunto_serializer = serializer.AssuntoSerializer(
             data=request.data, many=True)
         assunto_serializer.is_valid(raise_exception=True)
         assunto_serializer.save()
-        logger.info('Assuntos salvos: \n {assunto_serializer}')
+        logger.info(f'Assuntos salvos: \n {assunto_serializer}')
         headers = self.get_success_headers(assunto_serializer.data)
         return Response(assunto_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -90,13 +88,13 @@ class TipoPersonagemViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = tj_models.TipoPersonagem.objects.all()
     serializer_class = serializer.TipoPersonagemSerializer
-    
+
     def create(self, request, *args, **kwargs):
         tip_pers_serializer = serializer.TipoPersonagemSerializer(
             data=request.data, many=True)
         tip_pers_serializer.is_valid(raise_exception=True)
         tip_pers_serializer.save()
-        logger.info('Tipos Personagem salvos: \n {tip_pers_serializer}')
+        logger.info(f'Tipos Personagem salvos: \n {tip_pers_serializer}')
         headers = self.get_success_headers(tip_pers_serializer.data)
         return Response(tip_pers_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -112,10 +110,9 @@ class ClasseViewSet(viewsets.ModelViewSet):
             data=request.data, many=True)
         classe_serializer.is_valid(raise_exception=True)
         classe_serializer.save()
-        logger.info('Classes salvas: \n {classe_serializer}')
+        logger.info(f'Classes salvas: \n {classe_serializer}')
         headers = self.get_success_headers(classe_serializer.data)
         return Response(classe_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 
 class ClasseAssuntoViewSet(viewsets.ModelViewSet):
@@ -129,10 +126,57 @@ class ClasseAssuntoViewSet(viewsets.ModelViewSet):
             data=request.data, many=True)
         classeassunto_serializer.is_valid(raise_exception=True)
         classeassunto_serializer.save()
-        logger.info('Classes salvas: \n {classeassunto_serializer}')
+        logger.info(f'Classes Assuntos salvas: \n {classeassunto_serializer}')
         headers = self.get_success_headers(classeassunto_serializer.data)
         return Response(classeassunto_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+
+class TipoMovimentoViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = tj_models.TipoMovimento.objects.all()
+    serializer_class = serializer.TipoMovimentoSerializer
+
+    def create(self, request, *args, **kwargs):
+        tp_movimento_serializer = serializer.TipoMovimentoSerializer(
+            data=request.data, many=True)
+        tp_movimento_serializer.is_valid(raise_exception=True)
+        tp_movimento_serializer.save()
+        logger.info(f'Tipo Movimento salvos: \n {tp_movimento_serializer}')
+        headers = self.get_success_headers(tp_movimento_serializer.data)
+        return Response(tp_movimento_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class TipoAndamentoViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = tj_models.TipoAndamento.objects.all()
+    serializer_class = serializer.TipoAndamentoSerializer
+
+    def create(self, request, *args, **kwargs):
+        tp_andamento_serializer = serializer.TipoAndamentoSerializer(
+            data=request.data, many=True)
+        tp_andamento_serializer.is_valid(raise_exception=True)
+        tp_andamento_serializer.save()
+        logger.info(f'Tipo Andamentos salvos: \n {tp_andamento_serializer}')
+        headers = self.get_success_headers(tp_andamento_serializer.data)
+        return Response(tp_andamento_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class CargoViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = tj_models.Cargo.objects.all()
+    serializer_class = serializer.CargoSerializer
+
+    def create(self, request, *args, **kwargs):
+        cargo_serializer = serializer.CargoSerializer(
+            data=request.data, many=True)
+        cargo_serializer.is_valid(raise_exception=True)
+        cargo_serializer.save()
+        logger.info(f'Cargos salvos: \n {cargo_serializer}')
+        headers = self.get_success_headers(cargo_serializer.data)
+        return Response(cargo_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class ProcessoViewSet(viewsets.ModelViewSet):

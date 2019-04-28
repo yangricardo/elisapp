@@ -62,3 +62,21 @@ class ProcessoUnicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = tj_model.ProcessoUnico
         fields = '__all__'
+
+
+class TipoMovimentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.TipoMovimento
+        fields = '__all__'
+
+
+class TipoAndamentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.TipoAndamento
+        fields = '__all__'
+
+
+class CargoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.Cargo
+        fields = '__all__'
