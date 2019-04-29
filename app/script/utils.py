@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import django
 import numpy as np
@@ -86,6 +87,26 @@ class TJData:
         usecols = kwargs.get('usecols')
         return pd.read_csv(os.path.join('/tj_files', file), encoding='latin1', sep=';', chunksize=chunksize, usecols=usecols)
 
+    @staticmethod
+    def nan_to_int(series):
+        series = series.fillna(-1)
+        series = series.astype(int)
+        series = series.astype(str)
+        series = series.replace('-1', np.nan)
+        return series
+
+    @staticmethod
+    def to_utf8(series):
+        return series.apply(lambda x: x.encode('utf8').decode())
+
+    @staticmethod
+    def to_utf8_bytes(series):
+        return series.apply(lambda x: x.strip().encode('utf8') if not pd.isnull(x) else x)
+
+    @staticmethod
+    def to_json(df):
+        return json.loads(df.to_json(orient='records'))
+
 
 def setup_env():
     # exibe até 500 colunas
@@ -101,7 +122,7 @@ def setup_env():
     django.setup()
 
 
-class APIHandler:
+class ElisAPI:
     def __init__(self, host, username, password):
         r = requests.post(f'{host}/auth/login', json={
             "username": str(username),
@@ -115,38 +136,62 @@ class APIHandler:
         self.id = rawdata['user']['id']
         resources = requests.get(self.host+'/api')
         self.resources = json.loads(resources.text)
+        self.headers = {
+            'Authorization': f'token {self.token}',
+            'charset':'utf-8'
+        }
+
+    def head(self, resource, detail=""):
+        response = requests.head(f'{self.resources[resource]}{str(detail)}',
+                                 headers=self.headers)
+        return response
 
     def get(self, resource, detail=""):
         response = requests.get(f'{self.resources[resource]}{str(detail)}',
-                                headers={'Authorization': f'token {self.token}'})
+                                headers=self.headers)
         return json.loads(response.text), response
 
     def post(self, resource, data):
         response = requests.post(self.resources[resource],
                                  json=data,
-                                 headers={'Authorization': f'token {self.token}'})
+                                 headers=self.headers)
         return response
 
-    def put(self, resource, detail ,data):
+    def put(self, resource, detail, data):
         response = requests.put(f'{self.resources[resource]}{str(detail)}/',
-                                 json=data,
-                                 headers={'Authorization': f'token {self.token}'})
+                                json=data,
+                                headers=self.headers)
         return response
 
-    def patch(self, resource, detail ,data):
+    def patch(self, resource, detail, data):
         response = requests.patch(f'{self.resources[resource]}{str(detail)}/',
-                                 json=data,
-                                 headers={'Authorization': f'token {self.token}'})
+                                  json=data,
+                                  headers=self.headers)
         return response
 
+    def concurrent_request(self, request, resource, data_list,**kwargs):
+        self.responses = []
+        detail = kwargs.get('detail')
+        with ThreadPoolExecutor(max_workers=64) as executor:
+            if request == self.get or request == self.patch or request == self.put:
+                future_request = {executor.submit(
+                request, resource, data[detail] if detail else "" , data): data for data in data_list}
+            else:
+                future_request = {executor.submit(
+                request, resource, data): data for data in data_list}
+            for future in as_completed(future_request):
+                response = future_request[future]
+                try:
+                    data = future.result()
+                except Exception as exc:
+                    self.responses.append((response, exc))
+                else:
+                    self.responses.append((response, data))
+        return self.responses
 
-def nan_to_int(df, col):
-    df[col] = df[col].fillna(-1)
-    df[col] = df[col].astype(int)
-    df[col] = df[col].astype(str)
-    df[col] = df[col].replace('-1', np.nan)
-    return df[col]
-
+    @staticmethod
+    def get_erros(responses,expected_code):
+        return list(filter(lambda x : x[1].status_code != expected_code,responses))
 
 # def handle_assunto_pai_error(r):
 #     # processa cod_assunto_pai que ocorreu erro
@@ -160,3 +205,17 @@ def nan_to_int(df, col):
 #     r_error.assunto_pai.apply(lambda x : error_set.add(x))
 #     error_set = list(error_set)
 #     return error_set
+
+
+
+# tj.Funcionario.objects.all().delete()
+# tj.Cargo.objects.all().delete()
+# tj.TipoAndamento.objects.all().delete()
+# tj.TipoMovimento.objects.all().delete()
+# tj.ClasseAssunto.objects.all().delete()
+# tj.Classe.objects.all().delete()
+# tj.Assunto.objects.all().delete()
+# tj.TipoPersonagem.objects.all().delete()
+# tj.Competencia.objects.all().delete()
+# tj.Serventia.objects.all().delete()
+# tj.Comarca.objects.all().delete()

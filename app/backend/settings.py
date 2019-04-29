@@ -122,7 +122,7 @@ LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
@@ -233,31 +233,47 @@ LOGGING = {
     'loggers': {
         '': {
             'level': 'DEBUG',
-            'handlers': ['console', 'debug']
+            'handlers': ['debug']
         },
-        'django.request': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'request']
+        'info': {
+            'level': 'INFO',
+            'handlers': ['console']
         },
-        'django.server': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'server']
+        'warning': {
+            'level': 'WARNING',
+            'handlers': ['console']
         },
-        'django.template': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'template']
+        'error': {
+            'level': 'ERROR',
+            'handlers': ['console']
         },
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'db']
+        'critical': {
+            'level': 'CRITICAL',
+            'handlers': ['console']
         },
-        'django.security.*': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'security']
-        },
-        'django.security.csrf': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'csrf']
-        }
+        # 'django.request': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', 'request']
+        # },
+        # 'django.server': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', 'server']
+        # },
+        # 'django.template': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', 'template']
+        # },
+        # 'django.db.backends': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', 'db']
+        # },
+        # 'django.security.*': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', 'security']
+        # },
+        # 'django.security.csrf': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console', 'csrf']
+        # }
     }
 }

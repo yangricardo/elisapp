@@ -80,3 +80,11 @@ class CargoSerializer(serializers.ModelSerializer):
     class Meta:
         model = tj_model.Cargo
         fields = '__all__'
+
+
+class FuncionarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.Funcionario
+        fields = '__all__'
+
+

@@ -102,3 +102,10 @@ class Cargo(models.Model):
     cod_carg = models.IntegerField(primary_key=True)
     descr = models.CharField(max_length=50)
     objects = models.Manager
+
+
+class Funcionario(models.Model):
+    num_matr = models.TextField(primary_key=True)
+    nome = models.CharField(max_length=100)
+    cod_carg = models.ForeignKey(Cargo, blank=True, null=True, on_delete=models.DO_NOTHING)
+    objects = models.Manager

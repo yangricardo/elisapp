@@ -44,6 +44,7 @@ router.register('tipospersonagem', api_views.TipoPersonagemViewSet)
 router.register('tiposmovimento',api_views.TipoMovimentoViewSet)
 router.register('tiposandamento',api_views.TipoAndamentoViewSet)
 router.register('cargos',api_views.CargoViewSet)
+router.register('funcionarios',api_views.FuncionarioViewSet)
 router.register('leads', LeadViewSet, 'leads')
 
 urlpatterns = [

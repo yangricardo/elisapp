@@ -8,4 +8,4 @@ python manage.py migrate
 
 # Start gunicorn server at port 8000 and keep an eye for app code changes
 # If changes occur, kill worker and start a new one
-gunicorn --reload backend.wsgi:application -b 0.0.0.0:8000 -t 360
+gunicorn --reload backend.wsgi:application -b 0.0.0.0:8000 -t 360 --graceful-timeout 180 --workers 4 --threads 4
