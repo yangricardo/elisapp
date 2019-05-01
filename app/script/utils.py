@@ -96,6 +96,10 @@ class TJData:
         return series
 
     @staticmethod
+    def max_length(series):
+        return series.apply(lambda x: len(str(x))).agg(['max'])
+
+    @staticmethod
     def to_utf8(series):
         return series.apply(lambda x: x.encode('utf8').decode())
 
@@ -190,8 +194,12 @@ class ElisAPI:
         return self.responses
 
     @staticmethod
-    def to_json(response):
+    def response_to_json(response):
         return json.loads(response.text)
+
+    @staticmethod
+    def concurrent_responses_to_json(responses):
+        return list(map(lambda x: json.loads(x[1].text),responses))
 
     @staticmethod
     def get_erros(responses,expected_code):

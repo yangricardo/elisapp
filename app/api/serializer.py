@@ -92,3 +92,22 @@ class TipoDecisaoRecursoSerializer(serializers.ModelSerializer):
     class Meta:
         model = tj_model.TipoDecisaoRecurso
         fields = '__all__'
+
+
+class TipoAtoJuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.TipoAtoJuiz
+        fields = '__all__'
+
+
+class AtoJuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.AtoJuiz
+        fields = '__all__'
+
+
+class TipoDocumentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.TipoDocumento
+        fields = '__all__'
+

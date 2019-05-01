@@ -250,3 +250,63 @@ class TipoDecisaoRecursoViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return JsonResponse(serializer.data)
+
+
+class TipoAtoJuizViewSet(viewsets.ModelViewSet):
+    authentication_classes = [
+        TokenAuthentication
+    ]
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    queryset = tj_models.TipoAtoJuiz.objects.all()
+    serializer_class = serializer.TipoAtoJuizSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Tipo Ato Juiz criado: \n{serializer}')
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return JsonResponse(serializer.data)
+
+
+class AtoJuizViewSet(viewsets.ModelViewSet):
+    authentication_classes = [
+        TokenAuthentication
+    ]
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    queryset = tj_models.AtoJuiz.objects.all()
+    serializer_class = serializer.AtoJuizSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Ato Juiz criado: \n{serializer}')
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return JsonResponse(serializer.data)
+
+
+class TipoDocumentoViewSet(viewsets.ModelViewSet):
+    authentication_classes = [
+        TokenAuthentication
+    ]
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    queryset = tj_models.TipoDocumento.objects.all()
+    serializer_class = serializer.TipoDocumentoSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Tipo Documento criado: \n{serializer}')
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return JsonResponse(serializer.data)

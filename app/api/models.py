@@ -107,10 +107,35 @@ class Cargo(models.Model):
 class Funcionario(models.Model):
     num_matr = models.TextField(primary_key=True)
     nome = models.CharField(max_length=100)
-    cod_carg = models.ForeignKey(Cargo, blank=True, null=True, on_delete=models.DO_NOTHING)
+    cod_carg = models.ForeignKey(
+        Cargo, blank=True, null=True, on_delete=models.DO_NOTHING)
     objects = models.Manager
+
 
 class TipoDecisaoRecurso(models.Model):
     cod_tip_dec_rec = models.IntegerField(primary_key=True)
     descr = models.CharField(max_length=25)
+    objects = models.Manager
+
+
+class TipoAtoJuiz(models.Model):
+    cod_tip_ato = models.IntegerField(primary_key=True)
+    descr = models.CharField(max_length=20)
+    objects = models.Manager
+
+
+class AtoJuiz(models.Model):
+    cod_ato = models.IntegerField()
+    tipo_ato_juiz = models.ForeignKey(TipoAtoJuiz, blank=True, null=True, on_delete=models.DO_NOTHING)
+    tipo_movimento = models.ForeignKey(TipoMovimento, blank=True, null=True, on_delete=models.DO_NOTHING)
+    descr = models.CharField(max_length=60)
+    objects = models.Manager
+    
+    class Meta:
+        unique_together = (('cod_ato', 'tipo_ato_juiz','tipo_movimento'),)
+
+
+class TipoDocumento(models.Model):
+    id_tip_doc = models.IntegerField(primary_key=True)
+    descr = models.CharField(max_length=210)
     objects = models.Manager
