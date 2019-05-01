@@ -172,7 +172,7 @@ class ElisAPI:
     def concurrent_request(self, request, resource, data_list,**kwargs):
         self.responses = []
         detail = kwargs.get('detail')
-        with ThreadPoolExecutor(max_workers=64) as executor:
+        with ThreadPoolExecutor(max_workers=9) as executor:
             if request == self.get or request == self.patch or request == self.put:
                 future_request = {executor.submit(
                 request, resource, data[detail] if detail else "" , data): data for data in data_list}
