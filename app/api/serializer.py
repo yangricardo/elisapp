@@ -88,3 +88,7 @@ class FuncionarioSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TipoDecisaoRecursoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.TipoDecisaoRecurso
+        fields = '__all__'

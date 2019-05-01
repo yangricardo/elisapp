@@ -22,34 +22,15 @@ from django.urls import path
 from rest_framework import routers
 from rest_framework.authtoken import views as rest_views
 
-from api import views as api_views
 from auth import urls as auth_urls
 from frontend import urls as frontend_urls
-from leads.api import LeadViewSet
+from api.urls import models
 
 from . import settings
 
-router = routers.DefaultRouter()
-router.register('users', api_views.UserViewSet)
-router.register('assuntos', api_views.AssuntoViewSet)
-router.register('classes', api_views.ClasseViewSet)
-router.register('comarcas', api_views.ComarcaViewSet)
-router.register('competencias', api_views.CompetenciaViewSet)
-router.register('serventias', api_views.ServentiaViewSet)
-router.register('serventias', api_views.ServentiaViewSet)
-router.register('classesassuntos', api_views.ClasseAssuntoViewSet)
-router.register('processosunicos', api_views.ProcessoUnicoViewSet)
-router.register('processos', api_views.ProcessoViewSet)
-router.register('tipospersonagem', api_views.TipoPersonagemViewSet)
-router.register('tiposmovimento',api_views.TipoMovimentoViewSet)
-router.register('tiposandamento',api_views.TipoAndamentoViewSet)
-router.register('cargos',api_views.CargoViewSet)
-router.register('funcionarios',api_views.FuncionarioViewSet)
-router.register('leads', LeadViewSet, 'leads')
-
 urlpatterns = [
     path('', include(frontend_urls)),
-    path('api/', include(router.urls)),
+    path('api/models/', include(models.urls)),
     path('admin/', admin.site.urls),
     path('auth/', include(auth_urls))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

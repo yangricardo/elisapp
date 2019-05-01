@@ -230,3 +230,23 @@ class ProcessoUnicoViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return JsonResponse(serializer.data)
+
+
+class TipoDecisaoRecursoViewSet(viewsets.ModelViewSet):
+    authentication_classes = [
+        TokenAuthentication
+    ]
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    queryset = tj_models.TipoDecisaoRecurso.objects.all()
+    serializer_class = serializer.TipoDecisaoRecursoSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+        logger.info(f'Tipo Decisão Recurso criado: \n{serializer}')
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return JsonResponse(serializer.data)

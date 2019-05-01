@@ -134,7 +134,7 @@ class ElisAPI:
         self.username = rawdata['user']['username']
         self.email = rawdata['user']['email']
         self.id = rawdata['user']['id']
-        resources = requests.get(self.host+'/api')
+        resources = requests.get(self.host+'/api/models')
         self.resources = json.loads(resources.text)
         self.headers = {
             'Authorization': f'token {self.token}',
@@ -149,7 +149,7 @@ class ElisAPI:
     def get(self, resource, detail=""):
         response = requests.get(f'{self.resources[resource]}{str(detail)}',
                                 headers=self.headers)
-        return json.loads(response.text), response
+        return response
 
     def post(self, resource, data):
         response = requests.post(self.resources[resource],
@@ -188,6 +188,10 @@ class ElisAPI:
                 else:
                     self.responses.append((response, data))
         return self.responses
+
+    @staticmethod
+    def to_json(response):
+        return json.loads(response.text)
 
     @staticmethod
     def get_erros(responses,expected_code):

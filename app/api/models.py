@@ -109,3 +109,8 @@ class Funcionario(models.Model):
     nome = models.CharField(max_length=100)
     cod_carg = models.ForeignKey(Cargo, blank=True, null=True, on_delete=models.DO_NOTHING)
     objects = models.Manager
+
+class TipoDecisaoRecurso(models.Model):
+    cod_tip_dec_rec = models.IntegerField(primary_key=True)
+    descr = models.CharField(max_length=25)
+    objects = models.Manager
