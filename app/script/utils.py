@@ -1,7 +1,10 @@
 import json
 import os
 import sys
+import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from os import listdir
+from os.path import isfile, join
 
 import django
 import numpy as np
@@ -83,9 +86,30 @@ class TJData:
 
     @staticmethod
     def read_csv(file, **kwargs):
-        chunksize = kwargs.get('chunksize')
-        usecols = kwargs.get('usecols')
-        return pd.read_csv(os.path.join('/tj_files', file), encoding='latin1', sep=';', chunksize=chunksize, usecols=usecols)
+        return pd.read_csv(os.path.join('/tj_files', file),
+                           encoding='latin1', sep=';',
+                           chunksize=kwargs.get('chunksize'),
+                           usecols=kwargs.get('usecols'),
+                           low_memory=kwargs.get('low_memory'),
+                           nrows=kwargs.get('nrows')
+                           )
+
+    @staticmethod
+    def list_files_in_serventias_anos(file_regex, servs_anos):
+        dirpath = re.search(r'(\w+/)', file_regex).group(0)
+        fulldirpath = join('/tj_files',dirpath)
+        onlyfiles = [
+            f for f in listdir(fulldirpath)
+            if isfile(join(fulldirpath, f))
+            and TJData.in_serv_ano(f, file_regex, servs_anos)
+        ]
+        return onlyfiles
+
+    @staticmethod
+    def in_serv_ano(file, file_regex, servs_anos):
+        serv_ano_regex = re.search(file_regex, file)
+        serv_ano = (int(serv_ano_regex.group(1)), int(serv_ano_regex.group(2)))
+        return serv_ano in servs_anos
 
     @staticmethod
     def nan_to_int(series):
@@ -142,7 +166,7 @@ class ElisAPI:
         self.resources = json.loads(resources.text)
         self.headers = {
             'Authorization': f'token {self.token}',
-            'charset':'utf-8'
+            'charset': 'utf-8'
         }
 
     def head(self, resource, detail=""):
@@ -173,16 +197,16 @@ class ElisAPI:
                                   headers=self.headers)
         return response
 
-    def concurrent_request(self, request, resource, data_list,**kwargs):
+    def concurrent_request(self, request, resource, data_list, **kwargs):
         self.responses = []
         detail = kwargs.get('detail')
         with ThreadPoolExecutor(max_workers=9) as executor:
             if request == self.get or request == self.patch or request == self.put:
                 future_request = {executor.submit(
-                request, resource, data[detail] if detail else "" , data): data for data in data_list}
+                    request, resource, data[detail] if detail else "", data): data for data in data_list}
             else:
                 future_request = {executor.submit(
-                request, resource, data): data for data in data_list}
+                    request, resource, data): data for data in data_list}
             for future in as_completed(future_request):
                 response = future_request[future]
                 try:
@@ -199,11 +223,11 @@ class ElisAPI:
 
     @staticmethod
     def concurrent_responses_to_json(responses):
-        return list(map(lambda x: json.loads(x[1].text),responses))
+        return list(map(lambda x: json.loads(x[1].text), responses))
 
     @staticmethod
-    def get_erros(responses,expected_code):
-        return list(filter(lambda x : x[1].status_code != expected_code,responses))
+    def get_erros(responses, expected_code):
+        return list(filter(lambda x: x[1].status_code != expected_code, responses))
 
 # def handle_assunto_pai_error(r):
 #     # processa cod_assunto_pai que ocorreu erro
@@ -217,7 +241,6 @@ class ElisAPI:
 #     r_error.assunto_pai.apply(lambda x : error_set.add(x))
 #     error_set = list(error_set)
 #     return error_set
-
 
 
 # tj.Funcionario.objects.all().delete()

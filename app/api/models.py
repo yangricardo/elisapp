@@ -66,20 +66,20 @@ class Competencia(models.Model):
 
 
 class Processo(models.Model):
-    cod_proc = models.CharField(primary_key=True, max_length=18)
-    serventia = models.ForeignKey(Serventia, on_delete=models.DO_NOTHING)
-    competencia = models.ForeignKey(Competencia, on_delete=models.CASCADE)
-    objects = models.Manager
-
-
-class ProcessoUnico(models.Model):
-    processo = models.ForeignKey(Processo, on_delete=models.CASCADE)
-    cod_cnj = models.CharField(max_length=25, unique=True)
-    id_proc = models.IntegerField(unique=True)
+    id_proc = models.IntegerField(primary_key=True)
+    cod_proc = models.CharField(max_length=18, db_index=True, unique=True)
+    cod_cnj = models.CharField(
+        max_length=25, db_index=True, unique=True, blank=True, null=True)
+    serventia = models.ForeignKey(
+        Serventia, db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
+    competencia = models.ForeignKey(
+        Competencia, db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
+    assunto = models.ForeignKey(
+        Assunto, db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
     objects = models.Manager
 
     class Meta:
-        unique_together = (('processo', 'cod_cnj', 'id_proc'),)
+        unique_together = (('cod_proc', 'cod_cnj', 'id_proc'),)
 
 
 class TipoMovimento(models.Model):
@@ -126,16 +126,22 @@ class TipoAtoJuiz(models.Model):
 
 class AtoJuiz(models.Model):
     cod_ato = models.IntegerField()
-    tipo_ato_juiz = models.ForeignKey(TipoAtoJuiz, blank=True, null=True, on_delete=models.DO_NOTHING)
-    tipo_movimento = models.ForeignKey(TipoMovimento, blank=True, null=True, on_delete=models.DO_NOTHING)
+    tipo_ato_juiz = models.ForeignKey(
+        TipoAtoJuiz, blank=True, null=True, on_delete=models.DO_NOTHING)
+    tipo_movimento = models.ForeignKey(
+        TipoMovimento, blank=True, null=True, on_delete=models.DO_NOTHING)
     descr = models.CharField(max_length=60)
     objects = models.Manager
-    
+
     class Meta:
-        unique_together = (('cod_ato', 'tipo_ato_juiz','tipo_movimento'),)
+        unique_together = (('cod_ato', 'tipo_ato_juiz', 'tipo_movimento'),)
 
 
 class TipoDocumento(models.Model):
     id_tip_doc = models.IntegerField(primary_key=True)
     descr = models.CharField(max_length=210)
     objects = models.Manager
+
+
+# class DocumentoProcesso(models.Model):
+#     cod_docto_elet

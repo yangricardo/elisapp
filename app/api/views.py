@@ -192,44 +192,24 @@ class FuncionarioViewSet(viewsets.ModelViewSet):
         return JsonResponse(serializer.data)
 
 
-class ProcessoViewSet(viewsets.ModelViewSet):
-    authentication_classes = [
-        TokenAuthentication
-    ]
-    permission_classes = [
-        permissions.IsAuthenticated
-    ]
-    queryset = tj_models.Processo.objects.all()
-    serializer_class = serializer.ProcessoSerializer
+# class ProcessoViewSet(viewsets.ModelViewSet):
+#     authentication_classes = [
+#         TokenAuthentication
+#     ]
+#     permission_classes = [
+#         permissions.IsAuthenticated
+#     ]
+#     queryset = tj_models.Processo.objects.all()
+#     serializer_class = serializer.ProcessoSerializer
 
-    def perform_create(self, serializer):
-        serializer.save()
-        logger.info(f'Processo criado: \n{serializer}')
+#     def perform_create(self, serializer):
+#         serializer.save()
+#         logger.info(f'Processo criado: \n{serializer}')
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return JsonResponse(serializer.data)
-
-
-class ProcessoUnicoViewSet(viewsets.ModelViewSet):
-    authentication_classes = [
-        TokenAuthentication
-    ]
-    permission_classes = [
-        permissions.IsAuthenticated
-    ]
-    queryset = tj_models.ProcessoUnico.objects.all()
-    serializer_class = serializer.ProcessoUnicoSerializer
-
-    def perform_create(self, serializer):
-        serializer.save()
-        logger.info(f'Processo Unico criado: \n{serializer}')
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return JsonResponse(serializer.data)
+#     def retrieve(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         serializer = self.get_serializer(instance)
+#         return JsonResponse(serializer.data)
 
 
 class TipoDecisaoRecursoViewSet(viewsets.ModelViewSet):
