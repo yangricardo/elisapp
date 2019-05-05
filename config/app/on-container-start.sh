@@ -13,8 +13,8 @@ gunicorn    \
     -b 0.0.0.0:8000 \
     -t 360  \
     --graceful-timeout 180  \
-    --workers 2 \
-    --threads 2 \
+    --workers 3 \
+    --threads 3 \
     --worker-class gevent   \
     --worker-connections 1024   \
     backend.wsgi:application  

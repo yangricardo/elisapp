@@ -9,7 +9,7 @@ services:
     container_name: elisapp_postgres
     hostname: db
     ports:
-      - 15432:5432
+      - 5432:5432
     env_file:  # <-- we use the previously defined values
       - config/db/.env
     networks:  # <-- connect to the bridge
@@ -31,13 +31,16 @@ services:
     restart: always
     hostname: rabbitmq
     container_name: elisapp_rabbit
-    image: rabbitmq:latest
+    image: rabbitmq:3-management
     environment:
       - RABBITMQ_DEFAULT_USER=elisdbadmin
       - RABBITMQ_DEFAULT_PASS=elisdbpassword
     ports:
+      - 4369:4369
       - 5672:5672
       - 15672:15672
+      - 5671:5671
+      - 25672:25672
     networks: 
       - db_network
     depends_on:

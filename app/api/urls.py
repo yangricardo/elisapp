@@ -2,7 +2,7 @@ from rest_framework import routers
 from . import views as api_views
 from leads.api import LeadViewSet
 
-models = routers.DefaultRouter()
+models = routers.DefaultRouter(trailing_slash=True)
 models.register('users', api_views.UserViewSet)
 models.register('assuntos', api_views.AssuntoViewSet)
 models.register('classes', api_views.ClasseViewSet)

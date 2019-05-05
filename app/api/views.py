@@ -14,19 +14,27 @@ import logging
 import json
 from celery import shared_task
 from django.utils.decorators import method_decorator
+from backend.celery import app
+from functools import wraps
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-
-@shared_task
-def run_async(task_request, serializer):
-    return task_request(serializer)
+# def perform_async_create(self, serializer):
+#     self.perform_create(serializer)
+#     logger.info(f'Criado: {serializer.data}')
+#     headers = self.get_success_headers(serializer.data)
+#     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
-
+@method_decorator(wraps(app.task(bind=True)), name='create')
+@method_decorator(wraps(app.task(bind=True)), name='retrieve')
+@method_decorator(wraps(app.task(bind=True)), name='list')
+@method_decorator(wraps(app.task(bind=True)), name='update')
+@method_decorator(wraps(app.task(bind=True)), name='partial_update')
+@method_decorator(wraps(app.task(bind=True)), name='destroy')
 class TJModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -36,6 +44,7 @@ class TJModelViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
+        logger.info(serializer)
         return JsonResponse(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -43,7 +52,8 @@ class TJModelViewSet(viewsets.ModelViewSet):
         if type(serializer.initial_data) is not list:
             serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        run_async(self.perform_create,serializer)
+        self.perform_create(serializer)
+        # run_async(self.perform_create,serializer)
         logger.info(f'Criado: {serializer.data}')
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
