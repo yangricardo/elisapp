@@ -17,4 +17,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        import ptvsd
+        # # 5678 is the default attach port in the VS Code debug configurations
+        # print("Waiting for debugger attach")
+        ptvsd.enable_attach(('0.0.0.0', 3500), redirect_output=True)
+    finally:
+        main()

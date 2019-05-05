@@ -51,4 +51,4 @@ notebook-token:
 	docker-compose exec app jupyter notebook list
 
 run-debug:
-	docker-compose exec app python manage.py runserver --noreload 0.0.0.0:8002
+	docker-compose exec app python manage-debug.py runserver --noreload 0.0.0.0:9000

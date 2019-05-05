@@ -38,14 +38,12 @@ class TJModelViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance)
         return JsonResponse(serializer.data)
 
-    @method_decorator(shared_task)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
         if type(serializer.initial_data) is not list:
             serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # run_async(self.perform_create,serializer)
-        self.perform_create(serializer)
+        run_async(self.perform_create,serializer)
         logger.info(f'Criado: {serializer.data}')
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

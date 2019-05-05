@@ -5,7 +5,8 @@ import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from os import listdir
 from os.path import isfile, join
-
+from datetime import datetime
+import pytz
 import django
 import numpy as np
 import pandas as pd
@@ -134,6 +135,27 @@ class TJData:
     @staticmethod
     def to_json(df):
         return json.loads(df.to_json(orient='records'))
+
+    @staticmethod
+    def to_datetime_iso_format(series, format="%d/%m/%Y %H:%M:%S"):
+        #converte a serie de datetime para o formato iso8601 ajustado para o timezone America/Sao_Paulo
+        return series.apply(lambda x : pytz.timezone('America/Sao_Paulo').localize(datetime.strptime(x, format)).isoformat())
+
+    @staticmethod
+    def extract_serventia_ano_tuple(file):
+        search = re.search(r'Serv_(\d+)_ano_(\d+)',file)
+        return (int(search.group(1)),int(search.group(2))) if search.groups() else tuple()
+
+    @staticmethod
+    def list_files_in_serventias(file_regex, servs_anos):
+        dirpath = re.search(r'(\w+/)', file_regex).group(0)
+        fulldirpath = os.path.join('/tj_files',dirpath)
+        onlyfiles = [
+            f for f in os.listdir(fulldirpath)
+            if os.path.isfile(os.path.join(fulldirpath, f))
+            and TJData.extract_serventia_ano_tuple(f) in servs_anos
+        ]
+        return onlyfiles
 
 
 def setup_env():

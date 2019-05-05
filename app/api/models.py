@@ -70,6 +70,7 @@ class Processo(models.Model):
     cod_proc = models.CharField(max_length=18, db_index=True, unique=True)
     cod_cnj = models.CharField(
         max_length=25, db_index=True, unique=True, blank=True, null=True)
+    data_cad = models.DateTimeField(blank=True,null=True,auto_now=False,auto_now_add=False)
     serventia = models.ForeignKey(
         Serventia, db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
     competencia = models.ForeignKey(
@@ -77,9 +78,6 @@ class Processo(models.Model):
     assunto = models.ForeignKey(
         Assunto, db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
     objects = models.Manager
-
-    class Meta:
-        unique_together = (('cod_proc', 'cod_cnj', 'id_proc'),)
 
 
 class TipoMovimento(models.Model):

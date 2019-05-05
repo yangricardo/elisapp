@@ -12,17 +12,13 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: Remote Attach",
+            "name": "Attach (Remote Debug)",
             "type": "python",
             "request": "attach",
-            "port": 5678,
-            "host": "localhost",
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/app"
-                }
-            ]
+            "localRoot": "${workspaceRoot}/app",
+            "remoteRoot": "/app",
+            "port": 3500,
+            "host": "0.0.0.0"
         },
         {
             "name": "Python: Module",
@@ -35,12 +31,13 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
+            "program": "${workspaceFolder}/app/manage.py",
             "console": "integratedTerminal",
             "args": [
                 "runserver",
                 "--noreload",
-                "--nothreading"
+                "--nothreading",
+                "0.0.0.0:9000"
             ],
             "django": true
         },
