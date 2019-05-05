@@ -78,6 +78,9 @@ ptvsd = "*"
 requests = "*"
 djangorestframework-bulk = "*"
 gevent = "*"
+celery = "*"
+redis = "*"
+django-redis = "*"
 
 [requires]
 python_version = "3.7"

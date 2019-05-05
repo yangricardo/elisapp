@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -28,7 +27,8 @@ SECRET_KEY = 'tv4!=t*7wb_t@q0tebo9f3389uz1pw9-nbj*&l-ta4baj&5g%$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1','localhost', 'elisapp.dev', '192.168.0.27','192.168.1.105']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost',
+                 'elisapp.dev', '192.168.0.27', '192.168.1.105']
 
 
 # Application definition
@@ -48,12 +48,15 @@ INSTALLED_APPS = [
     'webpack_loader',
     'knox',
     'django_extensions',
+    'celery',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -235,6 +238,10 @@ LOGGING = {
             'level': 'DEBUG',
             'handlers': ['debug']
         },
+        'celery': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
         'info': {
             'level': 'INFO',
             'handlers': ['console']
@@ -277,3 +284,26 @@ LOGGING = {
         # }
     }
 }
+
+CELERY_BROKER_URL = 'pyamqp://elisdbadmin:elisdbpassword@rabbitmq:5672'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'America/Sao_Paulo'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": 'redis://redis:6379/0',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "backend"
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+CACHE_TTL = 60 * 60

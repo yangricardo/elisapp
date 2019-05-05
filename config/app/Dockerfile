@@ -23,7 +23,3 @@ ADD app /app/
 RUN npm i
 RUN npm run dev
 RUN python manage.py collectstatic
-
-# When container starts, this script will be executed.
-# Note that it is NOT executed during building
-CMD ["sh", "/config/on-container-start.sh"]

@@ -6,6 +6,7 @@ services:
   db:
     restart: always
     image: postgres
+    container_name: elisapp_postgres
     hostname: db
     ports:
       - 15432:5432
@@ -16,23 +17,40 @@ services:
     volumes:
       - db_volume:/var/lib/postgresql/data
 
+  redis:
+    restart: always
+    container_name: elisapp_redis
+    hostname: redis
+    image: redis
+    expose:
+      - 6379
+    networks: 
+      - db_network
 
-  # Our django application
-  # Build from remote dockerfile
-  # Connect local app folder with image folder, so changes will be pushed to image instantly
-  # Open port 8000
+  rabbitmq:
+    restart: always
+    hostname: rabbitmq
+    container_name: elisapp_rabbit
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=elisdbadmin
+      - RABBITMQ_DEFAULT_PASS=elisdbpassword
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks: 
+      - db_network
+    depends_on:
+      - redis
+
   app:
     restart: always
     build:
       context: .
+    container_name: elisapp_app
     image: yangricardo/elisapp:latest
+    command: sh /config/on-container-start.sh
     hostname: app
-    # environment:
-    #   VIRTUAL_HOST: elisapp.dev
-    #   VIRTUAL_NETWORK: nginx-proxy
-    #   VIRTUAL_PORT: 8000
-    #   LETSENCRYPT_HOST: elisapp.dev
-    #   LETSENCRYPT_EMAIL: yangricardo17@gmail.com
     env_file:
       - config/app/.env
     volumes:
@@ -54,6 +72,21 @@ services:
       - db_network  # <-- connect to the bridge
     depends_on:
       - db
+      - redis
+
+  worker:
+    build:
+      context: .
+    container_name: elisapp_celery
+    image: yangricardo/elisapp:latest
+    command: celery worker -A backend 
+    volumes:
+      - ./app:/app
+    depends_on:
+      - app
+      - rabbitmq
+    networks: 
+      - db_network
 
   # Web server based on official nginx image
   # Connect external 8000 (which you can access from browser)
@@ -61,6 +94,7 @@ services:
   # Connect local nginx configuration with image configuration
   nginx:
     image: nginx
+    container_name: elisapp_nginx
     restart:  always
     hostname: nginx
     ports:

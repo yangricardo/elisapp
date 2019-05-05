@@ -1,4 +1,8 @@
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.contrib.auth.models import User
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.shortcuts import render
 from knox.auth import TokenAuthentication
 from rest_framework import permissions, viewsets, status
@@ -8,26 +12,39 @@ from . import models as tj_models
 from . import serializer
 import logging
 import json
+from celery import shared_task
+from django.utils.decorators import method_decorator
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 
+@shared_task
+def run_async(task_request, serializer):
+    return task_request(serializer)
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+
 class TJModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-    
+
+    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(vary_on_cookie)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-
         return JsonResponse(serializer.data)
 
+    @method_decorator(shared_task)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
         if type(serializer.initial_data) is not list:
             serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        # run_async(self.perform_create,serializer)
         self.perform_create(serializer)
         logger.info(f'Criado: {serializer.data}')
         headers = self.get_success_headers(serializer.data)
