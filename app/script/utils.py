@@ -229,6 +229,26 @@ class ElisAPI:
     def get_erros(responses, expected_code):
         return list(filter(lambda x: x[1].status_code != expected_code, responses))
 
+    @staticmethod
+    def describe_attribute_error(error_list, attribute):
+        # converte para objeto o string json
+        erros = list(map(lambda x: json.loads(x[1].text), error_list))
+        # remove registros que não ocorreram erro
+        erros = list(map(lambda lst: list(filter(lambda x: x != {}, lst)), erros))
+        # seleciona e remove erros duplicados referente ao atributo
+        erros = list(map(lambda lst: list(map(lambda lst2: lst2[attribute],lst)), erros))
+        erros = [list(error_lst[0]) for error_lst in erros ]
+        erros = set(map(lambda x: x[0]  , erros))
+        return erros
+
+    @staticmethod
+    def list_pk_errors(erros):
+        return list(map(lambda x: re.search(r'(\d+)',x).group(),erros))
+
+    @staticmethod
+    def split_list(lst, max_size_group):
+        return [lst[i::max_size_group] for i in range(max_size_group)]
+
 # def handle_assunto_pai_error(r):
 #     # processa cod_assunto_pai que ocorreu erro
 #     r_error = json.loads(r.text)

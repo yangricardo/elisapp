@@ -52,10 +52,10 @@ class CompetenciaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class ProcessoSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = tj_model.Processo
-#         fields = '__all__'
+class ProcessoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.Processo
+        fields = '__all__'
 
 
 class TipoMovimentoSerializer(serializers.ModelSerializer):
