@@ -70,7 +70,7 @@ class TJData:
         'tipo_documento_juntada': 'Parametros/TIPODOCUMENTOJUNTADA.csv.gz',
         'tipo_personagem': 'Parametros/tipopersonagem.csv.gz',
         'tipo_andamento_3': 'Parametros/DCP_TipoAndamento_created.csv.gz',
-        'processo_unico': 'ProcessoUnico.csv.gz',
+        'processo_unico': 'ProcessoUnico/ProcessoUnico.csv.gz',
     }
 
     @staticmethod
@@ -182,6 +182,8 @@ class ElisAPI:
             "password": str(password)
         })
         rawdata = json.loads(r.text)
+        if type(rawdata) is not dict:
+            raise ValueError(r.status_code, rawdata)
         self.token = rawdata['token']
         self.username = rawdata['user']['username']
         self.email = rawdata['user']['email']

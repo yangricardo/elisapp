@@ -58,7 +58,7 @@ services:
       - config/app/.env
     volumes:
       - ./app:/app
-      - /home/yang/TJ_FILES/:/tj_files
+      - /Users/yangricardo/TJ_FILES/:/tj_files
       - static:/srv/static
       - media:/srv/media
     expose:
@@ -83,9 +83,11 @@ services:
       context: .
     container_name: elisapp_celery
     image: yangricardo/elisapp:latest
-    command: celery worker -A backend 
+    command: celery worker -A backend -E
     volumes:
       - ./app:/app
+    ports:
+      - 5555:5555
     depends_on:
       - app
       - rabbitmq

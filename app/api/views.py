@@ -125,7 +125,8 @@ class FuncionarioViewSet(TJModelViewSet):
 class ProcessoViewSet(TJModelViewSet):
     queryset = tj_models.Processo.objects.all()
     serializer_class = serializer.ProcessoSerializer
-
+    authentication_classes = ()
+    permission_classes = ()
 
 class TipoDecisaoRecursoViewSet(TJModelViewSet):
     queryset = tj_models.TipoDecisaoRecurso.objects.all()
