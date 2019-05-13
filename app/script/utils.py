@@ -11,6 +11,8 @@ import django
 import numpy as np
 import pandas as pd
 import requests
+import itertools
+import ftfy
 
 
 class TJData:
@@ -74,16 +76,16 @@ class TJData:
     }
 
     @staticmethod
-    def andamento_processo_clob(serventia, ano):
-        return f'AndamentoProcessoClobServAno/AndamentoProcesso_Cod_Serv_{serventia}_ano_{ano}.csv.gz'
+    def andamento_processo_clob(serventia=r'(\d+)', ano=r'(\d+)'):
+        return r'(AndamentoProcessoClobServAno/)?AndamentoProcesso(Clob)?_Cod_Serv_{}_ano_{}.csv.gz'.format(serventia, ano)
 
     @staticmethod
-    def andamento_processo(serventia, ano):
-        return f'AndamentoProcessoServAno/AndamentoProcesso_Cod_Serv_{serventia}_ano_{ano}.csv.gz'
+    def andamento_processo(serventia=r'(\d+)', ano=r'(\d+)'):
+        return r'(AndamentoProcessoServAno/)?AndamentoProcesso(Clob)?_Cod_Serv_{}_ano_{}.csv.gz'.format(serventia, ano)
 
     @staticmethod
-    def processo(serventia, ano):
-        return f'ProcessoServAno/Processo_Cod_Serv_{serventia}_ano_{ano}.csv.gz'
+    def processo(serventia=r'(\d+)', ano=r'(\d+)'):
+        return r'(ProcessoServAno/)?Processo_Cod_Serv_{}_ano_{}.csv.gz'.format(serventia, ano)
 
     @staticmethod
     def read_csv(file, **kwargs):
@@ -96,21 +98,35 @@ class TJData:
                            )
 
     @staticmethod
+    def extract_serventia_ano_tuple(file_regex, file):
+        regex = re.compile(file_regex())
+        search = regex.search(file)
+        return (int(search.groups()[-2]), int(search.groups()[-1])) if search else tuple()
+
+    @staticmethod
     def list_files_in_serventias_anos(file_regex, servs_anos):
-        dirpath = re.search(r'(\w+/)', file_regex).group(0)
-        fulldirpath = join('/tj_files',dirpath)
+        dirpath = re.search(
+            r'\((\w+/)\)', file_regex()).group(1)
+        fulldirpath = os.path.join('/tj_files', dirpath)
         onlyfiles = [
-            f for f in listdir(fulldirpath)
-            if isfile(join(fulldirpath, f))
-            and TJData.in_serv_ano(f, file_regex, servs_anos)
+            os.path.join(dirpath, f) for f in os.listdir(fulldirpath)
+            if os.path.isfile(os.path.join(fulldirpath, f))
+            and TJData.extract_serventia_ano_tuple(file_regex, f) in servs_anos
         ]
         return onlyfiles
 
     @staticmethod
-    def in_serv_ano(file, file_regex, servs_anos):
-        serv_ano_regex = re.search(file_regex, file)
-        serv_ano = (int(serv_ano_regex.group(1)), int(serv_ano_regex.group(2)))
-        return serv_ano in servs_anos
+    def get_servs_anos(file_format, cod_serventias, range_anos):
+        servs_anos = list(map(
+            lambda x: TJData.extract_serventia_ano_tuple(file_format, x),
+            TJData.list_files_in_serventias_anos(file_format, 
+                TJData.build_serventias_anos_list(cod_serventias, range_anos)))
+        )
+        return servs_anos
+
+    @staticmethod
+    def build_serventias_anos_list(cod_serventias, range_anos):
+        return list(itertools.product(cod_serventias, range_anos))
 
     @staticmethod
     def nan_to_int(series):
@@ -130,7 +146,7 @@ class TJData:
 
     @staticmethod
     def to_utf8_bytes(series):
-        return series.apply(lambda x: x.strip().encode('utf8') if not pd.isnull(x) else x)
+        return series.apply(lambda x: x.strip().encode('utf8') if not pd.isna(x) else None)
 
     @staticmethod
     def to_json(df):
@@ -138,24 +154,92 @@ class TJData:
 
     @staticmethod
     def to_datetime_iso_format(series, format="%d/%m/%Y %H:%M:%S"):
-        #converte a serie de datetime para o formato iso8601 ajustado para o timezone America/Sao_Paulo
-        return series.apply(lambda x : pytz.timezone('America/Sao_Paulo').localize(datetime.strptime(x, format)).isoformat())
+        # converte a serie de datetime para o formato iso8601 ajustado para o timezone America/Sao_Paulo
+        return series.apply(lambda x: pytz.timezone('America/Sao_Paulo').localize(datetime.strptime(x, format)).isoformat() if not pd.isna(x) else np.nan)
 
     @staticmethod
-    def extract_serventia_ano_tuple(file):
-        search = re.search(r'Serv_(\d+)_ano_(\d+)',file)
-        return (int(search.group(1)),int(search.group(2))) if search.groups() else tuple()
+    def concurrent_read(handle_df,files_list, kwargs):
+        dfs = []
+        with ThreadPoolExecutor(max_workers=12) as executor:
+            future_read = {executor.submit(handle_df, file, kwargs):file for file in files_list}
+            for future in as_completed(future_read):
+                dfs.append(future.result())
+        return dfs
 
     @staticmethod
-    def list_files_in_serventias(file_regex, servs_anos):
-        dirpath = re.search(r'(\w+/)', file_regex).group(0)
-        fulldirpath = os.path.join('/tj_files',dirpath)
-        onlyfiles = [
-            f for f in os.listdir(fulldirpath)
-            if os.path.isfile(os.path.join(fulldirpath, f))
-            and TJData.extract_serventia_ano_tuple(f) in servs_anos
-        ]
-        return onlyfiles
+    def clean_processo(file, kwargs):
+        df = TJData.read_csv(file,usecols=kwargs.get('usecols'))
+        df = df.rename(columns=lambda x : x.lower())
+        df = df.rename(columns={'cod_comp':'competencia','cod_serv':'serventia','cod_assunto':'assunto'})
+        # df.cod_proc = TJData.to_utf8_bytes(df.cod_proc)
+        df.id_proc = df.id_proc.apply(lambda x : str(x))
+        df.serventia = df.serventia.apply(lambda x : str(x))
+        df.data_cad = TJData.to_datetime_iso_format(df.data_cad)
+        df.data_cad = TJData.to_utf8_bytes(df.data_cad)
+        return df
+
+    @staticmethod
+    def clob_to_merge(file, files_list, pattern):
+        serv_ano = TJData.extract_serventia_ano_tuple(pattern,file)
+        regex = re.compile(pattern(serv_ano[0],serv_ano[1]))
+        return list(filter(lambda x : regex.match(x), files_list))[0]
+
+    @staticmethod
+    def clean_andamentos(file, kwargs):
+        usecols = kwargs.get('usecols')
+        merge_on = kwargs.get('merge_on')
+        files_clob_list = kwargs.get('files_clob_list')
+        clob_pattern = kwargs.get('clob_pattern')
+        juizes = kwargs.get('juizes')
+        tipos_andamento = kwargs.get('tipos_andamento')
+        df = TJData.read_csv(file,usecols=usecols)
+        df = df.rename(columns=lambda x : x.lower())
+        # filtra pelas sentenças
+        df = df[df.cod_tip_ato=='2']
+        usecols = list(map(lambda x : x.lower(),usecols))
+        try:
+            # se existir planilha clob auxiliar, realiza a junção das tabelas para completar o TXT_DESCR
+            df_clob = TJData.read_csv(TJData.clob_to_merge(file,files_clob_list,clob_pattern))
+            df_clob = df_clob.rename(columns=lambda x : str(x).lower())
+            df.ordem = df.ordem.astype(str)
+            df_clob.ordem = df_clob.ordem.astype(str)
+            df = df.merge(df_clob, on=merge_on, how='outer')
+            df.cod_tip_and = df.cod_tip_and.apply(lambda x : str(1))
+            df.cod_tip_ato = df.cod_tip_ato.apply(lambda x : str(2))
+            df.cod_serv = df.cod_serv.apply(lambda x : df.cod_serv.iloc[0])
+            # preenche os campos nulos de TXT_DESCR
+            df.txt_descr_x = df.txt_descr_x.fillna(df.txt_descr_y)
+            df = df.rename(columns={'txt_descr_x':'txt_descr'})
+            usecols.remove('num_seq')
+            usecols.remove('txt_descr_y')
+            usecols = list(df.columns)
+            df = df[usecols]
+        finally:
+            # limpa linhas sujas
+            df = df[df.cod_proc.str.match(r'\d{4}.\d{3}.\d{6}-\d\w?')]
+            # se por algum motivo TXT_DESCR ainda estiver nulo, utiliza TXT_DESCR_RES para preencher
+            df.txt_descr = df.txt_descr.fillna(df.txt_descr_res)
+            # ajusta codificação para utf8 (texto ainda com escapes)
+            df.txt_descr = df.txt_descr.apply(lambda x : ftfy.fix_encoding(str(x)).strip().encode('latin1').decode('latin1').encode('utf8').decode('utf8').encode() if x is not np.nan else x)
+            df.dt_ato = TJData.to_datetime_iso_format(df.dt_ato,'%d/%m/%Y')
+            usecols.remove('txt_descr_res')
+            df = df[~pd.isna(df.txt_descr)]
+            df = df.rename(columns={
+                'cod_proc':'processo',
+                'cod_tip_and' : 'tipo_andamento',
+                'num_matr_juiz' : 'juiz',
+                'cod_tip_ato' :  'tipo_ato_juiz',
+                'cod_ato' : 'ato_juiz',
+                'cod_serv' : 'serventia',
+                'cod_tip_dec_rec' : 'tipo_decisao_recurso',   
+                })
+            df.juiz = df.juiz.apply(lambda x : x if x in juizes else np.nan)
+            # df.tipo_andamento = df.tipo_andamento.apply(lambda x : x if x in tipos_andamento else np.nan)
+            usecols = list(df.columns)
+            return df[usecols].sort_values(['processo','ordem']).reset_index(drop=True)
+
+    
+
 
 
 def setup_env():
@@ -176,7 +260,8 @@ class ElisAPI:
     def __init__(self, host, username, password):
         self.host = host
         self.resources = json.loads(requests.get(self.host+'/auth').text)
-        self.resources.update(json.loads(requests.get(self.host+'/api/models').text))
+        self.resources.update(json.loads(
+            requests.get(self.host+'/api/models').text))
         r = requests.post(self.resources['login'], json={
             "username": str(username),
             "password": str(password)
@@ -238,7 +323,7 @@ class ElisAPI:
                 except Exception as exc:
                     self.responses.append((response, exc))
                 else:
-                    self.responses.append((response, data))
+                    self.responses.append(response)
         return self.responses
 
     @staticmethod
@@ -258,16 +343,18 @@ class ElisAPI:
         # converte para objeto o string json
         erros = list(map(lambda x: json.loads(x[1].text), error_list))
         # remove registros que não ocorreram erro
-        erros = list(map(lambda lst: list(filter(lambda x: x != {}, lst)), erros))
+        erros = list(map(lambda lst: list(
+            filter(lambda x: x != {}, lst)), erros))
         # seleciona e remove erros duplicados referente ao atributo
-        erros = list(map(lambda lst: list(map(lambda lst2: lst2[attribute],lst)), erros))
-        erros = [list(error_lst[0]) for error_lst in erros ]
-        erros = set(map(lambda x: x[0]  , erros))
+        erros = list(map(lambda lst: list(
+            map(lambda lst2: lst2[attribute], lst)), erros))
+        erros = [list(error_lst[0]) for error_lst in erros]
+        erros = set(map(lambda x: x[0], erros))
         return erros
 
     @staticmethod
     def list_pk_errors(erros):
-        return list(map(lambda x: re.search(r'(\d+)',x).group(),erros))
+        return list(map(lambda x: re.search(r'(\d+)', x).group(), erros))
 
     @staticmethod
     def split_list(lst, max_size_group):

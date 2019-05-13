@@ -141,5 +141,18 @@ class TipoDocumento(models.Model):
     objects = models.Manager
 
 
-# class DocumentoProcesso(models.Model):
-#     cod_docto_elet
+class AndamentoProcesso(models.Model):
+    processo = models.ForeignKey(Processo, to_field='cod_proc',db_index=True, on_delete=models.DO_NOTHING)
+    ordem = models.IntegerField()
+    tipo_andamento = models.ForeignKey(TipoAndamento, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
+    juiz = models.ForeignKey(Funcionario, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
+    tipo_ato_juiz = models.ForeignKey(TipoAtoJuiz, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
+    ato_juiz = models.ForeignKey(AtoJuiz, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
+    serventia = models.ForeignKey(Serventia, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
+    dt_ato = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, null=True)
+    tipo_decisao_recurso = models.ForeignKey(TipoDecisaoRecurso, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
+    txt_descr = models.TextField()
+    objects = models.Manager
+    
+    class Meta:
+        unique_together = (('processo', 'ordem'),)

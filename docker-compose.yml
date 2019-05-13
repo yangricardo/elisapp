@@ -58,7 +58,8 @@ services:
       - config/app/.env
     volumes:
       - ./app:/app
-      - /Users/yangricardo/TJ_FILES/:/tj_files
+      # - /Users/yangricardo/TJ_FILES/:/tj_files
+      - /home/yang/TJ_FILES:/tj_files
       - static:/srv/static
       - media:/srv/media
     expose:

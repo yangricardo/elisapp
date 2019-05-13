@@ -11,10 +11,10 @@ python manage.py migrate
 gunicorn    \
     --reload    \
     -b 0.0.0.0:8000 \
-    -t 360  \
+    -t 720  \
     --graceful-timeout 180  \
-    --workers 3 \
-    --threads 3 \
+    --workers 4 \
+    --threads 4 \
     --worker-class gevent   \
     --worker-connections 1024   \
     backend.wsgi:application  

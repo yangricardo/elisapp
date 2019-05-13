@@ -146,3 +146,7 @@ class AtoJuizViewSet(TJModelViewSet):
 class TipoDocumentoViewSet(TJModelViewSet):
     queryset = tj_models.TipoDocumento.objects.all()
     serializer_class = serializer.TipoDocumentoSerializer
+
+class AndamentoProcessoViewSet(TJModelViewSet):
+    queryset = tj_models.AndamentoProcesso.objects.all()
+    serializer_class = serializer.AndamentoProcessoSerializer

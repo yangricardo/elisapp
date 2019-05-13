@@ -105,3 +105,7 @@ class TipoDocumentoSerializer(serializers.ModelSerializer):
         model = tj_model.TipoDocumento
         fields = '__all__'
 
+class AndamentoProcessoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.AndamentoProcesso
+        fields = '__all__'
