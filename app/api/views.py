@@ -29,12 +29,17 @@ logger = logging.getLogger(__name__)
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
+@app.task(bind=True, serializer='pickle')
+def async_perform_create(serializer):
+    serializer.save()
+
 @method_decorator(wraps(app.task(bind=True)), name='create')
 @method_decorator(wraps(app.task(bind=True)), name='retrieve')
 @method_decorator(wraps(app.task(bind=True)), name='list')
 @method_decorator(wraps(app.task(bind=True)), name='update')
 @method_decorator(wraps(app.task(bind=True)), name='partial_update')
 @method_decorator(wraps(app.task(bind=True)), name='destroy')
+@method_decorator(wraps(app.task(bind=True)), name='perform_create')
 class TJModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -52,8 +57,8 @@ class TJModelViewSet(viewsets.ModelViewSet):
         if type(serializer.initial_data) is not list:
             serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        # async_perform_create.delay(serializer)
         self.perform_create(serializer)
-        # run_async(self.perform_create,serializer)
         logger.info(f'Criado: {serializer.data}')
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

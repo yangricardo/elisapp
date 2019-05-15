@@ -152,7 +152,8 @@ class AndamentoProcesso(models.Model):
     dt_ato = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, null=True)
     tipo_decisao_recurso = models.ForeignKey(TipoDecisaoRecurso, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
     txt_descr = models.TextField()
+    txt_descr_len = models.IntegerField()
     objects = models.Manager
     
     class Meta:
-        unique_together = (('processo', 'ordem'),)
+        unique_together = (('processo', 'ordem','txt_descr_len'),)

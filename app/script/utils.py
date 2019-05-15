@@ -13,7 +13,7 @@ import pandas as pd
 import requests
 import itertools
 import ftfy
-
+import gc
 
 class TJData:
 
@@ -210,9 +210,9 @@ class TJData:
             # preenche os campos nulos de TXT_DESCR
             df.txt_descr_x = df.txt_descr_x.fillna(df.txt_descr_y)
             df = df.rename(columns={'txt_descr_x':'txt_descr'})
+            usecols = list(df.columns)
             usecols.remove('num_seq')
             usecols.remove('txt_descr_y')
-            usecols = list(df.columns)
             df = df[usecols]
         finally:
             # limpa linhas sujas
@@ -222,7 +222,6 @@ class TJData:
             # ajusta codificação para utf8 (texto ainda com escapes)
             df.txt_descr = df.txt_descr.apply(lambda x : ftfy.fix_encoding(str(x)).strip().encode('latin1').decode('latin1').encode('utf8').decode('utf8').encode() if x is not np.nan else x)
             df.dt_ato = TJData.to_datetime_iso_format(df.dt_ato,'%d/%m/%Y')
-            usecols.remove('txt_descr_res')
             df = df[~pd.isna(df.txt_descr)]
             df = df.rename(columns={
                 'cod_proc':'processo',
@@ -234,8 +233,10 @@ class TJData:
                 'cod_tip_dec_rec' : 'tipo_decisao_recurso',   
                 })
             df.juiz = df.juiz.apply(lambda x : x if x in juizes else np.nan)
+            df = df.assign(txt_descr_len = df.txt_descr.apply(lambda x : len(str(x)) if not pd.isna(x) else 0 ))
             # df.tipo_andamento = df.tipo_andamento.apply(lambda x : x if x in tipos_andamento else np.nan)
             usecols = list(df.columns)
+            usecols.remove('txt_descr_res')
             return df[usecols].sort_values(['processo','ordem']).reset_index(drop=True)
 
     
@@ -307,7 +308,7 @@ class ElisAPI:
         return response
 
     def concurrent_request(self, request, resource, data_list, **kwargs):
-        self.responses = []
+        responses = []
         detail = kwargs.get('detail')
         with ThreadPoolExecutor(max_workers=9) as executor:
             if request == self.get or request == self.patch or request == self.put:
@@ -316,15 +317,23 @@ class ElisAPI:
             else:
                 future_request = {executor.submit(
                     request, resource, data): data for data in data_list}
+            data_list.clear()
+            del data_list
+            gc.collect()
             for future in as_completed(future_request):
                 response = future_request[future]
                 try:
                     data = future.result()
                 except Exception as exc:
-                    self.responses.append((response, exc))
+                    responses.append((response,exc))
                 else:
-                    self.responses.append(response)
-        return self.responses
+                    if data.status_code != 201 or data.status_code != 200:
+                        responses.append((response,data))
+                    else:
+                        del response
+                        del data
+                gc.collect()
+        return responses
 
     @staticmethod
     def response_to_json(response):
