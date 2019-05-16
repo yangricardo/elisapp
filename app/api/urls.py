@@ -1,6 +1,7 @@
 from rest_framework import routers
 from . import views as api_views
 from leads.api import LeadViewSet
+from django.conf.urls import include
 
 models = routers.DefaultRouter(trailing_slash=True)
 models.register('users', api_views.UserViewSet)

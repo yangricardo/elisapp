@@ -1,45 +1,29 @@
+from __future__ import absolute_import, unicode_literals
+
+import json
+import logging
+from functools import wraps
+
 from django.conf import settings
-from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.contrib.auth.models import User
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.shortcuts import render
 from knox.auth import TokenAuthentication
-from rest_framework import permissions, viewsets, status
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
-from django.http import JsonResponse
+
 from . import models as tj_models
 from . import serializer
-import logging
-import json
-from celery import shared_task
-from django.utils.decorators import method_decorator
-from backend.celery import app
-from functools import wraps
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-# def perform_async_create(self, serializer):
-#     self.perform_create(serializer)
-#     logger.info(f'Criado: {serializer.data}')
-#     headers = self.get_success_headers(serializer.data)
-#     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
-@app.task(bind=True, serializer='pickle')
-def async_perform_create(serializer):
-    serializer.save()
-
-@method_decorator(wraps(app.task(bind=True)), name='create')
-@method_decorator(wraps(app.task(bind=True)), name='retrieve')
-@method_decorator(wraps(app.task(bind=True)), name='list')
-@method_decorator(wraps(app.task(bind=True)), name='update')
-@method_decorator(wraps(app.task(bind=True)), name='partial_update')
-@method_decorator(wraps(app.task(bind=True)), name='destroy')
-@method_decorator(wraps(app.task(bind=True)), name='perform_create')
 class TJModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -57,11 +41,11 @@ class TJModelViewSet(viewsets.ModelViewSet):
         if type(serializer.initial_data) is not list:
             serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # async_perform_create.delay(serializer)
         self.perform_create(serializer)
         logger.info(f'Criado: {serializer.data}')
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 class UserViewSet(TJModelViewSet):
@@ -130,6 +114,8 @@ class FuncionarioViewSet(TJModelViewSet):
 class ProcessoViewSet(TJModelViewSet):
     queryset = tj_models.Processo.objects.all()
     serializer_class = serializer.ProcessoSerializer
+    lookup_field = 'cod_proc'
+    lookup_value_regex = r'\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?'
     authentication_classes = ()
     permission_classes = ()
 
@@ -152,6 +138,26 @@ class TipoDocumentoViewSet(TJModelViewSet):
     queryset = tj_models.TipoDocumento.objects.all()
     serializer_class = serializer.TipoDocumentoSerializer
 
+
 class AndamentoProcessoViewSet(TJModelViewSet):
     queryset = tj_models.AndamentoProcesso.objects.all()
     serializer_class = serializer.AndamentoProcessoSerializer
+    lookup_field = 'processo'
+    lookup_value_regex = r'\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?'
+    authentication_classes = ()
+    permission_classes = ()
+
+    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(vary_on_cookie)
+    def retrieve(self, request, *args, **kwargs):
+        print(request)
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

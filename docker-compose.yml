@@ -27,6 +27,21 @@ services:
     networks: 
       - db_network
 
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks: 
+      - db_network
+
   rabbitmq:
     restart: always
     hostname: rabbitmq
@@ -84,7 +99,7 @@ services:
       context: .
     container_name: elisapp_celery
     image: yangricardo/elisapp:latest
-    command: celery worker -A backend -E
+    command: celery -A backend worker -E -l info
     volumes:
       - ./app:/app
     ports:

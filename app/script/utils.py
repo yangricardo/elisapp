@@ -325,14 +325,16 @@ class ElisAPI:
                 try:
                     data = future.result()
                 except Exception as exc:
-                    responses.append((response,exc))
+                    responses.append(exc)
                 else:
                     if data.status_code != 201 or data.status_code != 200:
-                        responses.append((response,data))
+                        responses.append(data)
                     else:
                         del response
                         del data
                 gc.collect()
+            del future_request
+            gc.collect()
         return responses
 
     @staticmethod
