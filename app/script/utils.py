@@ -98,6 +98,10 @@ class TJData:
                            )
 
     @staticmethod
+    def count_lines(file):
+        return sum(1 for line in open(os.path.join('/tj_files',file), encoding='latin1'))
+
+    @staticmethod
     def extract_serventia_ano_tuple(file_regex, file):
         regex = re.compile(file_regex())
         search = regex.search(file)
