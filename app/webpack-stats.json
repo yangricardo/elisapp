@@ -1,1 +1,1 @@
-{"status":"done","error":"ModuleNotFoundError","message":"Module not found: Error: Can't resolve './auth/Login.jsx' in '/app/frontend/src'","chunks":{"main":[{"name":"main.js","path":"/app/frontend/static/frontend/main.js"}]}}
+{"status":"done","error":"ModuleNotFoundError","message":"Module not found: Error: Can't resolve '../actions/message' in '/app/frontend/src/containers/search-process'","chunks":{"main":[{"name":"main.js","path":"/app/frontend/static/frontend/main.js"}]}}

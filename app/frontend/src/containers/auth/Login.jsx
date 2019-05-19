@@ -63,7 +63,7 @@ class Login extends Component {
 
     render() {
         if(this.props.isAuthenticated){
-            return <Redirect to="/leads"/>
+            return <Redirect to="/buscarprocesso"/>
         }
         const {username, password} = this.state
         const {classes} = this.props

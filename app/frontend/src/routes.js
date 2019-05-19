@@ -8,6 +8,7 @@ import Alerts from './Alerts.jsx';
 import Login from './containers/auth/Login.jsx';
 import Register from './containers/auth/Register.jsx';
 import PrivateRoute from './containers/auth/PrivateRoute.js';
+import SearchProcessPage from './containers/search-process/SearchProcessPage.jsx';
 
 const Page404 = ({ location }) => (
   <div>
@@ -23,6 +24,7 @@ export default props => (
         <Header>
           <Switch>
               <PrivateRoute exact path="/leads" component={AppLeads} />
+              <PrivateRoute exact path="/buscarprocesso" component={SearchProcessPage} />
               <Route exact path='/dashboard' component={ Dashboard } />
               <Route exact path='/register' component={ Register } />
               <Route exact path='/login' component={ Login } />

@@ -13,7 +13,7 @@ import { Search, List, GroupWork } from '@material-ui/icons';
 import { Link as LinkRouter } from 'react-router-dom'
 export const mainListItems = (
   <div>
-    <ListItem button component={LinkRouter} to="/dashboard">
+    <ListItem button component={LinkRouter} to="/buscarprocesso">
       <ListItemIcon>
         <Search/>
       </ListItemIcon>

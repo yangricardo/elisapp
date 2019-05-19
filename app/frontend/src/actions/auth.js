@@ -8,7 +8,7 @@ export const loadUser = () => (dispatch, getState) => {
 	dispatch({ type: USER_LOADING });
 
 	axios
-	.get("/auth/user", tokenConfig(getState))
+	.get("/auth/user/", tokenConfig(getState))
 	.then(res => {
 		dispatch({
 		type: USER_LOADED,
@@ -36,7 +36,7 @@ export const login = (username, password) => dispatch => {
 	const body = JSON.stringify({ username, password });
 
 	axios
-	.post("/auth/login", body, config)
+	.post("/auth/login/", body, config)
 	.then(res => {
 		dispatch(createMessage({ login: "Login Success" }));
 		dispatch({
@@ -65,7 +65,7 @@ export const register = ({ username, password, email }) => dispatch => {
 	const body = JSON.stringify({ username, email, password });
 
 	axios
-	.post("/auth/register", body, config)
+	.post("/auth/register/", body, config)
 	.then(res => {
 		dispatch(createMessage({ register: "Register Success" }));
 		dispatch({
