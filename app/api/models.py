@@ -142,7 +142,7 @@ class TipoDocumento(models.Model):
 
 
 class AndamentoProcesso(models.Model):
-    processo = models.ForeignKey(Processo, to_field='cod_proc',db_index=True, on_delete=models.DO_NOTHING)
+    processo = models.ForeignKey(Processo, to_field='cod_proc',related_name='processo',db_index=True, on_delete=models.DO_NOTHING)
     ordem = models.IntegerField()
     tipo_andamento = models.ForeignKey(TipoAndamento, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)
     juiz = models.ForeignKey(Funcionario, db_index=True, on_delete=models.DO_NOTHING, blank=True, null=True)

@@ -24,6 +24,12 @@ down:
 bash:
 	docker-compose exec app /bin/bash
 
+npm-install:
+	docker-compose exec app npm install
+
+npm-run-dev:
+	docker-compose exec app npm run dev-watch
+
 app-logs:
 	docker-compose logs app
 
@@ -34,7 +40,7 @@ nginx-logs:
 	docker-compose logs nginx
 
 collectstatic:
-	docker-compose exec app python manage.py collectstatic
+	docker-compose exec app bash -c 'python manage.py collectstatic <<< yes'
 
 createsuperuser:
 	docker-compose exec app python manage.py createsuperuser

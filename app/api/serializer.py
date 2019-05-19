@@ -109,7 +109,6 @@ class TipoDocumentoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AndamentoProcessoSerializer(serializers.ModelSerializer):
-    processo = serializers.RegexField(r'^\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?$')
     class Meta:
         model = tj_model.AndamentoProcesso
         fields = '__all__'

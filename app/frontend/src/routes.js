@@ -4,10 +4,10 @@ import Dashboard from './containers/dashboard/Dashboard.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import AppLeads from './leads/AppLeads.js';
 import Header from './components/Header.jsx';
-import Login from './leads/Login.jsx';
-import Register from './leads/Register.jsx';
-import PrivateRoute from './leads/PrivateRoute.js';
 import Alerts from './Alerts.jsx';
+import Login from './containers/auth/Login.jsx';
+import Register from './containers/auth/Register.jsx';
+import PrivateRoute from './containers/auth/PrivateRoute.js';
 
 const Page404 = ({ location }) => (
   <div>

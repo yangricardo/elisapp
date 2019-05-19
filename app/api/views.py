@@ -7,15 +7,16 @@ from functools import wraps
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.core.exceptions import ValidationError
+from django.http import JsonResponse, Http404
+from django.shortcuts import render, get_list_or_404 as _get_list_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from knox.auth import TokenAuthentication
-from rest_framework import permissions, status, viewsets
+from rest_framework import permissions, status, viewsets, pagination
 from rest_framework.response import Response
-
+from backend.celery import app
 from . import models as tj_models
 from . import serializer
 
@@ -24,17 +25,23 @@ logger = logging.getLogger(__name__)
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
+
+class LargeResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 150
+
 class TJModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-
+    
     @method_decorator(cache_page(CACHE_TTL))
     @method_decorator(vary_on_cookie)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         logger.info(serializer)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
@@ -114,6 +121,7 @@ class FuncionarioViewSet(TJModelViewSet):
 class ProcessoViewSet(TJModelViewSet):
     queryset = tj_models.Processo.objects.all()
     serializer_class = serializer.ProcessoSerializer
+    pagination_class = LargeResultsSetPagination
     lookup_field = 'cod_proc'
     lookup_value_regex = r'\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?'
     authentication_classes = ()
@@ -142,22 +150,17 @@ class TipoDocumentoViewSet(TJModelViewSet):
 class AndamentoProcessoViewSet(TJModelViewSet):
     queryset = tj_models.AndamentoProcesso.objects.all()
     serializer_class = serializer.AndamentoProcessoSerializer
-    lookup_field = 'processo'
-    lookup_value_regex = r'\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?'
+    pagination_class = LargeResultsSetPagination
     authentication_classes = ()
     permission_classes = ()
 
-    @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
-    def retrieve(self, request, *args, **kwargs):
-        print(request)
-
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `processo` query parameter in the URL.
+        """
+        queryset = tj_models.AndamentoProcesso.objects.all()
+        processo = self.request.query_params.get('processo', None)
+        if processo is not None:
+            queryset = queryset.filter(processo__cod_proc=processo)
+        return queryset

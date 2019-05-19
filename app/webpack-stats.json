@@ -1,1 +1,1 @@
-{"status":"done","chunks":{"main":[{"name":"main.js","path":"/home/yang/elisapp/app/frontend/static/frontend/main.js"}]}}
+{"status":"done","error":"ModuleNotFoundError","message":"Module not found: Error: Can't resolve './auth/Login.jsx' in '/app/frontend/src'","chunks":{"main":[{"name":"main.js","path":"/app/frontend/static/frontend/main.js"}]}}

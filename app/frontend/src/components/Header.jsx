@@ -6,9 +6,9 @@ import { Link as LinkRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { logout } from '../actions/auth';
 import classNames from 'classnames';
-import { mainListItems, secondaryListItems } from '../containers/dashboard/listItems';
+import { mainListItems, secondaryListItems } from './listItems';
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const style = theme => ({
     root: {
@@ -197,7 +197,7 @@ class Header extends React.Component {
                     <Divider />
                     <List>{mainListItems}</List>
                     <Divider />
-                    <List>{secondaryListItems}</List>
+                    {/* <List>{secondaryListItems}</List> */}
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />

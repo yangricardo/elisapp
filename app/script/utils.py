@@ -327,7 +327,7 @@ class ElisAPI:
                 except Exception as exc:
                     responses.append(exc)
                 else:
-                    if data.status_code != 201 or data.status_code != 200:
+                    if (request == self.post and data.status_code != 201) or (request == self.patch and data.status_code != 200):
                         responses.append(data)
                     else:
                         del response
