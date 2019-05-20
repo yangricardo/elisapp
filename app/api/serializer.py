@@ -55,10 +55,11 @@ class CompetenciaSerializer(serializers.ModelSerializer):
 class ProcessoSerializer(serializers.ModelSerializer):
     cod_proc = serializers.RegexField(r'^\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?$')
     cod_cnj = serializers.RegexField(r'^\d{7}-\d{2}.\d{4}.\d.\d{2}.\d{4}$')
+
     class Meta:
         model = tj_model.Processo
         fields = '__all__'
-        lookup_field='cod_proc'
+        lookup_field = 'cod_proc'
 
 
 class TipoMovimentoSerializer(serializers.ModelSerializer):
@@ -108,8 +109,33 @@ class TipoDocumentoSerializer(serializers.ModelSerializer):
         model = tj_model.TipoDocumento
         fields = '__all__'
 
+
 class AndamentoProcessoSerializer(serializers.ModelSerializer):
     class Meta:
         model = tj_model.AndamentoProcesso
         fields = '__all__'
-        lookup_field='processo'
+        lookup_field = 'processo'
+
+
+class PersonagemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.Personagem
+        fields = '__all__'
+
+
+class AdvogadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.Advogado
+        fields = '__all__'
+
+
+class PersonagemProcessoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.PersonagemProcesso
+        fields = '__all__'
+
+
+class AdvogadoProcessoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.AdvogadoProcesso
+        fields = '__all__'

@@ -157,3 +157,37 @@ class AndamentoProcesso(models.Model):
     
     class Meta:
         unique_together = (('processo', 'ordem','txt_descr_len'),)
+
+
+class Personagem(models.Model):
+    cod_pers = models.IntegerField(primary_key=True)
+    nome = models.TextField(db_index=True)
+    objects = models.Manager
+
+
+class Advogado(models.Model):
+    cod_adv = models.IntegerField(primary_key=True)
+    num_oab = models.TextField(db_index=True)
+    nome_adv = models.TextField(db_index=True)
+    objects = models.Manager
+
+
+class PersonagemProcesso(models.Model):
+    processo = models.ForeignKey(Processo, to_field='cod_proc',db_index=True, on_delete=models.DO_NOTHING)
+    personagem = models.ForeignKey(Personagem, to_field='cod_pers',db_index=True, on_delete=models.DO_NOTHING)
+    tipo_personagem = models.ForeignKey(TipoPersonagem, to_field='cod_tip_pers', db_index=True, on_delete=models.DO_NOTHING)
+    objects = models.Manager
+
+    class Meta:
+        unique_together = (('processo', 'personagem'),)
+
+
+class AdvogadoProcesso(models.Model):
+    processo = models.ForeignKey(Processo, to_field='cod_proc',db_index=True, on_delete=models.DO_NOTHING)
+    advogado = models.ForeignKey(Advogado, to_field='cod_adv',db_index=True, on_delete=models.DO_NOTHING)
+    tipo_personagem = models.ForeignKey(TipoPersonagem, to_field='cod_tip_pers', db_index=True, on_delete=models.DO_NOTHING)
+    tip_polo = models.CharField(max_length=1, blank=True, null=True)
+    objects = models.Manager
+    
+    class Meta:
+        unique_together = (('processo', 'advogado'),)

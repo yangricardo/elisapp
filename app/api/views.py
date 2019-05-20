@@ -31,10 +31,11 @@ class LargeResultsSetPagination(pagination.PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 150
 
+
 class TJModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-    
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
+
     @method_decorator(cache_page(CACHE_TTL))
     @method_decorator(vary_on_cookie)
     def retrieve(self, request, *args, **kwargs):
@@ -52,7 +53,6 @@ class TJModelViewSet(viewsets.ModelViewSet):
         logger.info(f'Criado: {serializer.data}')
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 
 class UserViewSet(TJModelViewSet):
@@ -124,8 +124,7 @@ class ProcessoViewSet(TJModelViewSet):
     pagination_class = LargeResultsSetPagination
     lookup_field = 'cod_proc'
     lookup_value_regex = r'\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?'
-    authentication_classes = ()
-    permission_classes = ()
+
 
 class TipoDecisaoRecursoViewSet(TJModelViewSet):
     queryset = tj_models.TipoDecisaoRecurso.objects.all()
@@ -151,8 +150,6 @@ class AndamentoProcessoViewSet(TJModelViewSet):
     queryset = tj_models.AndamentoProcesso.objects.all()
     serializer_class = serializer.AndamentoProcessoSerializer
     pagination_class = LargeResultsSetPagination
-    authentication_classes = ()
-    permission_classes = ()
 
     def get_queryset(self):
         """
@@ -163,4 +160,61 @@ class AndamentoProcessoViewSet(TJModelViewSet):
         processo = self.request.query_params.get('processo', None)
         if processo is not None:
             queryset = queryset.filter(processo__cod_proc=processo)
+        return queryset
+
+
+class PersonagemViewSet(TJModelViewSet):
+    queryset = tj_models.Personagem.objects.all()
+    serializer_class = serializer.PersonagemSerializer
+
+
+class AdvogadoViewSet(TJModelViewSet):
+    queryset = tj_models.Advogado.objects.all()
+    serializer_class = serializer.AdvogadoSerializer
+
+
+class PersonagemProcessoViewSet(TJModelViewSet):
+    queryset = tj_models.PersonagemProcesso.objects.all()
+    serializer_class = serializer.PersonagemProcessoSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `processo` query parameter in the URL.
+        """
+        queryset = tj_models.PersonagemProcesso.objects.all()
+        processo = self.request.query_params.get('processo', None)
+        if processo is not None:
+            queryset = queryset.filter(processo__cod_proc=processo)
+
+        personagem = self.request.query_params.get(
+            'personagem', None).upper()
+        if personagem is not None:
+            queryset = queryset.filter(personagem__nome=personagem)
+
+        return queryset
+
+
+class AdvogadoProcessoViewSet(TJModelViewSet):
+    queryset = tj_models.AdvogadoProcesso.objects.all()
+    serializer_class = serializer.AdvogadoProcessoSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `processo` query parameter in the URL.
+        """
+        queryset = tj_models.PersonagemProcesso.objects.all()
+        processo = self.request.query_params.get('processo', None)
+        if processo is not None:
+            queryset = queryset.filter(processo__cod_proc=processo)
+
+        advogado = self.request.query_params.get('advogado', None).upper()
+        if advogado is not None:
+            queryset = queryset.filter(advogado__nome_adv=advogado)
+
+        oab = self.request.query_params.get('oab', None).upper()
+        if oab is not None:
+            queryset = queryset.filter(advogado__num_oab=oab)
+
         return queryset
