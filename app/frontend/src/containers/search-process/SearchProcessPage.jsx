@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, Typography, TextField } from '@material-ui/core';
+import { withStyles, Typography, TextField, FormControl, Input, InputLabel } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
 import MaskedInput from 'react-text-mask';
 
@@ -14,6 +14,9 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
     },
+    formControl: {
+        margin: theme.spacing.unit,
+    },
 })
 
 function TextMaskCustom(props) {
@@ -25,7 +28,9 @@ function TextMaskCustom(props) {
         ref={ref => {
         inputRef(ref ? ref.inputElement : null);
         }}
-        mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+        mask={[
+            /\d/,/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,'-',/\d/,/\w?/
+        ]}
         placeholderChar={'\u2000'}
         showMask
     />
@@ -37,7 +42,6 @@ inputRef: PropTypes.func.isRequired,
 };
 
 class SearchProcessPage extends Component {
-
     state = {}
 
     onChange = e => {
@@ -62,8 +66,10 @@ class SearchProcessPage extends Component {
                     onChange={this.onChange}
                     margin="normal"
                     variant="outlined"
+                    InputProps={{
+                        inputComponent: TextMaskCustom,
+                      }}
                     >
-                        
                 </TextField>
             </form>
         </Fragment>)
