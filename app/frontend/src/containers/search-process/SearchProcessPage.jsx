@@ -48,7 +48,7 @@ function TextMaskCustom(props) {
         inputRef(ref ? ref.inputElement : null);
         }}
         mask={[
-            /\d/,/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,'-',/\d/,/\w?/
+            /\d/,/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,'-',/\d/,/[A-Za-z]?/
         ]}
         placeholderChar={'\u2000'}
         showMask
