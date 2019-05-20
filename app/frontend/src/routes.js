@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Route, HashRouter, Switch, Redirect } from 'react-router-dom'
+import { Route, HashRouter, BrowserRouter ,Switch, Redirect } from 'react-router-dom'
 import Dashboard from './containers/dashboard/Dashboard.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import AppLeads from './leads/AppLeads.js';

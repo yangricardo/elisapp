@@ -42,24 +42,24 @@ services:
     networks: 
       - db_network
 
-  rabbitmq:
-    restart: always
-    hostname: rabbitmq
-    container_name: elisapp_rabbit
-    image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=elisdbadmin
-      - RABBITMQ_DEFAULT_PASS=elisdbpassword
-    ports:
-      - 4369:4369
-      - 5672:5672
-      - 15672:15672
-      - 5671:5671
-      - 25672:25672
-    networks: 
-      - db_network
-    depends_on:
-      - redis
+  # rabbitmq:
+  #   restart: always
+  #   hostname: rabbitmq
+  #   container_name: elisapp_rabbit
+  #   image: rabbitmq:3-management
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=elisdbadmin
+  #     - RABBITMQ_DEFAULT_PASS=elisdbpassword
+  #   ports:
+  #     - 4369:4369
+  #     - 5672:5672
+  #     - 15672:15672
+  #     - 5671:5671
+  #     - 25672:25672
+  #   networks: 
+  #     - db_network
+  #   depends_on:
+  #     - redis
 
   app:
     restart: always
@@ -79,6 +79,8 @@ services:
       - media:/srv/media
     expose:
       - 8000
+      - 8001
+      - 8002
     ports:
       - 8888:8888
       - 3500:3500
@@ -94,21 +96,21 @@ services:
       - db
       - redis
 
-  worker:
-    build:
-      context: .
-    container_name: elisapp_celery
-    image: yangricardo/elisapp:latest
-    command: celery -A backend worker -E -l info
-    volumes:
-      - ./app:/app
-    ports:
-      - 5555:5555
-    depends_on:
-      - app
-      - rabbitmq
-    networks: 
-      - db_network
+  # worker:
+  #   build:
+  #     context: .
+  #   container_name: elisapp_celery
+  #   image: yangricardo/elisapp:latest
+  #   command: celery -A backend worker -E -l info
+  #   volumes:
+  #     - ./app:/app
+  #   ports:
+  #     - 5555:5555
+  #   depends_on:
+  #     - app
+  #     - rabbitmq
+  #   networks: 
+  #     - db_network
 
   # Web server based on official nginx image
   # Connect external 8000 (which you can access from browser)

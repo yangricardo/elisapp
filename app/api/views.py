@@ -188,9 +188,9 @@ class PersonagemProcessoViewSet(TJModelViewSet):
             queryset = queryset.filter(processo__cod_proc=processo)
 
         personagem = self.request.query_params.get(
-            'personagem', None).upper()
+            'personagem', None)
         if personagem is not None:
-            queryset = queryset.filter(personagem__nome=personagem)
+            queryset = queryset.filter(personagem__nome=personagem.upper())
 
         return queryset
 
@@ -209,12 +209,12 @@ class AdvogadoProcessoViewSet(TJModelViewSet):
         if processo is not None:
             queryset = queryset.filter(processo__cod_proc=processo)
 
-        advogado = self.request.query_params.get('advogado', None).upper()
+        advogado = self.request.query_params.get('advogado', None)
         if advogado is not None:
-            queryset = queryset.filter(advogado__nome_adv=advogado)
+            queryset = queryset.filter(advogado__nome_adv__upper=advogado.upper())
 
-        oab = self.request.query_params.get('oab', None).upper()
+        oab = self.request.query_params.get('oab', None)
         if oab is not None:
-            queryset = queryset.filter(advogado__num_oab=oab)
+            queryset = queryset.filter(advogado__num_oab__upper=oab.upper())
 
         return queryset

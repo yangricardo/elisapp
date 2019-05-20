@@ -1,1 +1,1 @@
-{"status":"done","error":"ModuleBuildError","message":"Module build failed: Error: ENOENT: no such file or directory, open '/app/node_modules/prop-types/checkPropTypes.js'","chunks":{"main":[{"name":"main.js","path":"/app/frontend/static/frontend/main.js"}]}}
+{"status":"done","chunks":{"main":[{"name":"main.js","path":"/app/frontend/static/frontend/main.js"}]}}

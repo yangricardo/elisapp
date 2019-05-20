@@ -12,10 +12,11 @@ from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
 
 # Create your views here.
 
+
 @method_decorator(wraps(app.task(bind=True)), name='create')
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
     serializer_class = RegisterSerializer
-  
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -25,6 +26,7 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.R
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": token[1]
         })
+
 
 @method_decorator(wraps(app.task(bind=True)), name='create')
 class LoginViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
@@ -40,15 +42,15 @@ class LoginViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.Retr
             "token": token[1]
         })
 
+
 @method_decorator(wraps(app.task(bind=True)), name='retrieve')
 class UserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
-  permission_classes = [
-    permissions.IsAuthenticated,
-  ]
-  serializer_class = UserSerializer
+    # authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSerializer
 
-  def get_object(self):
-    return self.request.user
+    def get_object(self):
+        return self.request.user
 
 @method_decorator(wraps(app.task(bind=True)), name='create')
 class LogoutViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):

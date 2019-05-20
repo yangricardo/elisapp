@@ -350,26 +350,37 @@ class ElisAPI:
         return list(map(lambda x: json.loads(x[1].text), responses))
 
     @staticmethod
-    def get_erros(responses, expected_code):
-        return list(filter(lambda x: x[1].status_code != expected_code, responses))
+    def get_response_request_body(response):
+        return json.loads(response.request.body)
 
     @staticmethod
-    def describe_attribute_error(error_list, attribute):
-        # converte para objeto o string json
-        erros = list(map(lambda x: json.loads(x[1].text), error_list))
-        # remove registros que não ocorreram erro
-        erros = list(map(lambda lst: list(
-            filter(lambda x: x != {}, lst)), erros))
-        # seleciona e remove erros duplicados referente ao atributo
-        erros = list(map(lambda lst: list(
-            map(lambda lst2: lst2[attribute], lst)), erros))
-        erros = [list(error_lst[0]) for error_lst in erros]
-        erros = set(map(lambda x: x[0], erros))
-        return erros
+    def get_response_text(response):
+        return json.loads(response.text)
 
     @staticmethod
-    def list_pk_errors(erros):
-        return list(map(lambda x: re.search(r'(\d+)', x).group(), erros))
+    def zip_request_response(response):
+        return list(zip(ElisAPI.get_response_request_body(response), ElisAPI.get_response_text(response)))
+
+    @staticmethod
+    def filter_ok(zip_request_response):
+        return list(filter(lambda x: x[1]=={}, zip_request_response))
+
+    @staticmethod
+    def filter_errors(zip_request_response):
+        return list(filter(lambda x: x[1]!={}, zip_request_response))
+
+    @staticmethod
+    def clean_requests(response):
+        response = ElisAPI.zip_request_response(response)
+        return ElisAPI.filter_ok(response), ElisAPI.filter_errors(response)
+
+    @staticmethod
+    def list_data(list_request):
+        return list(map(lambda x: x[0], list_request))
+
+    @staticmethod
+    def list_data_error(list_request):
+        return list(map(lambda x: x[1], list_request))
 
     @staticmethod
     def split_list(lst, max_size_group):

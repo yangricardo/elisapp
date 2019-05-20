@@ -95,6 +95,7 @@ DATABASES = {
         'PASSWORD': 'elisdbpassword',
         'HOST': 'db',
         'PORT': 5432,
+        'CONN_MAX_AGE': 0,
     }
 }
 
@@ -154,6 +155,7 @@ WEBPACK_LOADER = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'knox.auth.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -285,12 +287,12 @@ LOGGING = {
     }
 }
 
-CELERY_BROKER_URL = 'pyamqp://elisdbadmin:elisdbpassword@rabbitmq:5672'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'America/Sao_Paulo'
+# CELERY_BROKER_URL = 'pyamqp://elisdbadmin:elisdbpassword@rabbitmq:5672'
+# CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TIMEZONE = 'America/Sao_Paulo'
 
 CACHES = {
     "default": {
