@@ -218,3 +218,8 @@ class AdvogadoProcessoViewSet(TJModelViewSet):
             queryset = queryset.filter(advogado__num_oab__upper=oab.upper())
 
         return queryset
+
+
+class DocumentoProcessoViewSet(TJModelViewSet):
+    queryset = tj_models.DocumentoProcesso.objects.all()
+    serializer_class = serializer.DocumentoProcessoSerializer

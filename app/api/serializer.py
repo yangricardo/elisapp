@@ -139,3 +139,9 @@ class AdvogadoProcessoSerializer(serializers.ModelSerializer):
     class Meta:
         model = tj_model.AdvogadoProcesso
         fields = '__all__'
+
+
+class DocumentoProcessoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.DocumentoProcesso
+        fields = '__all__'

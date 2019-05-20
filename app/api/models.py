@@ -191,3 +191,13 @@ class AdvogadoProcesso(models.Model):
     
     class Meta:
         unique_together = (('processo', 'advogado'),)
+
+
+class DocumentoProcesso(models.Model):
+    cod_docto_elet = models.TextField(primary_key=True)
+    processo = models.ForeignKey(Processo, to_field='cod_proc',db_index=True, on_delete=models.DO_NOTHING)
+    competencia = models.ForeignKey(Competencia, to_field='cod_comp',db_index=True, on_delete=models.DO_NOTHING)
+    assunto = models.ForeignKey(Assunto, to_field='cod_assunto',db_index=True, on_delete=models.DO_NOTHING)
+    classe = models.ForeignKey(Classe, to_field='cod_classe',db_index=True, on_delete=models.DO_NOTHING)
+    tipo_documento = models.ForeignKey(TipoDocumento, to_field='id_tip_doc',db_index=True, on_delete=models.DO_NOTHING)
+    objects = models.Manager

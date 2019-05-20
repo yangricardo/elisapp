@@ -26,6 +26,7 @@ django-redis = "*"
 redis = "*"
 pip = "*"
 ftfy = "*"
+gensim = "*"
 
 [requires]
 python_version = "3.7"

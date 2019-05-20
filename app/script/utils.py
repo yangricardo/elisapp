@@ -73,6 +73,8 @@ class TJData:
         'tipo_personagem': 'Parametros/tipopersonagem.csv.gz',
         'tipo_andamento_3': 'Parametros/DCP_TipoAndamento_created.csv.gz',
         'processo_unico': 'ProcessoUnico/ProcessoUnico.csv.gz',
+        'contestacoes':'DVP_Contestacoes.csv',
+        'iniciais':'DVP_Iniciais.csv',
     }
 
     @staticmethod
