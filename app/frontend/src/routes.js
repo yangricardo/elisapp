@@ -11,6 +11,7 @@ import PrivateRoute from './containers/auth/PrivateRoute.js';
 import SearchProcessPage from './containers/search-process/SearchProcessPage.jsx';
 import ListProcessPage from './containers/list-process/ListProcessPage.jsx';
 import GroupProcessPage from './containers/group-process/GroupProcessPage.jsx';
+import DetailSentencesPage from './containers/detail-sentences/DetailSentencesPage.jsx';
 
 const Page404 = ({ location }) => (
   <div>
@@ -27,8 +28,9 @@ export default props => (
           <Switch>
               <PrivateRoute exact path="/leads" component={AppLeads} />
               <PrivateRoute exact path="/buscarprocesso" component={SearchProcessPage} />
-              <PrivateRoute exact path="/listarprocessos" component={ListProcessPage} />
-              <PrivateRoute exact path="/gruposprocessos" component={GroupProcessPage} />
+              <PrivateRoute exact path="/listarsentencas" component={ListProcessPage} />
+              <PrivateRoute exact path="/gruposanalise" component={GroupProcessPage} />
+              <PrivateRoute exact path="/detalharsentencas" component={DetailSentencesPage} />
               <Route exact path='/dashboard' component={ Dashboard } />
               <Route exact path='/register' component={ Register } />
               <Route exact path='/login' component={ Login } />

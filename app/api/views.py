@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from knox.auth import TokenAuthentication
-from rest_framework import permissions, status, viewsets, pagination
+from rest_framework import permissions, status, viewsets, pagination, mixins
 from rest_framework.response import Response
 from backend.celery import app
 from . import models as tj_models
@@ -222,4 +222,10 @@ class AdvogadoProcessoViewSet(TJModelViewSet):
 
 class DocumentoProcessoViewSet(TJModelViewSet):
     queryset = tj_models.DocumentoProcesso.objects.all()
+    serializer_class = serializer.DocumentoProcessoSerializer
+
+
+class SentençasSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = serializer.DocumentoProcessoSerializer

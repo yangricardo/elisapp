@@ -145,3 +145,7 @@ class DocumentoProcessoSerializer(serializers.ModelSerializer):
     class Meta:
         model = tj_model.DocumentoProcesso
         fields = '__all__'
+
+
+# class SentençasSimilaresSerializer(serializers.Serializer):
+#     processo_buscado = 
