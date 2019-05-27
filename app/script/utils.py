@@ -90,6 +90,10 @@ class TJData:
         return r'(ProcessoServAno/)?Processo_Cod_Serv_{}_ano_{}.csv.gz'.format(serventia, ano)
 
     @staticmethod
+    def processo_similar():
+        return r'similar_to_([0-9A-Z]+)\.csv'
+
+    @staticmethod
     def read_csv(file, **kwargs):
         return pd.read_csv(os.path.join('/tj_files', file),
                            encoding='latin1', sep=';',

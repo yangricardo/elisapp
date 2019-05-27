@@ -1,5 +1,8 @@
+from django.db.models.base import ModelBase
 from django.contrib import admin
-#from .models import Comarca, Serventia, Assunto, ClasseAssunto, Classe, Competencia, Processo, TipoPersonagem
+from api import models
 
-# Register your models here.
-# admin.site.register([Comarca, Serventia, Assunto, ClasseAssunto, Classe, Competencia, Processo, TipoPersonagem])
+for model_name in dir(models):
+    model = getattr(models, model_name)
+    if isinstance(model, ModelBase):
+        admin.site.register(model)

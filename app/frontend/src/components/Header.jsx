@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
-import { AppBar, Toolbar, Typography, IconButton, withStyles, MenuItem, Menu, Divider, List, Drawer, CssBaseline } from '@material-ui/core';
-import { Menu as MenuIcon, AccountCircle, ChevronLeft } from '@material-ui/icons'
+import { AppBar, Toolbar, Typography, IconButton, withStyles, MenuItem, Menu, Divider, List, Drawer, CssBaseline, ListItem, ListItemIcon, ListItemText, MenuList  } from '@material-ui/core';
+import { AccountCircle, ChevronLeft, ChevronRight } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import { Link as LinkRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -67,16 +67,16 @@ const style = theme => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing.unit * 7,
+        width: theme.spacing(7),
         [theme.breakpoints.up('sm')]: {
-        width: theme.spacing.unit * 9,
+        width: theme.spacing(9),
         },
     },
     appBarSpacer: theme.mixins.toolbar,
     menuButtonLink: { textDecoration: 'none', display: 'block' },
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
         height: '100vh',
         overflow: 'auto',
     },
@@ -98,24 +98,24 @@ class Header extends React.Component {
 
     // eslint-disable-next-line
     authLinks = (
-        <div>
+        <MenuList>
             <Divider/>
             <MenuItem onClick={this.props.logout} >
                 Logout
             </MenuItem>
-        </div>
+        </MenuList>
     );
 
     
     guestLinks = (
-        <div>
+        <MenuList>
             <MenuItem component={LinkRouter}  to="/login" className={this.props.classes.menuButtonLink} onClick={this.handleClose}>
                 Login
             </MenuItem>
             <MenuItem component={LinkRouter} to="/register" className={this.props.classes.menuButtonLink} onClick={this.handleClose} >
                 Register
             </MenuItem>
-        </div>
+        </MenuList>
     );
 
     handleMenu = (event) => {
@@ -140,19 +140,8 @@ class Header extends React.Component {
                 position="absolute"
                 className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
                 >
-                <Toolbar disableGutters={!this.state.open} className={classes.toolbar}>
-                    <IconButton
-                    color="inherit"
-                    aria-label="Open drawer"
-                    onClick={this.handleDrawerOpen}
-                    className={classNames(
-                        classes.menuButton,
-                        this.state.open && classes.menuButtonHidden,
-                    )}
-                    >
-                    <MenuIcon />
-                    </IconButton>
-                    <Typography variant="title" color="inherit" className={classes.grow}>
+                <Toolbar className={classes.toolbar}>
+                    <Typography variant="caption" color="inherit" className={classes.grow}>
                         Elis
                     </Typography>
                     <Fragment>
@@ -189,15 +178,18 @@ class Header extends React.Component {
                     }}
                     open={this.state.open}
                     >
-                    <div className={classes.toolbarIcon}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                        <ChevronLeft />
-                        </IconButton>
-                    </div>
+                    <div className={classes.toolbar} />
                     <Divider />
                     <List>{mainListItems}</List>
                     <Divider />
-                    {/* <List>{secondaryListItems}</List> */}
+                    <List>
+                    <ListItem button onClick={this.state.open ? this.handleDrawerOpen : this.handleDrawerClose }>
+                        <ListItemIcon>
+                            <ChevronRight/>
+                        </ListItemIcon>
+                        <ListItemText primary="Recolher Menu" />
+                    </ListItem>
+                    </List>
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />

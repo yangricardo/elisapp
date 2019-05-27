@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withStyles, CssBaseline, Paper, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
-import { SentencaDetail } from './SentencaDetail.jsx';
+import SentencaDetail from './SentencaDetail.jsx';
 
 const styles = theme => ({
     main: {
@@ -11,23 +11,24 @@ const styles = theme => ({
         display: 'block', // Fix IE 11 issue.
     },
     paper: {
-        marginTop: theme.spacing.unit * 25,
+        marginTop: theme.spacing(25),
+        marginRight: theme.spacing(2),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         borderColor: 'primary',
-        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
     button: {
-        margin: theme.spacing.unit,
-        marginTop: theme.spacing.unit * 2.5,
+        margin: theme.spacing(1),
+        marginTop: theme.spacing(2.5),
     },
     formControl: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
     },
 })
 
@@ -39,23 +40,27 @@ class DetailSentencesPage extends Component {
     }
 
     render() {
-        if(!this.props.isAuthenticated){
-            this.props.createMessage({ loginRequired: "Login Required" });
-            return <Redirect to="/login"/>
-        }
+        // if(!this.props.isAuthenticated){
+        //     this.props.createMessage({ loginRequired: "Login Required" });
+        //     return <Redirect to="/login"/>
+        // }
         const { classes } = this.props;
         return (
             <main className={classes.main}>
             <CssBaseline/>
-            <Grid container direction="row" spacing={24}>
+            <Grid container direction="row" 
+                justify="center"
+                alignItems="baseline" 
+                spacing={2}
+            >
                 <Grid item xs={5} >
-                    <SentencaDetail></SentencaDetail>
+                    <SentencaDetail/>
                 </Grid>
                 <Grid item xs={5} >
-                    <Paper>b</Paper>
+                    <SentencaDetail/>
                 </Grid>
                 <Grid item xs={2} >
-                    <Paper>c</Paper>
+                    <Paper></Paper>
                 </Grid>
             </Grid>
             </main>

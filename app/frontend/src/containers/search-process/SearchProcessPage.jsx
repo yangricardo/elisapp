@@ -9,32 +9,32 @@ const styles = theme => ({
     main: {
         width: 'auto',
         display: 'block', // Fix IE 11 issue.
-        marginLeft: theme.spacing.unit * 3,
-        marginRight: theme.spacing.unit * 3,
-        [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        [theme.breakpoints.up(600 + theme.spacing(6))]: {
             width: 600,
             marginLeft: 'auto',
             marginRight: 'auto',
         },
     },
     paper: {
-        marginTop: theme.spacing.unit * 25,
+        marginTop: theme.spacing(25),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         borderColor: 'primary',
-        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
     button: {
-        margin: theme.spacing.unit,
-        marginTop: theme.spacing.unit * 2.5,
+        margin: theme.spacing(1),
+        marginTop: theme.spacing(2.5),
     },
     formControl: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
     },
 })
 
@@ -77,7 +77,7 @@ class SearchProcessPage extends Component {
         return (
             <main className={classes.main}>
             <CssBaseline/>
-            <Grid container direction="row" spacing={24}>
+            <Grid container direction="row" spacing={10}>
                 <Grid item xs/>
                 <Grid item xs={12} >
                 <Paper className={classes.paper}>

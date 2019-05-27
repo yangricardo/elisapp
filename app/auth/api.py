@@ -1,19 +1,17 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_out
-from django.utils.decorators import method_decorator
+
 from knox.models import AuthToken, AuthTokenManager
 from rest_framework import (authentication, generics, mixins, permissions,
                             status, viewsets)
 from rest_framework.response import Response
-from functools import wraps
-from backend.celery import app
 
 from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
 
 # Create your views here.
 
 
-@method_decorator(wraps(app.task(bind=True)), name='create')
+
 class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
     serializer_class = RegisterSerializer
 
@@ -28,7 +26,7 @@ class RegisterViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.R
         })
 
 
-@method_decorator(wraps(app.task(bind=True)), name='create')
+
 class LoginViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
     serializer_class = LoginSerializer
 
@@ -43,7 +41,7 @@ class LoginViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.Retr
         })
 
 
-@method_decorator(wraps(app.task(bind=True)), name='retrieve')
+
 class UserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
     # authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -52,7 +50,7 @@ class UserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.Retri
     def get_object(self):
         return self.request.user
 
-@method_decorator(wraps(app.task(bind=True)), name='create')
+
 class LogoutViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -63,7 +61,7 @@ class LogoutViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.Ret
                              request=request, user=request.user)
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
-@method_decorator(wraps(app.task(bind=True)), name='create')
+
 class LogoutAllViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
     '''
     Log the user out of all sessions

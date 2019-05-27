@@ -146,6 +146,19 @@ class DocumentoProcessoSerializer(serializers.ModelSerializer):
         model = tj_model.DocumentoProcesso
         fields = '__all__'
 
+class ProcessosSimilaresSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.ProcessosSimilares
+        fields = '__all__'
 
-# class SentençasSimilaresSerializer(serializers.Serializer):
-#     processo_buscado = 
+class DescricaoProcessoSerializer(serializers.Serializer):
+    advogado_processo = serializers.StringRelatedField(many=True)
+    personagem_processo = serializers.StringRelatedField(many=True)
+    processo_andamento = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = tj_model.Processo
+        fields = ('cod_proc','cod_cnj','advogado_processo','personagem_processo','processo_andamento')
+   
+class RelatorioProcessosSimilares(serializers.Serializer):
+    pass

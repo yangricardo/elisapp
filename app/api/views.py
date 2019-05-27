@@ -2,21 +2,25 @@ from __future__ import absolute_import, unicode_literals
 
 import json
 import logging
+from builtins import object
 from functools import wraps
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.core.exceptions import ValidationError
-from django.http import JsonResponse, Http404
-from django.shortcuts import render, get_list_or_404 as _get_list_or_404
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_list_or_404 as _get_list_or_404
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from knox.auth import TokenAuthentication
-from rest_framework import permissions, status, viewsets, pagination, mixins
+from rest_framework import mixins, pagination, permissions, status, viewsets
 from rest_framework.response import Response
+
 from backend.celery import app
+
 from . import models as tj_models
 from . import serializer
 
@@ -71,6 +75,17 @@ class ComarcaViewSet(TJModelViewSet):
 class ServentiaViewSet(TJModelViewSet):
     queryset = tj_models.Serventia.objects.all()
     serializer_class = serializer.ServentiaSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `serventia` query parameter in the URL.
+        """
+        queryset = tj_models.Serventia.objects.all()
+        descricao = self.request.query_params.get('descricao', None)
+        if descricao is not None:
+            queryset = queryset.filter(desc_serv__upper__contains=descricao)
+        return queryset
 
 
 class CompetenciaViewSet(TJModelViewSet):
@@ -225,7 +240,42 @@ class DocumentoProcessoViewSet(TJModelViewSet):
     serializer_class = serializer.DocumentoProcessoSerializer
 
 
-class SentençasSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = serializer.DocumentoProcessoSerializer
+class ProcessosSimilaresViewSet(TJModelViewSet):
+    serializer_class = serializer.ProcessosSimilaresSerializer
+    queryset = tj_models.ProcessosSimilares.objects.all()
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `processo` query parameter in the URL.
+        """
+        queryset = tj_models.ProcessosSimilares.objects.all()
+        processo_base = self.request.query_params.get('processo_base', None)
+        if processo_base is not None:
+            queryset = queryset.filter(processo_base__cod_proc=processo_base)
+        
+        processo_similar = self.request.query_params.get('processo_similar', None) 
+        
+        if processo_similar is not None:
+            queryset = queryset.filter(processo_similar__cod_proc=processo_similar)
+
+        processo_base_cnj = self.request.query_params.get('processo_base_cnj', None)
+        if processo_base_cnj is not None:
+            queryset = queryset.filter(processo_base__cod_cnj=processo_base_cnj)
+        
+        processo_similar_cnj = self.request.query_params.get('processo_similar_cnj', None)
+        if processo_similar_cnj is not None:
+            queryset = queryset.filter(processo_similar__cod_cnj=processo_similar_cnj)
+
+        return queryset
+
+
+class DescricaoProcessoViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    serializer_class = serializer.DescricaoProcessoSerializer
+    queryset = tj_models.Processo.objects.all()
+    lookup_field = 'cod_proc'
+    lookup_value_regex = r'\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?'
+
+
+class RelatorioProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    pass
