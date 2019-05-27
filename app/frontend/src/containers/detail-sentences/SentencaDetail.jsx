@@ -37,12 +37,9 @@ const BorderBox = props => {
 const BottomBorderBox = props => {
     return (
         <Box borderColor="primary.main"
-            bgcolor="primary.main"
-            borderLeft={0}
-            borderRight={0}
-            borderTop={0}
-            borderRadius={5}
-            borderBottom={2}
+            bgcolor={props.bgcolor ? props.bgcolor : "primary.main"}
+            borderRadius={10}
+            borderBottom={5}
             pb={1}
             pt={1}
             pl={1}
@@ -94,6 +91,22 @@ const ButtonToolTip = props => {
     )
 }
 
+const ProcessButton = props => {
+    return (
+        <Fragment>
+            <Chip color="primary" 
+                label={
+                () => {
+                    <Typography>
+                        <strong>Código {props.isCNJ ? 'CNJ' : 'TJ'}:</strong>
+                        {props.processCode}}
+                    </Typography>
+                }
+            }/>
+        </Fragment>
+    );
+}
+
 const SentencaDetail = props => {
     const { classes } = props;
     return (
@@ -101,7 +114,7 @@ const SentencaDetail = props => {
             <BorderBox>
                 <Grid container direction="column" spacing={0}>
                     <Grid item>
-                        <BottomBorderBox>
+                        <BottomBorderBox bgcolor="background.paper">
 
                         <Grid container direction="row"
                             justify="center"
@@ -109,7 +122,7 @@ const SentencaDetail = props => {
                             spacing={6}
                         >
                             <Grid item>
-                                <Chip color="primary" label='Código TJ: 2016.204.039133-6'/>
+                                {/* <ProcessButton processCode='2016.204.039133-6'/> */}
                             </Grid>
                             <Grid item>
                                 <Chip color="primary" label='Código CNJ: 0039914-80.2016.8.19.0204' />
@@ -188,8 +201,7 @@ const SentencaDetail = props => {
                             spacing={0}
                         >
                             <Grid item>
-                                <Box height={420} p={1.5}
-            bgcolor="#f5f5f9" borderRadius={3} style={{overflow: 'auto'}}>
+                                <Box height={420} p={1.5} bgcolor="#f5f5f9" borderRadius={3} style={{overflow: 'auto'}}>
                                     <Typography variant='body1' wrap="nowrap">
                                         {"XXVI JUIZADO ESPECIAL CÍVEL DA COMARCA DA CAPITAL\nProcesso nº: 0049986-94.2014.8.19.0205\nAutor: ANGELA CHAM\nRéu: TEKA DAN-LOUR ELETRODOMESTICOS LTDA-ME\n\nProjeto de Sentença\n\nDispensado o relatório, nos termos do artigo 38 da Lei 9099/95, passo a decidir."
                                         .split("\n").map((item, key) => {

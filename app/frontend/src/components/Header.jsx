@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react'
-import { AppBar, Toolbar, Typography, IconButton, withStyles, MenuItem, Menu, Divider, List, Drawer, CssBaseline, ListItem, ListItemIcon, ListItemText, MenuList  } from '@material-ui/core';
-import { AccountCircle, ChevronLeft, ChevronRight } from '@material-ui/icons'
+import { AppBar, Toolbar, Typography, IconButton, withStyles, MenuItem, Menu, Divider, CssBaseline,  MenuList  } from '@material-ui/core';
+import { AccountCircle } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import { Link as LinkRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { logout } from '../actions/auth';
 import classNames from 'classnames';
-import { mainListItems, secondaryListItems } from './listItems';
+import Dashboard from './Dashboard';
 
 const drawerWidth = 250;
 
@@ -42,13 +42,6 @@ const style = theme => ({
         duration: theme.transitions.duration.enteringScreen,
         }),
     },
-    menuButton: {
-        marginLeft: 12,
-        marginRight: 36,
-    },
-    menuButtonHidden: {
-        display: 'none',
-    },
     title: {
         flexGrow: 1,
     },
@@ -73,7 +66,6 @@ const style = theme => ({
         },
     },
     appBarSpacer: theme.mixins.toolbar,
-    menuButtonLink: { textDecoration: 'none', display: 'block' },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
@@ -84,16 +76,7 @@ const style = theme => ({
 class Header extends React.Component {
 
     state = {
-        open: false,
         anchorEl: null,
-    };
-
-    handleDrawerOpen = () => {
-        this.setState({ open: true });
-    };
-
-    handleDrawerClose = () => {
-        this.setState({ open: false });
     };
 
     // eslint-disable-next-line
@@ -109,10 +92,10 @@ class Header extends React.Component {
     
     guestLinks = (
         <MenuList>
-            <MenuItem component={LinkRouter}  to="/login" className={this.props.classes.menuButtonLink} onClick={this.handleClose}>
+            <MenuItem component={LinkRouter}  to="/login"  onClick={this.handleClose}>
                 Login
             </MenuItem>
-            <MenuItem component={LinkRouter} to="/register" className={this.props.classes.menuButtonLink} onClick={this.handleClose} >
+            <MenuItem component={LinkRouter} to="/register"  onClick={this.handleClose} >
                 Register
             </MenuItem>
         </MenuList>
@@ -128,9 +111,9 @@ class Header extends React.Component {
     
     render() {
 
+        const {isAuthenticated, user} = this.props.auth
         const {anchorEl} = this.state
         const {classes} = this.props
-        const {isAuthenticated, user} = this.props.auth
         const open = Boolean(anchorEl)
         
         return (
@@ -138,7 +121,6 @@ class Header extends React.Component {
                 <CssBaseline />
                 <AppBar
                 position="absolute"
-                className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
                 >
                 <Toolbar className={classes.toolbar}>
                     <Typography variant="caption" color="inherit" className={classes.grow}>
@@ -171,30 +153,10 @@ class Header extends React.Component {
                     </Fragment>
                 </Toolbar>
                 </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-                    }}
-                    open={this.state.open}
-                    >
-                    <div className={classes.toolbar} />
-                    <Divider />
-                    <List>{mainListItems}</List>
-                    <Divider />
-                    <List>
-                    <ListItem button onClick={this.state.open ? this.handleDrawerOpen : this.handleDrawerClose }>
-                        <ListItemIcon>
-                            <ChevronRight/>
-                        </ListItemIcon>
-                        <ListItemText primary="Recolher Menu" />
-                    </ListItem>
-                    </List>
-                </Drawer>
-                <main className={classes.content}>
+                <div className={classes.content}>    
                     <div className={classes.appBarSpacer} />
-                    {this.props.children}
-                </main>
+                    <Dashboard>{this.props.children}</Dashboard>
+                </div>
             </div>
         )
     }

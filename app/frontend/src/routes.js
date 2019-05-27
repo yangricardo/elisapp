@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { Route, HashRouter, Switch } from 'react-router-dom'
-import Dashboard from './containers/dashboard/Dashboard.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import Header from './components/Header.jsx';
 import Alerts from './Alerts.jsx';
@@ -29,7 +28,6 @@ export default props => (
               <PrivateRoute exact path="/listarsentencas" component={ListProcessPage} />
               <PrivateRoute exact path="/gruposanalise" component={GroupProcessPage} />
               <Route exact path="/detalharsentencas" component={DetailSentencesPage} />
-              <Route exact path='/dashboard' component={ Dashboard } />
               <Route exact path='/register' component={ Register } />
               <Route exact path='/login' component={ Login } />
           </Switch>
