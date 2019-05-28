@@ -1,204 +1,188 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { withStyles, Box, Tooltip, Button, Avatar, Grid, Chip, Typography } from '@material-ui/core';
-import { Info } from '@material-ui/icons';
+import { withStyles, createMuiTheme ,Box, Tooltip, Button, Fab, Grid, Chip, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/styles';
+import { Info, Link as LinkIcon } from '@material-ui/icons';
+import {cyan, indigo} from '@material-ui/core/colors/';
 
-const styles = theme => ({
-    // paper: {
-    //     // marginTop: theme.spacing.unit * 5,
-    //     display: 'flex',
-    //     flexDirection: 'column',
-    //     alignItems: 'center',
-    //     borderColor: 'primary',
-    //     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-    // },
-    input: {
-        display: 'none',
+const detailProcessTheme = createMuiTheme({
+    palette: {
+        primary: {
+            main: indigo[500],
+            contrastText: "#fff",
+        },
+        secondary: {
+            main: cyan[800],
+            contrastText: "#fff",
+        },
+        default : {
+            main : "#fff"
+        }
     },
 });
 
-
+const processLabelTheme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#fff",
+        },
+        secondary: {
+            main: "#fff",
+        },
+        default : {
+            main : "#fff"
+        }
+    },
+});
+  
 const BorderBox = props => {
     return (
-        <Box borderColor="primary.main"
-            borderLeft={2}
-            borderRight={2}
-            borderTop={2}
-            borderBottom={0}
-            bgcolor="primary.main"
-            boxShadow={0.5}
-            borderRadius={5}
-        >
+        <Box bgcolor={`${props.bgcolor}.main`} borderRadius={10}>
             {props.children}
         </Box>
     );
 }
 
-const BottomBorderBox = props => {
+const SectionBox = props => {
     return (
-        <Box borderColor="primary.main"
-            bgcolor={props.bgcolor ? props.bgcolor : "primary.main"}
-            borderRadius={10}
-            borderBottom={5}
-            pb={1}
-            pt={1}
-            pl={1}
-            pr={1}
-        >
-            {props.children}
-        </Box>
+        <Box p={1}>{props.children}</Box>
     );
 }
 
-const ContentBox = props => {
-    return (
-        <Box>
-            {props.children}
-        </Box>
-    );
-}
 
 const HtmlTooltip = withStyles(theme => ({
     tooltip: {
       backgroundColor: '#f5f5f9',
       color: 'rgba(0, 0, 0, 0.87)',
       maxWidth: 250,
-      fontSize: theme.typography.pxToRem(18),
-      border: '2px solid #3F51B5',
+      fontSize: theme.typography.pxToRem(22),
       '& b': {
-        fontWeight: theme.typography.fontWeightRegular,
+        fontWeight: theme.typography.fontWeightMedium,
       },
     },
   }))(Tooltip);
 
-const ToolTipContent = props => {
-    return (
-        <Fragment>
-            <Typography color="inherit">{props.text}</Typography>
-        </Fragment>
-    )
-};
-
-
-
 const ButtonToolTip = props => {
     return (
-        <Fragment>
-            <HtmlTooltip title={<ToolTipContent text={props.text} />} placement="bottom">
-                <Chip color="primary" label={props.button} icon={<Info />} />
-            </HtmlTooltip>
-        </Fragment>
+        <HtmlTooltip 
+            title={<Typography color="inherit">{props.text}</Typography>} 
+            placement="bottom"
+        >
+            <Fab variant="extended" size="small" color={props.bgcolor}>
+                <Info/>&nbsp;{props.button}
+            </Fab>
+        </HtmlTooltip>
     )
 }
 
-const ProcessButton = props => {
+const ProcessLabel = props => {
     return (
-        <Fragment>
-            <Chip color="primary" 
-                label={
-                () => {
-                    <Typography>
-                        <strong>Código {props.isCNJ ? 'CNJ' : 'TJ'}:</strong>
-                        {props.processCode}}
-                    </Typography>
-                }
-            }/>
-        </Fragment>
+        <ThemeProvider theme={processLabelTheme}>
+            <Grid container direction="column" justify="center" alignItems="center" spacing={0}>
+                <Grid item><Typography color="primary" variant="caption">Código {props.cnj?'CNJ':'TJ'}</Typography></Grid>
+                <Grid item><Typography color="primary" variant="button">{props.cod}</Typography></Grid>
+            </Grid>
+        </ThemeProvider>
     );
 }
 
 const SentencaDetail = props => {
-    const { classes } = props;
+    const { isSimilar } = props;
+    const bgcolor = isSimilar ? "secondary" : "primary"
     return (
-        <Fragment>
-            <BorderBox>
+        <ThemeProvider theme={detailProcessTheme}>
+            <BorderBox bgcolor={bgcolor}>
                 <Grid container direction="column" spacing={0}>
                     <Grid item>
-                        <BottomBorderBox bgcolor="background.paper">
-
+                        <SectionBox bgcolor={bgcolor}>
                         <Grid container direction="row"
                             justify="center"
                             alignItems="center"
-                            spacing={6}
+                            spacing={2}
                         >
                             <Grid item>
-                                {/* <ProcessButton processCode='2016.204.039133-6'/> */}
+                                <ProcessLabel cod='2014.204.034102-0' />
                             </Grid>
                             <Grid item>
-                                <Chip color="primary" label='Código CNJ: 0039914-80.2016.8.19.0204' />
+                                <ProcessLabel cod='0034204-50.2014.8.19.0204' cnj/>
                             </Grid>
                         </Grid>
-                        </BottomBorderBox>
+                        </SectionBox>
                     </Grid>
                     <Grid item>
-                        <BottomBorderBox>
+                        <SectionBox bgcolor={bgcolor}>
                         <Grid container direction="row"
                             justify="center"
                             alignItems="center"
-                            spacing={3}
+                            spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip button='Comarca' text='Comarca' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Comarca' text='Comarca' />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip button='Serventia' text='Serventia' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Serventia' text='Serventia' />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip button='Classe' text='Classe' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Classe' text='Classe' />
                             </Grid>
                             <Grid item>
-                                <ButtonToolTip button='Assunto' text='Assunto' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Assunto' text='Assunto' />
                             </Grid>
                         </Grid>
-                        </BottomBorderBox>
+                        </SectionBox>
                     </Grid>
                     <Grid item>
-                        <BottomBorderBox>
+                        <SectionBox bgcolor={bgcolor}>
                         <Grid container direction="row"
                             justify="center"
                             alignItems="center"
-                            spacing={3}
+                            spacing={1}
                         >
                             <Grid item>
-                                <ButtonToolTip button='Juiz' text='Juiz' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Juiz' text='Juiz' />
                             </Grid>
                             <Grid item>
-                                <ButtonToolTip button='Advogado' text='Advogado' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Advogado' text='Advogado' />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip button='Autor' text='Autor' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Autor' text='Autor' />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip button='Réu' text='Réu' />
+                                <ButtonToolTip bgcolor={bgcolor} button='Réu' text='Réu' />
                             </Grid>
                         </Grid>
-                        </BottomBorderBox>
+                        </SectionBox>
                     </Grid>
                     <Grid item>
-                        <BottomBorderBox>
+                        <SectionBox bgcolor={bgcolor}>
                         <Grid container direction="row"
                             justify="center"
                             alignItems="center"
-                            spacing={4}
+                            spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip button='Inicial' text='Inicial' />
+                                <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${''}`}>
+                                    <LinkIcon/>&nbsp;Inicial
+                                </Fab>
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip button='Contestação' text='Contestação' />
+                                <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${''}`}>
+                                    <LinkIcon/>&nbsp;Contestação
+                                </Fab>
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip button='Movimentos' text='Movimentos' />
+                                <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://www4.tjrj.jus.br/consultaProcessoWebV2/consultaMov.do?v=2&numProcesso=${''}&acessoIP=internet&tipoUsuario=`}>
+                                    <LinkIcon/>&nbsp;Movimentos
+                                </Fab>
                             </Grid>
                         </Grid>
-                        </BottomBorderBox>
+                        </SectionBox>
                     </Grid>
                     <Grid item>
-                        <BottomBorderBox>
+                        <SectionBox bgcolor={bgcolor}>
                         <Grid container direction="row"
                             justify="center"
                             alignItems="center"
-                            spacing={0}
                         >
                             <Grid item>
                                 <Box height={420} p={1.5} bgcolor="#f5f5f9" borderRadius={3} style={{overflow: 'auto'}}>
@@ -211,16 +195,15 @@ const SentencaDetail = props => {
                                 </Box>
                             </Grid>
                         </Grid>
-                        </BottomBorderBox>
+                        </SectionBox>
                     </Grid>
                 </Grid>
             </BorderBox>
-        </Fragment>
+        </ThemeProvider>
     );
 }
 
 SentencaDetail.propTypes = {
-    classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(SentencaDetail);
+export default SentencaDetail;

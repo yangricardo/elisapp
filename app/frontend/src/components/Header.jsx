@@ -7,12 +7,14 @@ import { connect } from 'react-redux'
 import { logout } from '../actions/auth';
 import classNames from 'classnames';
 import Dashboard from './Dashboard';
+import Login from '../containers/auth/Login';
 
 const drawerWidth = 250;
 
 const style = theme => ({
     root: {
         display: 'flex',
+        zIndex: 1
     },
     grow: {
         flexGrow: 1 ,
@@ -27,50 +29,16 @@ const style = theme => ({
         padding: '0 8px',
         ...theme.mixins.toolbar,
     },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-        }),
-    },
-    appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
     title: {
         flexGrow: 1,
     },
-    drawerPaper: {
-        position: 'relative',
-        whiteSpace: 'nowrap',
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    drawerPaperClose: {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9),
-        },
-    },
     appBarSpacer: theme.mixins.toolbar,
     content: {
+        zIndex: 0,
         flexGrow: 1,
-        padding: theme.spacing(3),
+        padding: theme.spacing(2),
         height: '100vh',
-        overflow: 'auto',
+        overflow: 'hidden'
     },
   });
 class Header extends React.Component {
@@ -123,8 +91,8 @@ class Header extends React.Component {
                 position="absolute"
                 >
                 <Toolbar className={classes.toolbar}>
-                    <Typography variant="caption" color="inherit" className={classes.grow}>
-                        Elis
+                    <Typography variant="overline" color="inherit" className={classes.grow}>
+                        Explorador de Litígios Similares
                     </Typography>
                     <Fragment>
                         <Typography variant="subtitle1" color="inherit" >{user ? `Welcome ${user.username}` : ""}</Typography>
@@ -155,6 +123,7 @@ class Header extends React.Component {
                 </AppBar>
                 <div className={classes.content}>    
                     <div className={classes.appBarSpacer} />
+                    {/* { isAuthenticated ? <Dashboard>{this.props.children}</Dashboard> : this.props.children }                     */}
                     <Dashboard>{this.props.children}</Dashboard>
                 </div>
             </div>

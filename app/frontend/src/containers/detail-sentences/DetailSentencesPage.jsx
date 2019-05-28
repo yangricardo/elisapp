@@ -6,29 +6,8 @@ import { createMessage } from '../../actions/message';
 import SentencaDetail from './SentencaDetail.jsx';
 
 const styles = theme => ({
-    main: {
-        width: 'auto',
-        display: 'block', // Fix IE 11 issue.
-    },
-    paper: {
-        marginTop: theme.spacing(25),
-        marginRight: theme.spacing(2),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        borderColor: 'primary',
-        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
-    },
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-    },
-    button: {
-        margin: theme.spacing(1),
-        marginTop: theme.spacing(2.5),
-    },
-    formControl: {
-        margin: theme.spacing(1),
+    content: {
+        overflow: 'hidden',
     },
 })
 
@@ -46,24 +25,23 @@ class DetailSentencesPage extends Component {
         // }
         const { classes } = this.props;
         return (
-            <main className={classes.main}>
-            <CssBaseline/>
+            <div className={classes.content} >
             <Grid container direction="row" 
                 justify="center"
                 alignItems="baseline" 
                 spacing={2}
             >
-                <Grid item xs={5} >
+                <Grid item md={5} >
                     <SentencaDetail/>
                 </Grid>
-                <Grid item xs={5} >
-                    <SentencaDetail/>
+                <Grid item md={5} >
+                    <SentencaDetail isSimilar/>
                 </Grid>
-                <Grid item xs={2} >
+                <Grid item md={2} >
                     <Paper></Paper>
                 </Grid>
             </Grid>
-            </main>
+            </div>
         )
     }
 

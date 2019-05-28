@@ -41,18 +41,10 @@ const useStyles = makeStyles(theme => ({
             width: theme.spacing(7) + 1,
         },
     },
-    toolbar: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        padding: '0 8px',
-        ...theme.mixins.toolbar,
-    },
     content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
+        overflowY: 'auto',
+        height: '100vh'
     },
-    appBarSpacer: theme.mixins.toolbar,
 }));
 
 function Dashboard(props) {
@@ -96,7 +88,7 @@ function Dashboard(props) {
                     <ListItemText primary="Recolher menu" />
                 </ListItem>
             </Drawer>
-            <main>{props.children}</main>
+            <main className={classes.content} >{props.children}</main>
         </div>
     );
 }

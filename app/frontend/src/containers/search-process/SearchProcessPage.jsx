@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, CssBaseline, Paper, TextField, Grid, Button } from '@material-ui/core';
+import { withStyles, CssBaseline, Box, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
 import MaskedInput from 'react-text-mask';
 
@@ -18,7 +18,7 @@ const styles = theme => ({
         },
     },
     paper: {
-        marginTop: theme.spacing(25),
+        marginTop: theme.spacing(15),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -68,19 +68,24 @@ class SearchProcessPage extends Component {
     }
 
     render() {
-        if(!this.props.isAuthenticated){
-            this.props.createMessage({ loginRequired: "Login Required" });
-            return <Redirect to="/login"/>
-        }
+        // if(!this.props.isAuthenticated){
+        //     this.props.createMessage({ loginRequired: "Login Required" });
+        //     return <Redirect to="/login"/>
+        // }
         const { classes } = this.props;
 
         return (
             <main className={classes.main}>
             <CssBaseline/>
-            <Grid container direction="row" spacing={10}>
+            <Grid container direction="row" justify="center"
+                            alignItems="center" spacing={10}>
                 <Grid item xs/>
                 <Grid item xs={12} >
-                <Paper className={classes.paper}>
+                <Box borderColor="primary.main"
+                    border={2}
+                    borderRadius={10}
+                    boxShadow={5}
+                    className={classes.paper}>
                     <form noValidate autoComplete="off">
                         <TextField
                             id="processo"
@@ -100,7 +105,7 @@ class SearchProcessPage extends Component {
                             Consultar Processo
                         </Button>
                     </form>
-                </Paper>
+                </Box>
                 </Grid>
                 <Grid item xs/>
             </Grid>

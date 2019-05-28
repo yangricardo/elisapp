@@ -24,7 +24,7 @@ export default props => (
         <Alerts/>
         <Header>
           <Switch>
-              <PrivateRoute exact path="/buscarprocesso" component={SearchProcessPage} />
+              <Route exact path="/buscarprocesso" component={SearchProcessPage} />
               <PrivateRoute exact path="/listarsentencas" component={ListProcessPage} />
               <PrivateRoute exact path="/gruposanalise" component={GroupProcessPage} />
               <Route exact path="/detalharsentencas" component={DetailSentencesPage} />
