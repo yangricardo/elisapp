@@ -159,6 +159,3 @@ class DescricaoProcessoSerializer(serializers.Serializer):
     class Meta:
         model = tj_model.Processo
         fields = ('cod_proc','cod_cnj','advogado_processo','personagem_processo','processo_andamento')
-   
-class RelatorioProcessosSimilares(serializers.Serializer):
-    pass

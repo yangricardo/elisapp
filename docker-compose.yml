@@ -154,6 +154,12 @@ services:
     image: dpage/pgadmin4
     restart:  always
     hostname: pgadmin
+    volumes:
+      - pgadmin_volume:/var/lib/pgadmin
+      - pgadmin_volume:/pgadmin4/config_local.py
+      - pgadmin_volume:/pgadmin4/servers.json
+      - pgadmin_volume:/certs/server.cert
+      - pgadmin_volume:/certs/server.key
     environment:
       PGADMIN_DEFAULT_EMAIL: 'yangricardo17@gmail.com'
       PGADMIN_DEFAULT_PASSWORD: 'elisdbpassword'
@@ -175,5 +181,6 @@ networks:
 
 volumes:
   db_volume:
+  pgadmin_volume:
   static:
   media:

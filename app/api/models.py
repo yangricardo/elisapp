@@ -93,6 +93,8 @@ class Processo(models.Model):
         Competencia,related_name='competencia_processo', db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
     assunto = models.ForeignKey(
         Assunto,related_name='assunto_processo', db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
+    classe = models.ForeignKey(
+        Classe,related_name='classe_processo', db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
     objects = models.Manager
 
     def __str__(self):

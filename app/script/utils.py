@@ -1,19 +1,22 @@
+import gc
+import itertools
 import json
 import os
-import sys
 import re
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 from os import listdir
 from os.path import isfile, join
-from datetime import datetime
-import pytz
+
 import django
+import ftfy
 import numpy as np
 import pandas as pd
+import pytz
 import requests
-import itertools
-import ftfy
-import gc
+from django.conf.urls.static import static
+
 
 class TJData:
 
@@ -180,7 +183,7 @@ class TJData:
     def clean_processo(file, kwargs):
         df = TJData.read_csv(file,usecols=kwargs.get('usecols'))
         df = df.rename(columns=lambda x : x.lower())
-        df = df.rename(columns={'cod_comp':'competencia','cod_serv':'serventia','cod_assunto':'assunto'})
+        df = df.rename(columns={'cod_comp':'competencia','cod_serv':'serventia','cod_assunto':'assunto','cod_classe':'classe'})
         # df.cod_proc = TJData.to_utf8_bytes(df.cod_proc)
         df.id_proc = df.id_proc.apply(lambda x : str(x))
         df.serventia = df.serventia.apply(lambda x : str(x))
@@ -387,6 +390,20 @@ class ElisAPI:
     @staticmethod
     def list_data_error(list_request):
         return list(map(lambda x: x[1], list_request))
+
+    @staticmethod
+    def select_ok_to_retry(list_request):
+        return [ ElisAPI.list_data(post[0]) for post in list_request]
+
+    @staticmethod
+    def select_bad_to_discover(list_request):
+        return [ ElisAPI.list_data(post[1]) for post in list_request]
+
+    def retry_post(self,resource,list_request):
+        r_post = [ ElisAPI.clean_requests(post) for post in list_request]
+        r_post = ElisAPI.select_ok_to_retry(r_post)
+        r_post = self.concurrent_request(self.post,resource, r_post)
+        return r_post
 
     @staticmethod
     def split_list(lst, max_size_group):

@@ -136,7 +136,7 @@ const SentencaDetail = props => {
                         <Grid container direction="row"
                             justify="center"
                             alignItems="center"
-                            spacing={1}
+                            spacing={2}
                         >
                             <Grid item>
                                 <ButtonToolTip bgcolor={bgcolor} button='Juiz' text='Juiz' />

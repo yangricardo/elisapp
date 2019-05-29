@@ -270,12 +270,22 @@ class ProcessosSimilaresViewSet(TJModelViewSet):
         return queryset
 
 
-class DescricaoProcessoViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
-    serializer_class = serializer.DescricaoProcessoSerializer
-    queryset = tj_models.Processo.objects.all()
-    lookup_field = 'cod_proc'
-    lookup_value_regex = r'\d{4}.\d{3}.\d{6}-\d[a-zA-Z]?'
+class RelatorioProcessosSimilaresViewSet(viewsets.GenericViewSet, viewsets.mixins.ListModelMixin):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated)
+    queryset = tj_models.ProcessosSimilares.objects.all()
+    serializer_class = serializer.ProcessosSimilaresSerializer
 
+    def list(self, request, *args, **kwargs):
+        processo_base = self.request.query_params.get('processo_base', None)
+        if processo_base is not None:
+            queryset = queryset.filter(processo_base__cod_proc=processo_base)
 
-class RelatorioProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
-    pass
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
