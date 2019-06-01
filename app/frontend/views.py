@@ -13,6 +13,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404 as _get_list_or_404, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.vary import vary_on_cookie
 from django.db.models.functions import Coalesce
 from knox.auth import TokenAuthentication
@@ -143,5 +144,6 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
             return self.get_paginated_response(serializer)
 
 # Create your views here.
+@ensure_csrf_cookie
 def index(request):
     return render(request, 'frontend/index.html')
