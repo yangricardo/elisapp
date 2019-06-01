@@ -1,8 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
+import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
 import { withStyles, CssBaseline, Box, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
+import { getProcess } from '../../actions/similarprocesses';
+
 import MaskedInput from 'react-text-mask';
 
 const styles = theme => ({
@@ -48,7 +51,7 @@ function TextMaskCustom(props) {
         inputRef(ref ? ref.inputElement : null);
         }}
         mask={[
-            /\d/,/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,'-',/\d/,/[A-Za-z]?/
+            /\d/,/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,'-',/\d/,/[A-Za-z]?/
         ]}
         placeholderChar={'\u2000'}
         showMask
@@ -67,11 +70,17 @@ class SearchProcessPage extends Component {
         this.setState({[e.target.name]: e.target.value})
     }
 
+    onSubmit = e => {
+        e.preventDefault();
+        const { processo } = this.state;
+        this.props.getProcess(processo.trim())
+    }
+
     render() {
-        // if(!this.props.isAuthenticated){
-        //     this.props.createMessage({ loginRequired: "Login Required" });
-        //     return <Redirect to="/login"/>
-        // }
+        if(!this.props.isAuthenticated){
+            this.props.createMessage({ loginRequired: "Login Required" });
+            return <Redirect to="/login"/>
+        }
         const { classes } = this.props;
 
         return (
@@ -86,7 +95,7 @@ class SearchProcessPage extends Component {
                     borderRadius={10}
                     boxShadow={5}
                     className={classes.paper}>
-                    <form noValidate autoComplete="off">
+                    <form onSubmit={this.onSubmit} autoComplete="on">
                         <TextField
                             id="processo"
                             name="processo"
@@ -101,7 +110,7 @@ class SearchProcessPage extends Component {
                             }}
                             >
                         </TextField>
-                        <Button size='large' variant="contained" color="primary" className={classes.button}>
+                        <Button size='large' type="submit" variant="contained" color="primary" className={classes.button}>
                             Consultar Processo
                         </Button>
                     </form>
@@ -120,4 +129,10 @@ const mapStateToProps = (state) => ({
     isAuthenticated: state.authReducer.isAuthenticated
 })
 
-export default connect(mapStateToProps, { createMessage })(withStyles(styles)(SearchProcessPage));
+const mapDispatchToProps = {
+    getProcess,
+    createMessage
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SearchProcessPage));

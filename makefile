@@ -31,6 +31,16 @@ init-letsencrypt.sh:
 bash:
 	docker-compose exec app /bin/bash
 
+pipenv-install:
+	pipenv install
+
+pipenv-update:
+	pipenv update-outdated
+	pipenv update
+
+npm-update:
+	docker-compose exec app npm update
+
 npm-install:
 	docker-compose exec app npm install
 
@@ -53,15 +63,11 @@ createsuperuser:
 	docker-compose exec app python manage.py createsuperuser
 
 migrate:
-	# docker-compose exec app rm -rf api/migrations
-	# docker-compose exec app rm -rf frontend/migrations
 	docker-compose exec app python manage.py makemigrations api
 	docker-compose exec app python manage.py makemigrations frontend
 	docker-compose exec app python manage.py makemigrations
 	docker-compose exec app python manage.py migrate
-	# docker-compose exec app python manage.py sqlmigrate api 0001 > config/db/1-api.sql
-	# docker-compose exec app python manage.py sqlmigrate frontend 0001 > config/db/3-frontend.sql
-
+	
 remigrate:
 	docker-compose exec app rm -rf api/migrations
 	docker-compose exec app rm -rf frontend/migrations

@@ -4,6 +4,7 @@ import errorReducer from './errors';
 import snackbarReducer from './snackbar'
 import messageReducer from './message'
 import authReducer from './auth'
+import similarProcessesReducer from './similarprocesses'
 
 export default combineReducers({
     leadReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
     snackbarReducer,
     messageReducer,
     authReducer,
+    similarProcessesReducer
 });
