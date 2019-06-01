@@ -1,7 +1,8 @@
 import { USER_LOADING, AUTH_ERROR, USER_LOADED, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS } from "../actions/types";
 
+
 const initialState = {
-    token: localStorage.getItem('token') || sessionStorage.getItem('token') ,
+    token: document.cookie ,
     isAuthenticated: null,
     isLoading: false,
     user: null
@@ -23,8 +24,9 @@ export default (state = initialState, action) => {
             }
         case LOGIN_SUCCESS:
         case REGISTER_SUCCESS:
-            localStorage.setItem('token', action.payload.token)
-            sessionStorage.setItem('token', action.payload.token)
+            document.cookie = `token=${action.payload.token};`
+            // localStorage.setItem('token', )
+            // sessionStorage.setItem('token', action.payload.token)
             return {
                 ...state,
                 ...action.payload,
@@ -35,6 +37,7 @@ export default (state = initialState, action) => {
         case LOGOUT_SUCCESS:
         case REGISTER_FAIL:
         case AUTH_ERROR:
+            document.cookie = "token=;"
             localStorage.removeItem('token')
             sessionStorage.removeItem('token')
             return {

@@ -3,27 +3,6 @@ import { returnError, createMessage } from "./message";
 
 import {USER_LOADED, USER_LOADING, AUTH_ERROR, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_FAIL } from './types'
 
-
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-var csrftoken = getCookie('csrftoken');
-
 // CHECK TOKEN & LOAD USER
 export const loadUser = () => (dispatch, getState) => {
 	// User Loading
@@ -126,12 +105,9 @@ export const tokenConfig = getState => {
 
 	// Headers
 	const config = {
-	credentials: 'include',
-	mode: 'same-origin',
-	headers: {
-		"Content-Type": "application/json",
-		"X-CSRFToken": csrftoken
-	}
+		headers: {
+			"Content-Type": "application/json",
+		}
 	};
 
 	// If token, add to headers config
