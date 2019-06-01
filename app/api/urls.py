@@ -2,6 +2,7 @@ from rest_framework import routers
 from . import views as api_views
 from leads.api import LeadViewSet
 from django.conf.urls import include
+from frontend import views as frontend
 
 models = routers.DefaultRouter(trailing_slash=True)
 models.register('users', api_views.UserViewSet)
@@ -29,4 +30,5 @@ models.register('personagensprocesso', api_views.PersonagemProcessoViewSet)
 models.register('advogadosprocesso', api_views.AdvogadoProcessoViewSet)
 models.register('documentosprocesso', api_views.DocumentoProcessoViewSet)
 models.register('processossimilares', api_views.ProcessosSimilaresViewSet)
+models.register('processossimilaresreport', frontend.ProcessosSimilaresViewSet)
 # models.register('leads', LeadViewSet, 'leads')

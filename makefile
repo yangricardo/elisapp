@@ -8,6 +8,7 @@ build:
 
 push:
 	docker push yangricardo/elisapp:latest
+	docker push yangricardo/elisdb:latest
 
 deploy:
 	eb deploy
@@ -52,7 +53,20 @@ createsuperuser:
 	docker-compose exec app python manage.py createsuperuser
 
 migrate:
+	# docker-compose exec app rm -rf api/migrations
+	# docker-compose exec app rm -rf frontend/migrations
+	docker-compose exec app python manage.py makemigrations api
+	docker-compose exec app python manage.py makemigrations frontend
 	docker-compose exec app python manage.py makemigrations
+	docker-compose exec app python manage.py migrate
+	# docker-compose exec app python manage.py sqlmigrate api 0001 > config/db/1-api.sql
+	# docker-compose exec app python manage.py sqlmigrate frontend 0001 > config/db/3-frontend.sql
+
+remigrate:
+	docker-compose exec app rm -rf api/migrations
+	docker-compose exec app rm -rf frontend/migrations
+	docker-compose exec app python manage.py makemigrations api
+	docker-compose exec app python manage.py makemigrations frontend
 	docker-compose exec app python manage.py migrate
 
 notebook:
@@ -64,3 +78,12 @@ notebook-token:
 
 run-debug:
 	docker-compose exec app python manage-debug.py runserver --noreload 0.0.0.0:9000
+
+backup-db:
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb > config/db/elisdb.sql
+
+restore-db:
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb < config/db/elisdb.sql
+
+build-db:
+	docker build -t yangricardo/elisdb:latest -f config/db/Dockerfile config/db

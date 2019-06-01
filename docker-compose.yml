@@ -3,9 +3,26 @@ version: '3.7'
 
 services:
   # Database based on official postgres image
+  
+  # elisdb:
+  #   restart: always
+  #   image: yangricardo/elisdb:latest
+  #   container_name: elisapp_elisdb
+  #   hostname: elisdb
+  #   ports:
+  #     - 6432:5432
+  #   env_file:  # <-- we use the previously defined values
+  #     - config/db/.env
+  #   networks:  # <-- connect to the bridge
+  #     - db_network
+  #   volumes:
+  #     - elisdb_volume:/data
+  #     - ./config/db/elisdb.sql:/docker-entrypoint-initdb.d/elisdb.sql
+  
   db:
     restart: always
-    image: postgres
+    # image: postgres
+    image: yangricardo/elisdb:latest
     container_name: elisapp_postgres
     hostname: db
     ports:
@@ -15,7 +32,7 @@ services:
     networks:  # <-- connect to the bridge
       - db_network
     volumes:
-      - db_volume:/var/lib/postgresql/data
+      - elisdb_volume:/data
 
   redis:
     restart: always
@@ -181,6 +198,7 @@ networks:
 
 volumes:
   db_volume:
+  elisdb_volume:
   pgadmin_volume:
   static:
   media:
