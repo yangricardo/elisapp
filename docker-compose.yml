@@ -2,47 +2,32 @@
 version: '3.7'
 
 services:
-  # Database based on official postgres image
   
-  # elisdb:
-  #   restart: always
-  #   image: yangricardo/elisdb:latest
-  #   container_name: elisapp_elisdb
-  #   hostname: elisdb
-  #   ports:
-  #     - 6432:5432
-  #   env_file:  # <-- we use the previously defined values
-  #     - config/db/.env
-  #   networks:  # <-- connect to the bridge
-  #     - db_network
-  #   volumes:
-  #     - elisdb_volume:/data
-  #     - ./config/db/elisdb.sql:/docker-entrypoint-initdb.d/elisdb.sql
-  
-  db:
+  postgres:
     restart: always
-    # image: postgres
     image: yangricardo/elisdb:latest
     container_name: elisapp_postgres
-    hostname: db
-    ports:
-      - 5432:5432
-    env_file:  # <-- we use the previously defined values
-      - config/db/.env
-    networks:  # <-- connect to the bridge
-      - db_network
+    hostname: postgres
+    expose:
+      - 5432
+    env_file:
+      - ${PWD}/config/db/.env
+    networks:
+      - db
     volumes:
-      - elisdb_volume:/data
+      - postgres:/data
 
   redis:
     restart: always
     container_name: elisapp_redis
     hostname: redis
     image: redis
+    volumes:
+      - redis:/data
     expose:
       - 6379
     networks: 
-      - db_network
+      - db
 
   redis-commander:
     container_name: redis-commander
@@ -51,13 +36,15 @@ services:
     restart: always
     environment:
       - REDIS_HOSTS=local:redis:6379
+    expose:
+      - 6379
     ports:
       - "8081:8081"
     dns:
       - 8.8.8.8
       - 8.8.4.4
     networks: 
-      - db_network
+      - db
 
   # rabbitmq:
   #   restart: always
@@ -84,20 +71,17 @@ services:
       context: .
     container_name: elisapp_app
     image: yangricardo/elisapp:latest
-    command: sh /config/on-container-start.sh
+    # command: sh /config/on-container-start.sh
     hostname: app
     env_file:
-      - config/app/.env
+      - ${PWD}/config/app/.env
     volumes:
-      - ./app:/app
-      # - /Users/yangricardo/TJ_FILES/:/tj_files
+      - ${PWD}/app:/app
       - ${HOME}/TJ_FILES:/tj_files
       - static:/srv/static
       - media:/srv/media
     expose:
       - 8000
-      - 8001
-      - 8002
     ports:
       - 8888:8888
       - 3500:3500
@@ -106,12 +90,11 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     networks:
-      nginx_network:
+      nginx:
           ipv4_address: 172.16.1.2
-      # - nginx-proxy
-      db_network:
+      db:
     depends_on:
-      - db
+      - postgres
       - redis
 
   # worker:
@@ -147,17 +130,17 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     volumes:
-      - ./config/nginx:/etc/nginx/conf.d
+      - ${PWD}/config/nginx:/etc/nginx/conf.d
       # - ./config/nginx/certbot/conf:/etc/letsencrypt
       # - ./config/nginx/certbot/www:/var/www/certbot
-      - ./config/nginx/elisapp.dev.crt:/etc/nginx/elisapp.dev.crt # New Line!
-      - ./config/nginx/elisapp.dev.key:/etc/nginx/elisapp.dev.key # New Line!
+      - ${PWD}/config/nginx/elisapp.dev.crt:/etc/nginx/elisapp.dev.crt # New Line!
+      - ${PWD}/config/nginx/elisapp.dev.key:/etc/nginx/elisapp.dev.key # New Line!
       - static:/srv/static:ro
       - media:/srv/media:ro
     depends_on:
       - app
     networks: 
-      nginx_network:
+      nginx:
         ipv4_address: 172.16.1.3
  
   # certbot:
@@ -172,33 +155,31 @@ services:
     restart:  always
     hostname: pgadmin
     volumes:
-      - pgadmin_volume:/var/lib/pgadmin
-      - pgadmin_volume:/pgadmin4/config_local.py
-      - pgadmin_volume:/pgadmin4/servers.json
-      - pgadmin_volume:/certs/server.cert
-      - pgadmin_volume:/certs/server.key
+      - pgadmin:/var/lib/pgadmin
+      - pgadmin:/pgadmin4/config_local.py
+      - pgadmin:/pgadmin4/servers.json
+      - pgadmin:/certs/server.cert
+      - pgadmin:/certs/server.key
     environment:
       PGADMIN_DEFAULT_EMAIL: 'yangricardo17@gmail.com'
       PGADMIN_DEFAULT_PASSWORD: 'elisdbpassword'
     ports:
       - 8001:80
     depends_on:
-      - db
+      - postgres
     networks: 
-      - db_network
+      - db
 
 networks:
-  nginx_network:
+  nginx:
     external:
-      name: elisapp_nginx_network
-        
-
-  db_network:  # <-- add the bridge
+      name: elisapp_network
+  db:
     driver: bridge
 
 volumes:
-  db_volume:
-  elisdb_volume:
-  pgadmin_volume:
+  postgres:
+  redis:
+  pgadmin:
   static:
   media:

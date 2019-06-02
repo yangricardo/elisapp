@@ -1,8 +1,10 @@
 amqp==2.5.0
+appnope==0.1.0
 asn1crypto==0.24.0
 astroid==2.2.5
 attrs==19.1.0
 autopep8==1.4.4
+Babel==2.6.0
 backcall==0.1.0
 billiard==3.6.0.0
 bleach==3.1.0
@@ -23,8 +25,10 @@ django-redis==4.10.0
 django-rest-knox==4.0.1
 django-webpack-loader==0.6.0
 djangorestframework==3.9.4
+djangorestframework-bulk==0.2.1
 docutils==0.14
 entrypoints==0.3
+flower==0.9.3
 ftfy==5.5.1
 gensim==3.7.3
 gevent==1.4.0

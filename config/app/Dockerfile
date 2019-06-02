@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 # Creating and putting configurations
 RUN mkdir -p /srv/{static,media}
 RUN mkdir /config
-ADD config/app /config/
+COPY config/app /config/
 
 # Installing all python dependencies
 RUN pip install -r /config/requirements.txt
@@ -19,7 +19,7 @@ EXPOSE 8000
 # and setting it to working directory (meaning it is going to be default)
 RUN mkdir /app
 WORKDIR /app
-ADD app /app/
+COPY app /app/
 RUN npm i
 RUN npm run dev
-RUN python manage.py collectstatic
+ENTRYPOINT [ "sh" , "/config/on-container-start.sh"]

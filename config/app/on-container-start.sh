@@ -1,3 +1,4 @@
+#!/bin/sh
 python manage.py collectstatic
 
 # Create migrations based on django models

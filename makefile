@@ -22,8 +22,8 @@ stop:
 down:
 	docker-compose down
 
-nginx-network:
-	docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 elisapp_nginx
+create-network:
+	docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 elisapp_network
 
 init-letsencrypt.sh:
 	curl -L https://raw.githubusercontent.com/wmnnd/nginx-certbot/master/init-letsencrypt.sh > ./config/nginx/init-letsencrypt.sh
