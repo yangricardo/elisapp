@@ -101,8 +101,8 @@ class SearchProcessPage extends Component {
             this.props.createMessage({ loginRequired: "Autenticação necessária" });
             return <Redirect to="/login"/>
         }
-        if(this.props.searched === true){
-            if(this.props.found === true){
+        if(this.state.searched === true){
+            if(this.state.found === true){
                 return <Redirect to="/detalharsentencas"/>
             } else {
                 this.props.createMessage({ notFound: "Código de Processo Não Disponível" });
