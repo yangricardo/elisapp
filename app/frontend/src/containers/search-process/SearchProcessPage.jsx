@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
 import { withStyles, CssBaseline, Box, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
-import { getProcess } from '../../actions/similarprocesses';
+import { getProcess, clearSimilarProcess } from '../../actions/similarprocesses';
 
 import MaskedInput from 'react-text-mask';
 
@@ -54,7 +54,6 @@ function TextMaskCustom(props) {
             /\d/,/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,'-',/\d/,/[A-Za-z]?/
         ]}
         placeholderChar={'\u2000'}
-        showMask
     />
     );
 }
@@ -64,7 +63,15 @@ inputRef: PropTypes.func.isRequired,
 };
 
 class SearchProcessPage extends Component {
-    state = {}
+    
+    constructor (props) {
+        super(props);
+        this.props.clearSimilarProcess();
+        this.state = {
+            found : false,
+            searched : false
+        };
+    }
 
     onChange = e => {
         this.setState({[e.target.name]: e.target.value})
@@ -73,14 +80,35 @@ class SearchProcessPage extends Component {
     onSubmit = e => {
         e.preventDefault();
         const { processo } = this.state;
+        this.setState({searched:true})
         this.props.getProcess(processo.trim())
+    }
+
+    componentWillUpdate(nextProps) {
+        if (this.props.searchedProcess !== nextProps.searchedProcess ){
+            if (nextProps.searchedProcess.hasOwnProperty('id') && !this.state.found){
+                this.setState({found:true})
+            } 
+        }
+    }
+
+    componentWillUnmount() {
+        this.setState({found:false, searched : false})
     }
 
     render() {
         if(!this.props.isAuthenticated){
-            this.props.createMessage({ loginRequired: "Login Required" });
+            this.props.createMessage({ loginRequired: "Autenticação necessária" });
             return <Redirect to="/login"/>
         }
+        if(this.props.searched === true){
+            if(this.props.found === true){
+                return <Redirect to="/detalharsentencas"/>
+            } else {
+                this.props.createMessage({ notFound: "Código de Processo Não Disponível" });
+            }
+        } 
+
         const { classes } = this.props;
 
         return (
@@ -126,12 +154,14 @@ class SearchProcessPage extends Component {
 
 
 const mapStateToProps = (state) => ({
-    isAuthenticated: state.authReducer.isAuthenticated
+    isAuthenticated: state.authReducer.isAuthenticated,
+    searchedProcess : state.similarProcessesReducer.searchedProcess
 })
 
 const mapDispatchToProps = {
     getProcess,
-    createMessage
+    createMessage,
+    clearSimilarProcess
 }
 
 

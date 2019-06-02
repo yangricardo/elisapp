@@ -1,7 +1,7 @@
-import { GET_PROCESS } from "../actions/types";
+import { GET_PROCESS, CLEAR_SEARCHED_PROCESS } from "../actions/types";
 
 const initialState = {
-    similarprocess : []
+    searchedProcess : {}
 }
 
 export default function(state = initialState, action) {
@@ -9,7 +9,12 @@ export default function(state = initialState, action) {
         case GET_PROCESS: 
             return {
                 ...state,
-                similarprocess : action.payload
+                searchedProcess : action.payload.results[0] || {}
+            }
+        case CLEAR_SEARCHED_PROCESS:
+            return {
+                ...state,
+                searchedProcess : {}
             }
         default:
             return state
