@@ -24,10 +24,10 @@ export default props => (
         <Alerts/>
         <Header>
           <Switch>
-              <Route exact path="/buscarprocesso" component={SearchProcessPage} />
+              <PrivateRoute exact path="/buscarprocesso" component={SearchProcessPage} />
               <PrivateRoute exact path="/listarsentencas" component={ListProcessPage} />
               <PrivateRoute exact path="/gruposanalise" component={GroupProcessPage} />
-              <Route exact path="/detalharsentencas" component={DetailSentencesPage} />
+              <PrivateRoute exact path="/detalharsentencas" component={DetailSentencesPage} />
               <Route exact path='/register' component={ Register } />
               <Route exact path='/login' component={ Login } />
           </Switch>

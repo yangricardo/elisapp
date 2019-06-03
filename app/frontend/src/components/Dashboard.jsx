@@ -17,6 +17,9 @@ const drawerWidth = 250;
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
+        overflowY: 'auto',
+        height: '100vh',
+        width: 'auto',
     },
     drawer: {
         width: drawerWidth,
@@ -42,9 +45,8 @@ const useStyles = makeStyles(theme => ({
         },
     },
     content: {
-        overflowY: 'auto',
-        padding : theme.spacing(2) + 1 ,
-        height: '100vh'
+        width: '100vw',
+        height: '100vh',
     },
 }));
 

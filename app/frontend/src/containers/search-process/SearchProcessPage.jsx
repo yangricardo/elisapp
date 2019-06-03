@@ -124,9 +124,9 @@ class SearchProcessPage extends Component {
         return (
             <main className={classes.main}>
             <CssBaseline/>
-            <Grid container spacing={5}>
+            <Grid container spacing={2}>
                 <Grid item xs/>
-                <Grid item md={10} >
+                <Grid item md={5} >
                 <Box borderColor="primary.main"
                     border={2}
                     borderRadius={10}

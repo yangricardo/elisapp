@@ -10,7 +10,10 @@ import { buildTokenHeader } from '../../actions/auth';
 
 const styles = theme => ({
     content: {
-        overflow: 'hidden',
+        height: 'auto',
+        width: 'auto',
+        display: 'block',
+        padding: theme.spacing(1),
     },
 })
 
@@ -37,6 +40,10 @@ class DetailSentencesPage extends Component {
             return <Redirect to="/login"/>
         }
         const { classes, searchedProcess } = this.props;
+        if (!searchedProcess.hasOwnProperty('id')){
+            return <Redirect to="/buscarprocesso"/>
+        }
+
         const { similaridade , processos_similares } = searchedProcess;
         return (
             <div className={classes.content} >
