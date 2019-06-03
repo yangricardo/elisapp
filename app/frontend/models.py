@@ -33,7 +33,7 @@ class DocumentoProcesso(ProcessoDBView):
     cod_documento = models.TextField(primary_key=True)
     id_tipo_documento = models.CharField(max_length=1, blank=True, null=True)
     tipo_documento = models.CharField(max_length=210)
-    
+
     def __str__(self):
         return f'{self.cod_documento} - {self.tipo_documento} - {self.processo_tj} - {self.processo_cnj}'
 
@@ -45,9 +45,10 @@ class DocumentoProcesso(ProcessoDBView):
 class PersonagemProcesso(ProcessoDBView):
     nome_personagem = models.TextField(db_index=True)
     tipo_personagem = models.CharField(max_length=25)
+    participacao = models.CharField(max_length=1)
 
     def __str__(self):
-        return f'{self.nome_personagem} - {self.tipo_personagem} - {self.processo_tj} - {self.processo_cnj}'
+        return f'{self.nome_personagem} - {self.tipo_personagem}- {self.participacao} - {self.processo_tj} - {self.processo_cnj}'
 
     class Meta:
         managed = False

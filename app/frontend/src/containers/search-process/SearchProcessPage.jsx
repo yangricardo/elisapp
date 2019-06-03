@@ -1,12 +1,14 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, useState } from 'react'
+import axios from 'axios';
 import PropTypes from 'prop-types'
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
-import { withStyles, CssBaseline, Box, TextField, Grid, Button } from '@material-ui/core';
-import { createMessage } from '../../actions/message';
-import { getProcess, clearSimilarProcess } from '../../actions/similarprocesses';
+import { withStyles, CssBaseline, Box, TextField, Grid, Button, CircularProgress } from '@material-ui/core';
+import { createMessage, returnError } from '../../actions/message';
+import { getProcess, clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
 
 import MaskedInput from 'react-text-mask';
+import { buildTokenHeader } from '../../actions/auth';
 
 const styles = theme => ({
     main: {
@@ -41,7 +43,7 @@ const styles = theme => ({
     },
 })
 
-function TextMaskCustom(props) {
+const TextMaskCustom = props => {
     const { inputRef, ...other } = props;
   
     return (
@@ -66,10 +68,11 @@ class SearchProcessPage extends Component {
     
     constructor (props) {
         super(props);
-        this.props.clearSimilarProcess();
+        this.props.clearSearchedProcess();
         this.state = {
             found : false,
-            searched : false
+            searched : false,
+            loading : false,
         };
     }
 
@@ -77,23 +80,28 @@ class SearchProcessPage extends Component {
         this.setState({[e.target.name]: e.target.value})
     }
 
-    onSubmit = e => {
+    onClick = e => {
         e.preventDefault();
+        this.setState({searched:true, loading:true});
         const { processo } = this.state;
-        this.setState({searched:true})
-        this.props.getProcess(processo.trim())
+        axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(this.props.token))
+        .then(res => {
+            const { results } = res.data
+            if (results[0].hasOwnProperty('id')){
+                this.setState({found:true});
+                this.props.setSearchedProcess(results[0]);
+            }
+        })
+        .catch(err => dispatch(returnError(err.response.data, err.response.status)));
     }
 
-    componentWillUpdate(nextProps) {
-        if (this.props.searchedProcess !== nextProps.searchedProcess ){
-            if (nextProps.searchedProcess.hasOwnProperty('id') && !this.state.found){
-                this.setState({found:true})
-            } 
+
+    shouldComponentUpdate(nextProps) {
+        if (this.state.loading && nextProps.searchedProcess.hasOwnProperty('id')) {
+            this.setState({loading:false})
+            return true
         }
-    }
-
-    componentWillUnmount() {
-        this.setState({found:false, searched : false})
+        return false
     }
 
     render() {
@@ -101,29 +109,30 @@ class SearchProcessPage extends Component {
             this.props.createMessage({ loginRequired: "Autenticação necessária" });
             return <Redirect to="/login"/>
         }
-        if(this.state.searched === true){
-            if(this.state.found === true){
-                return <Redirect to="/detalharsentencas"/>
-            } else {
-                this.props.createMessage({ notFound: "Código de Processo Não Disponível" });
-            }
-        } 
+        if (this.state.loading === false ){
+            if(this.state.searched === true){
+                if(this.state.found === true){
+                    return <Redirect to="/detalharsentencas"/>
+                } else {
+                    this.props.createMessage({ notFound: "Código de Processo Não Disponível" });
+                }
+            } 
+        }
 
         const { classes } = this.props;
 
         return (
             <main className={classes.main}>
             <CssBaseline/>
-            <Grid container direction="row" justify="center"
-                            alignItems="center" spacing={10}>
+            <Grid container spacing={5}>
                 <Grid item xs/>
-                <Grid item xs={12} >
+                <Grid item md={10} >
                 <Box borderColor="primary.main"
                     border={2}
                     borderRadius={10}
                     boxShadow={5}
                     className={classes.paper}>
-                    <form onSubmit={this.onSubmit} autoComplete="on">
+                    <form autoComplete="on">
                         <TextField
                             id="processo"
                             name="processo"
@@ -138,9 +147,13 @@ class SearchProcessPage extends Component {
                             }}
                             >
                         </TextField>
-                        <Button size='large' type="submit" variant="contained" color="primary" className={classes.button}>
-                            Consultar Processo
-                        </Button>
+                        { this.state.loading ? <CircularProgress/> :
+                            <Button size='large' type="button" color="primary" 
+                            className={classes.button} onClick={this.onClick} variant="contained" 
+                            >
+                                Consultar Processo
+                            </Button>
+                        }
                     </form>
                 </Box>
                 </Grid>
@@ -154,14 +167,19 @@ class SearchProcessPage extends Component {
 
 
 const mapStateToProps = (state) => ({
+    token : state.authReducer.token,
     isAuthenticated: state.authReducer.isAuthenticated,
-    searchedProcess : state.similarProcessesReducer.searchedProcess
+    searchedProcess : state.similarProcessesReducer.searchedProcess,
+    loading : state.similarProcessesReducer.loading
 })
 
 const mapDispatchToProps = {
     getProcess,
+    returnError,
     createMessage,
-    clearSimilarProcess
+    clearSearchedProcess,
+    setSearchedProcess,
+    setLoadingProcess,
 }
 
 

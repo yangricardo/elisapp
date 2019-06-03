@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { returnError, createMessage } from "./message";
-
+import store from '../store';
 import {USER_LOADED, USER_LOADING, AUTH_ERROR, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_FAIL } from './types'
 
 // CHECK TOKEN & LOAD USER
@@ -98,11 +98,7 @@ export const logout = () => (dispatch, getState) => {
 	});
 };
 
-// Setup config with token - helper function
-export const tokenConfig = getState => {
-	// Get token from state
-	const token = getState().authReducer.token;
-
+export const buildTokenHeader = token => {
 	// Headers
 	const config = {
 		headers: {
@@ -116,4 +112,11 @@ export const tokenConfig = getState => {
 	}
 
 	return config;
+}
+
+// Setup config with token - helper function
+export const tokenConfig = getState => {
+	// Get token from state
+	const token = getState().authReducer.token;
+	return buildTokenHeader(token);
 };

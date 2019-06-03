@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Redirect } from "react-router-dom";
 import { withStyles, CssBaseline, Paper, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
 import SentencaDetail from './SentencaDetail.jsx';
@@ -19,10 +20,10 @@ class DetailSentencesPage extends Component {
     }
 
     render() {
-        // if(!this.props.isAuthenticated){
-        //     this.props.createMessage({ loginRequired: "Login Required" });
-        //     return <Redirect to="/login"/>
-        // }
+        if(!this.props.isAuthenticated){
+            this.props.createMessage({ loginRequired: "Login Required" });
+            return <Redirect to="/login"/>
+        }
         const { classes } = this.props;
         return (
             <div className={classes.content} >

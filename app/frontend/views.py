@@ -99,7 +99,6 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
     pagination_class = LargeResultsSetPagination
     
     @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance).data
@@ -107,7 +106,6 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
         return Response(serializer)
 
     @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset()).order_by('-similaridade')
         processo_tj = self.request.query_params.get('processo_tj', None)
