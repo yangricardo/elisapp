@@ -43,7 +43,7 @@ class LoginViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.Retr
 
 
 class UserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin):
-    # authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserSerializer
 

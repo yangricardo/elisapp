@@ -13,7 +13,6 @@ const styles = theme => ({
         height: 'auto',
         width: 'auto',
         display: 'block',
-        padding: theme.spacing(1),
     },
 })
 

@@ -16,16 +16,11 @@ const styles = theme => ({
         display: 'block', // Fix IE 11 issue.
         marginLeft: theme.spacing(3),
         marginRight: theme.spacing(3),
-        [theme.breakpoints.up(600 + theme.spacing(6))]: {
-            width: 600,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-        },
     },
     paper: {
-        marginTop: theme.spacing(15),
+        marginTop: theme.spacing(20),
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
         borderColor: 'primary',
         padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
@@ -33,6 +28,10 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
+    },
+    progress: {
+        marginTop: theme.spacing(2.5),
+        marginLeft: theme.spacing(1)
     },
     button: {
         margin: theme.spacing(1),
@@ -72,61 +71,68 @@ class SearchProcessPage extends Component {
         this.state = {
             found : false,
             searched : false,
-            loading : false,
+            loading : false
         };
     }
 
     onChange = e => {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState({
+            [e.target.name]: e.target.value,
+            searched : false, loading : false, found: false
+        })
     }
 
     onClick = e => {
         e.preventDefault();
-        this.setState({searched:true, loading:true});
+        this.setState({searched:true, loading:true, found:false});
+        const { token } = this.props
         const { processo } = this.state;
-        axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(this.props.token))
+        axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(token))
         .then(res => {
-            const { results } = res.data
-            if (results[0].hasOwnProperty('id')){
-                this.setState({found:true});
+            const { results } = res.data;
+            const found = results[0] !== undefined
+            if (found){
                 this.props.setSearchedProcess(results[0]);
+            } else {
+                this.props.clearSearchedProcess();
             }
+            this.setState({loading:false,found});
         })
-        .catch(err => dispatch(returnError(err.response.data, err.response.status)));
+        .catch(err => {
+            // this.setState({loading:false, found:false, searched : false});
+            this.props.returnError(err.response.data, err.response.status);
+        });
     }
 
 
-    shouldComponentUpdate(nextProps) {
-        if (this.state.loading && nextProps.searchedProcess.hasOwnProperty('id')) {
-            this.setState({loading:false})
-            return true
+    shouldComponentUpdate(nextState) {
+        if(nextState.loading & nextState.result !== null){
+            return false
         }
-        return false
+        return true
     }
 
     render() {
-        if(!this.props.isAuthenticated){
-            this.props.createMessage({ loginRequired: "Autenticação necessária" });
+        const {loading, searched, found } = this.state
+        const {isAuthenticated, createMessage, classes } = this.props
+        if(!isAuthenticated){
+            createMessage({ loginRequired: "Autenticação necessária" });
             return <Redirect to="/login"/>
         }
-        if (this.state.loading === false ){
-            if(this.state.searched === true){
-                if(this.state.found === true){
-                    return <Redirect to="/detalharsentencas"/>
-                } else {
-                    this.props.createMessage({ notFound: "Código de Processo Não Disponível" });
-                }
-            } 
-        }
 
-        const { classes } = this.props;
+        if (found){
+            return <Redirect to="/detalharsentencas"/>
+        } 
+        if (searched && !found & !loading) {
+            createMessage({ notFound: "Código de Processo Não Disponível" });
+        }
 
         return (
             <main className={classes.main}>
             <CssBaseline/>
             <Grid container spacing={2}>
                 <Grid item xs/>
-                <Grid item md={5} >
+                <Grid item xs={5} >
                 <Box borderColor="primary.main"
                     border={2}
                     borderRadius={10}
@@ -147,7 +153,7 @@ class SearchProcessPage extends Component {
                             }}
                             >
                         </TextField>
-                        { this.state.loading ? <CircularProgress/> :
+                        { loading ? <CircularProgress className={classes.progress}/> :
                             <Button size='large' type="button" color="primary" 
                             className={classes.button} onClick={this.onClick} variant="contained" 
                             >
