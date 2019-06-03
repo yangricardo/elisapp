@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
-import { withStyles, CssBaseline, Paper, TextField, Grid, Button } from '@material-ui/core';
-import { createMessage } from '../../actions/message';
+import { withStyles, Paper, Typography, Grid, Button } from '@material-ui/core';
 import SentencaDetail from './SentencaDetail.jsx';
+import { createMessage, returnError } from '../../actions/message';
+import { getProcess, clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
+import { buildTokenHeader } from '../../actions/auth';
 
 const styles = theme => ({
     content: {
@@ -12,19 +14,30 @@ const styles = theme => ({
     },
 })
 
+export const GetSimilarProcess = (similarProcessURL) => {
+    axios.get(similarProcessURL, buildTokenHeader(this.props.token))
+    .then(res => {
+        const { results } = res.data
+        if (results.hasOwnProperty('id')){
+            this.setState({found:true});
+            this.props.setSearchedProcess(results);
+        }
+    })
+    .catch(err => dispatch(returnError(err.response.data, err.response.status)));
+}
+
+
+
 class DetailSentencesPage extends Component {
     state = {}
-
-    onChange = e => {
-        this.setState({[e.target.name]: e.target.value})
-    }
 
     render() {
         if(!this.props.isAuthenticated){
             this.props.createMessage({ loginRequired: "Login Required" });
             return <Redirect to="/login"/>
         }
-        const { classes } = this.props;
+        const { classes, searchedProcess } = this.props;
+        const { similaridade , processos_similares } = searchedProcess;
         return (
             <div className={classes.content} >
             <Grid container direction="row" 
@@ -39,7 +52,26 @@ class DetailSentencesPage extends Component {
                     <SentencaDetail isSimilar/>
                 </Grid>
                 <Grid item md={2} >
-                    <Paper></Paper>
+                        <Grid container direction="column" 
+                        justify="center"
+                        alignItems="baseline" 
+                        spacing={2}
+                    >
+                        <Grid item xs>
+                            <Paper>
+                                <Typography>{similaridade}</Typography>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs>
+                            <Paper>
+                            {processos_similares.map((item, key) => {
+                                return  <Typography color="inherit" key={key}>
+                                            {`• ${item[0]} - ${item[2]}`}<br/>
+                                        </Typography>})
+                            }}
+                            </Paper>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
             </div>
@@ -50,7 +82,18 @@ class DetailSentencesPage extends Component {
 
 
 const mapStateToProps = (state) => ({
-    isAuthenticated: state.authReducer.isAuthenticated
+    isAuthenticated: state.authReducer.isAuthenticated,
+    token : state.authReducer.token,
+    searchedProcess : state.similarProcessesReducer.searchedProcess,
 })
 
-export default connect(mapStateToProps, { createMessage })(withStyles(styles)(DetailSentencesPage));
+const mapDispatchToProps = {
+    getProcess,
+    returnError,
+    createMessage,
+    clearSearchedProcess,
+    setSearchedProcess,
+    setLoadingProcess,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailSentencesPage));

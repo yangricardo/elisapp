@@ -108,7 +108,6 @@ const SentencaDetail = props => {
     const bgcolor = isSimilar ? "secondary" : "primary"
     const indicatorColor = isSimilar ? "primary" : "secondary"
 
-    const similaridade = searchedProcess.similaridade
     const cod_tj = isSimilar ? searchedProcess.processo_similar_tj : searchedProcess.processo_base_tj
     const cod_cnj = isSimilar ? searchedProcess.processo_similar_cnj : searchedProcess.processo_base_cnj
     const assunto = isSimilar ? searchedProcess.processo_similar_assunto : searchedProcess.processo_base_assunto
@@ -119,7 +118,6 @@ const SentencaDetail = props => {
     const personagens = isSimilar ? searchedProcess.personagens_similar : searchedProcess.personagens_base
     const advogados = isSimilar ? searchedProcess.advogados_similar : searchedProcess.advogados_base
     const documentos = isSimilar ? searchedProcess.documentos_similar : searchedProcess.documentos_base
-    const estatistica = isSimilar ? searchedProcess.estatistica_similar : searchedProcess.estatistica_base
     
     const [sentenca, setSentenca] = React.useState(0);
 
