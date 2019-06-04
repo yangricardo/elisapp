@@ -47,6 +47,7 @@ const useStyles = makeStyles(theme => ({
     content: {
         width: '100vw',
         height: '100vh',
+        overflowY: 'auto',
     },
 }));
 

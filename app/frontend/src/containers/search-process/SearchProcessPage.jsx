@@ -18,23 +18,31 @@ const styles = theme => ({
         marginRight: theme.spacing(3),
     },
     paper: {
-        marginTop: theme.spacing(20),
+        // marginTop: theme.spacing(30),
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         borderColor: 'primary',
+        width: 600,
         padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
     },
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
-    progress: {
-        marginTop: theme.spacing(2.5),
-        marginLeft: theme.spacing(1)
-    },
-    button: {
+    progresWrapper: {
         margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        // color: green[500],
+        position: 'relative',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+    button: {       
         marginTop: theme.spacing(2.5),
     },
     formControl: {
@@ -130,38 +138,48 @@ class SearchProcessPage extends Component {
         return (
             <main className={classes.main}>
             <CssBaseline/>
-            <Grid container spacing={2}>
+            <Grid container direction="row" justify="center"
+                        alignItems="center" alignContent="center" spacing={2}>
                 <Grid item xs/>
                 <Grid item xs={5} >
-                <Box borderColor="primary.main"
-                    border={2}
-                    borderRadius={10}
-                    boxShadow={5}
-                    className={classes.paper}>
-                    <form autoComplete="on">
-                        <TextField
-                            id="processo"
-                            name="processo"
-                            label="Processo"
-                            className={classes.textField}
-                            value={this.state.name}
-                            onChange={this.onChange}
-                            margin="normal"
-                            variant="outlined"
-                            InputProps={{
-                                inputComponent: TextMaskCustom,
-                            }}
-                            >
-                        </TextField>
-                        { loading ? <CircularProgress className={classes.progress}/> :
-                            <Button size='large' type="button" color="primary" 
-                            className={classes.button} onClick={this.onClick} variant="contained" 
-                            >
-                                Consultar Processo
-                            </Button>
-                        }
-                    </form>
-                </Box>
+                <Grid container direction="column" justify="center"
+                        alignItems="center" alignContent="center"   spacing={5}>
+                    <Grid item xs/>
+                    <Grid item md={10}>
+                    <Box borderColor="primary.main"
+                        border={2}
+                        borderRadius={10}
+                        boxShadow={5}
+                        className={classes.paper}>
+                        <form onSubmit={this.onClick} autoComplete="on">
+                            <TextField
+                                id="processo"
+                                name="processo"
+                                label="Processo"
+                                disabled={loading}
+                                className={classes.textField}
+                                value={this.state.name}
+                                onChange={this.onChange}
+                                margin="normal"
+                                variant="outlined"
+                                InputProps={{
+                                    inputComponent: TextMaskCustom,
+                                }}
+                                >
+                            </TextField>
+                            <div className={classes.wrapper}>
+                                <Button size='large' type="button" disabled={loading} color="primary" 
+                                    className={classes.button} onClick={this.onClick} variant="contained" 
+                                    >
+                                        Consultar Processo 
+                                </Button>
+                                { loading ? <CircularProgress size={24} className={classes.buttonProgress}/> : undefined}
+                            </div>
+                        </form>
+                    </Box>
+                    </Grid>
+                    <Grid item xs/>
+                </Grid>
                 </Grid>
                 <Grid item xs/>
             </Grid>

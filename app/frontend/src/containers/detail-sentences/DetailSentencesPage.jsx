@@ -6,7 +6,7 @@ import { withStyles, Paper, Typography, Grid, Button } from '@material-ui/core';
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
 import { getProcess, clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
-import { buildTokenHeader } from '../../actions/auth';
+import SimilarList from './DetailSentenceHelpers.jsx';
 
 const styles = theme => ({
     content: {
@@ -16,20 +16,6 @@ const styles = theme => ({
     },
 })
 
-export const GetSimilarProcess = (similarProcessURL) => {
-    axios.get(similarProcessURL, buildTokenHeader(this.props.token))
-    .then(res => {
-        const { results } = res.data
-        if (results.hasOwnProperty('id')){
-            this.setState({found:true});
-            this.props.setSearchedProcess(results);
-        }
-    })
-    .catch(err => dispatch(returnError(err.response.data, err.response.status)));
-}
-
-
-
 class DetailSentencesPage extends Component {
     state = {}
 
@@ -38,7 +24,7 @@ class DetailSentencesPage extends Component {
             this.props.createMessage({ loginRequired: "Login Required" });
             return <Redirect to="/login"/>
         }
-        const { classes, searchedProcess } = this.props;
+        const { classes, searchedProcess, token } = this.props;
         if (!searchedProcess.hasOwnProperty('id')){
             return <Redirect to="/buscarprocesso"/>
         }
@@ -69,13 +55,7 @@ class DetailSentencesPage extends Component {
                             </Paper>
                         </Grid>
                         <Grid item xs>
-                            <Paper>
-                            {processos_similares.map((item, key) => {
-                                return  <Typography color="inherit" key={key}>
-                                            {`• ${item[0]} - ${item[2]}`}<br/>
-                                        </Typography>})
-                            }}
-                            </Paper>
+                            <SimilarList similarProcesses={processos_similares} token={token}/>
                         </Grid>
                     </Grid>
                 </Grid>

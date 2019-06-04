@@ -1,106 +1,12 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, createMuiTheme ,Box, Tooltip, Fab, Grid, Typography, AppBar, Tabs ,Tab } from '@material-ui/core';
+import { Box, Tooltip, Fab, Grid, Typography, AppBar, Tabs ,Tab } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { Info, Link as LinkIcon } from '@material-ui/icons';
-import {cyan, indigo, common} from '@material-ui/core/colors/';
+import { Link as LinkIcon } from '@material-ui/icons';
+import { detailProcessTheme,processLabelTheme,BorderBox,SectionBox,HtmlTooltip, ButtonToolTip, ProcessLabel } from './DetailSentenceHelpers';
 import { createMessage, returnError } from '../../actions/message';
 import { getProcess, setSearchedProcess } from '../../actions/similarprocesses';
-
-const detailProcessTheme = createMuiTheme({
-    palette: {
-        primary: {
-            main: indigo[500],
-            contrastText: common.white,
-        },
-        secondary: {
-            main: cyan[800],
-            contrastText: common.white,
-        },
-        default : {
-            main : common.white
-        }
-    },
-});
-
-const processLabelTheme = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#fff",
-        },
-        secondary: {
-            main: "#fff",
-        },
-        default : {
-            main : "#fff"
-        }
-    },
-});
-  
-const BorderBox = props => {
-    return (
-        <Box bgcolor={`${props.bgcolor}.main`} borderRadius={10}>
-            {props.children}
-        </Box>
-    );
-}
-
-const SectionBox = props => {
-    return (
-        <Box p={1}>{props.children}</Box>
-    );
-}
-
-
-const HtmlTooltip = withStyles(theme => ({
-    tooltip: {
-      backgroundColor: '#f5f5f9',
-      color: 'rgba(0, 0, 0, 0.87)',
-      maxWidth: 450,
-      fontSize: theme.typography.pxToRem(22),
-      '& b': {
-        fontWeight: theme.typography.fontWeightMedium,
-      },
-    },
-  }))(Tooltip);
-
-const ButtonToolTip = props => {
-    const disable = props.text.length === 0
-    return (
-        <div>
-            <HtmlTooltip 
-                disableFocusListener={disable}
-                disableHoverListener={disable}
-                disableTouchListener={disable}
-                title={
-                    <Fragment>
-                        {props.text.split("\n").map((item, key) => {
-                            return  <Typography color="inherit" key={key}>
-                                        {item}<br/>
-                                    </Typography>})
-                  }</Fragment> 
-                }
-                placement="bottom"
-            >
-                <Fab variant="extended" size="small" color={props.bgcolor} disabled={disable}>
-                    <Info/>&nbsp;{props.button}
-                </Fab>
-            </HtmlTooltip>
-        </div>
-    )
-}
-
-const ProcessLabel = props => {
-    return (
-        <ThemeProvider theme={processLabelTheme}>
-            <Grid container direction="column" justify="center" alignItems="center" spacing={0}>
-                <Grid item><Typography color="primary" variant="caption">Código {props.cnj?'CNJ':'TJ'}</Typography></Grid>
-                <Grid item><Typography color="primary" variant="button">{props.cod}</Typography></Grid>
-            </Grid>
-        </ThemeProvider>
-    );
-}
 
 const SentencaDetail = props => {
     const { isSimilar, searchedProcess } = props;
@@ -180,16 +86,16 @@ const SentencaDetail = props => {
                             spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor} button='Comarca' text={comarca} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Comarca' text={comarca} />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip bgcolor={bgcolor} button='Serventia' text={serventia} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Serventia' text={serventia} />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip bgcolor={bgcolor} button='Classe' text={classe} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Classe' text={classe} />
                             </Grid>
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor} button='Assunto' text={assunto} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Assunto' text={assunto} />
                             </Grid>
                         </Grid>
                         </SectionBox>
@@ -202,16 +108,16 @@ const SentencaDetail = props => {
                             spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor} button='Juiz' text={`${sentencas[sentenca].nome_juiz} - ${sentencas[sentenca].cargo_juiz}`} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Juiz' text={`${sentencas[sentenca].nome_juiz} - ${sentencas[sentenca].cargo_juiz}`} />
                             </Grid>
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor} button='Advogado' text={_advogados} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Advogado' text={_advogados} />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip bgcolor={bgcolor} button='Autor' text={autores} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Autor' text={autores} />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip bgcolor={bgcolor} button='Réu' text={reus} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Réu' text={reus} />
                             </Grid>
                         </Grid>
                         </SectionBox>
@@ -224,7 +130,7 @@ const SentencaDetail = props => {
                             spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor} button='Ato' text={`${sentencas[sentenca].ato_juiz}`} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Ato' text={`${sentencas[sentenca].ato_juiz}`} />
                             </Grid>
                             <Grid item>
                                 <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${iniciais[0]}`}>

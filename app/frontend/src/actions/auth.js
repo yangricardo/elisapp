@@ -12,14 +12,14 @@ export const loadUser = () => (dispatch, getState) => {
 	.get("/auth/user/", tokenConfig(getState))
 	.then(res => {
 		dispatch({
-		type: USER_LOADED,
-		payload: res.data
+			type: USER_LOADED,
+			payload: res.data
 		});
 	})
 	.catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
 		dispatch({
-		type: AUTH_ERROR
+			type: AUTH_ERROR
 		});
 	});
 };
