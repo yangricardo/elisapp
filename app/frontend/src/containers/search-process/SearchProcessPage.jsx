@@ -31,7 +31,6 @@ const styles = theme => ({
         marginRight: theme.spacing(1),
     },
     progresWrapper: {
-        margin: theme.spacing(1),
         position: 'relative',
     },
     buttonProgress: {
@@ -63,6 +62,7 @@ const TextMaskCustom = props => {
             /\d/,/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,'.',/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,'-',/\d/,/[A-Za-z]?/
         ]}
         placeholderChar={'\u2000'}
+        keepCharPositions={false}
     />
     );
 }
@@ -77,16 +77,20 @@ class SearchProcessPage extends Component {
         super(props);
         this.props.clearSearchedProcess();
         this.state = {
+            processo : "",
             found : false,
             searched : false,
-            loading : false
+            loading : false, 
+            canSearch : false,
         };
     }
 
     onChange = e => {
+        const reTJ = new RegExp('\\d{4}\\.\\d{3}\\.\\d{6}-\\d(\\s|\\w)?');
         this.setState({
             [e.target.name]: e.target.value,
-            searched : false, loading : false, found: false
+            canSearch : reTJ.test(e.target.value)
+            ,searched : false, loading : false, found: false
         })
     }
 
@@ -121,7 +125,7 @@ class SearchProcessPage extends Component {
     }
 
     render() {
-        const {loading, searched, found } = this.state
+        const {loading, searched, found, canSearch } = this.state
         const {isAuthenticated, createMessage, classes } = this.props
         if(!isAuthenticated){
             createMessage({ loginRequired: "Autenticação necessária" });
@@ -168,7 +172,7 @@ class SearchProcessPage extends Component {
                                 >
                             </TextField>
                             <div className={classes.wrapper}>
-                                <Button size='large' type="button" disabled={loading} color="primary" 
+                                <Button size='large' type="button" disabled={!canSearch || loading} color="primary" 
                                     className={classes.button} onClick={this.onClick} variant="contained" 
                                     >
                                         Consultar Processo 
