@@ -2,7 +2,6 @@ import { GET_PROCESS, SET_SEARCHED_PROCESS, CLEAR_SEARCHED_PROCESS, LOADING_PROC
 
 const initialState = {
     searchedProcess : {},
-    loading : false,
 }
 
 export default function(state = initialState, action) {

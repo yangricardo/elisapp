@@ -1,11 +1,9 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import axios from 'axios';
-import { buildTokenHeader } from '../../actions/auth';
 import {cyan, indigo, common} from '@material-ui/core/colors/';
 import { Info } from '@material-ui/icons';
-import { withStyles, makeStyles, createMuiTheme, Paper , Chip, Tooltip, Box, Fab, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, Divider } from '@material-ui/core';
+import { withStyles, makeStyles, createMuiTheme, Paper , Chip, Tooltip, Box, Fab, Grid, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { returnError } from '../../actions/message';
 import { setSearchedProcess } from '../../actions/similarprocesses';
@@ -72,7 +70,7 @@ export const ButtonToolTip = props => {
     return (
         <div>
             <HtmlTooltip 
-                disableHoverListener={disable.toString()}
+                disableHoverListener={disable}
                 title={
                     <Fragment>
                         {props.text.split("\n").map((item, key) => {
@@ -110,47 +108,3 @@ const useSimilarListStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.background.paper,
     },
 }));
-
-const SimilarList = props => {
-    const {similarProcesses, token,setSearchedProcess} = props
-    const classes = useSimilarListStyles();
-    const getSimilarProcess = (similarProcessURL) => {
-        axios.get(similarProcessURL, buildTokenHeader(token))
-        .then(res => {
-            const { results } = res.data
-            if (results.hasOwnProperty('id')){
-                setSearchedProcess(results);
-            }
-        })
-        .catch(err => returnError(err.response.data, err.response.status));
-    }
-    
-    return (
-        <Paper className={classes.root}>
-            <List dense>
-                { similarProcesses.map((item,index)=>{
-                    return (
-                    <ListItem key={index} button onClick={getSimilarProcess(item[1])}>
-                        <ListItemIcon>
-                            <Chip size="small" label={`${item[0]}%`}/>
-                        </ListItemIcon>
-                        <ListItemText primary={item[2]} />
-                    </ListItem>
-                )})
-                }
-            </List>
-        </Paper>
-    )
-}
-
-
-const mapStateToProps = (state) => ({
-    token : state.authReducer.token,
-})
-
-const mapDispatchToProps = {
-    setSearchedProcess,
-    returnError
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SimilarList)

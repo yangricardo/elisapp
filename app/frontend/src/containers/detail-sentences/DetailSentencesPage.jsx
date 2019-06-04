@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import { buildTokenHeader } from '../../actions/auth';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
-import { withStyles, Paper, Typography, Grid, Button } from '@material-ui/core';
+import { withStyles, Paper, Typography,LinearProgress, Grid, Button,List, ListItem, ListItemText, ListItemIcon, Divider,Chip } from '@material-ui/core';
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
-import { getProcess, clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
+import { setLoading } from '../../actions/loading';
+import { clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
 import SimilarList from './DetailSentenceHelpers.jsx';
 
 const styles = theme => ({
@@ -14,10 +17,42 @@ const styles = theme => ({
         width: 'auto',
         display: 'block',
     },
+    similarList : {
+        maxHeight : 300,
+        width : 'auto',
+        overflowY : 'auto',
+        backgroundColor: theme.palette.background.paper,
+    }
 })
 
 class DetailSentencesPage extends Component {
-    state = {}
+    constructor (props){
+        super(props)
+        this.state = {
+            loading : false
+        }
+    }
+
+    onListClick = e => {
+        console.log(e)
+        const urlRE = new RegExp('https?:\\/\\/(\\w\\.?)+');
+        const similarProcessURL = e[1].replace(urlRE,"")
+        const { token } = this.props
+        this.setState({loading:true})
+        this.props.setLoading();
+        axios.get(similarProcessURL, buildTokenHeader(token))
+        .then(res => {
+            this.props.setSearchedProcess(res.data);
+            this.setState({loading:false})
+            this.props.setLoading();
+        })
+        .catch(err => {
+            this.props.returnError(err.response.data, err.response.status);
+            this.setState({loading:false})
+            this.props.setLoading();
+        });
+    }
+
 
     render() {
         if(!this.props.isAuthenticated){
@@ -25,8 +60,10 @@ class DetailSentencesPage extends Component {
             return <Redirect to="/login"/>
         }
         const { classes, searchedProcess, token } = this.props;
-        if (!searchedProcess.hasOwnProperty('id')){
-            return <Redirect to="/buscarprocesso"/>
+        if(searchedProcess !== undefined){
+            if (!searchedProcess.hasOwnProperty('id')){
+                return <Redirect to="/buscarprocesso"/>
+            }
         }
 
         const { similaridade , processos_similares } = searchedProcess;
@@ -55,7 +92,20 @@ class DetailSentencesPage extends Component {
                             </Paper>
                         </Grid>
                         <Grid item xs>
-                            <SimilarList similarProcesses={processos_similares} token={token}/>
+                        <List dense className={classes.similarList}>
+                            { processos_similares !== undefined ?
+                                processos_similares.map((item,index)=>{
+                                return (
+                                <ListItem key={index} disable={this.state.loading.toString()} button onClick={this.onListClick.bind(this, item)}>
+                                    <ListItemIcon>
+                                        <Chip size="small" label={`${item[0]}%`}/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={item[2]} />
+                                </ListItem>
+                                )})
+                                : undefined
+                            }
+                        </List>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -74,12 +124,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    getProcess,
     returnError,
     createMessage,
     clearSearchedProcess,
     setSearchedProcess,
-    setLoadingProcess,
+    setLoading,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailSentencesPage));

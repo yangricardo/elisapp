@@ -6,7 +6,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Link as LinkIcon } from '@material-ui/icons';
 import { detailProcessTheme,processLabelTheme,BorderBox,SectionBox,HtmlTooltip, ButtonToolTip, ProcessLabel } from './DetailSentenceHelpers';
 import { createMessage, returnError } from '../../actions/message';
-import { getProcess, setSearchedProcess } from '../../actions/similarprocesses';
+import { setSearchedProcess } from '../../actions/similarprocesses';
 
 const SentencaDetail = props => {
     const { isSimilar, searchedProcess } = props;
@@ -197,7 +197,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    getProcess,
     returnError,
     createMessage,
     setSearchedProcess,

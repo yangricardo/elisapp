@@ -103,6 +103,15 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
         instance = self.get_object()
         serializer = self.get_serializer(instance).data
         serializer.update(build_processo_extra_data(instance.processo_base_tj,instance.processo_similar_tj))
+        processos_similares = models.ProcessoSimilar.objects.filter(processo_base_tj=instance.processo_base_tj)
+        processos_similares = self.get_serializer(instance=processos_similares, many=True).data
+        processos_similares = list(map(lambda ps: 
+            (   ps['similaridade'], 
+                ps['id'], 
+                ps['processo_similar_tj'], ps['processo_similar_cnj']
+            ),processos_similares)
+        )
+        serializer.update({'processos_similares':processos_similares})
         return Response(serializer)
 
     @method_decorator(cache_page(CACHE_TTL))

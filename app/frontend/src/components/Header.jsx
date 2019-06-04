@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { AppBar, Toolbar, Typography, IconButton, withStyles, MenuItem, Menu, Divider, CssBaseline,  MenuList  } from '@material-ui/core';
+import { LinearProgress, AppBar, Toolbar, Typography, IconButton, withStyles, MenuItem, Menu, Divider, CssBaseline,  MenuList  } from '@material-ui/core';
 import { AccountCircle } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import { Link as LinkRouter } from 'react-router-dom'
@@ -120,8 +120,9 @@ class Header extends React.Component {
                         </Menu>
                     </Fragment>
                 </Toolbar>
+                { this.props.isLoading ? <LinearProgress /> : undefined}
                 </AppBar>
-                <div className={classes.content}>    
+                <div className={classes.content}> 
                     <div className={classes.appBarSpacer} />
                     {/* { isAuthenticated ? <Dashboard>{this.props.children}</Dashboard> : this.props.children }                     */}
                     <Dashboard>{this.props.children}</Dashboard>
@@ -139,7 +140,8 @@ Header.propTypes = {
 
 
 const mapStateToProps = (state) => ({
-  auth: state.authReducer
+  auth: state.authReducer,
+  isLoading : state.loadingReducer.isLoading
 })
 
 const mapDispatchToProps = {

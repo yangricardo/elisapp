@@ -1,6 +1,4 @@
-export const GET_LEADS = 'GET_LEADS';
-export const DELETE_LEAD = 'DELETE_LEAD';
-export const ADD_LEAD = 'ADD_LEAD';
+export const LOAD_ASYNC = 'LOAD_ASYNC';
 export const GET_ERRORS = 'GET_ERRORS';
 export const ENQUEUE_SNACKBAR = 'ENQUEUE_SNACKBAR';
 export const REMOVE_SNACKBAR = 'REMOVE_SNACKBAR';

@@ -10,7 +10,6 @@ export const setLoadingProcess = (loading) => (dispatch) => {
     })
 }
 
-
 export const clearSearchedProcess = () => (dispatch) => {
     dispatch({
         type : CLEAR_SEARCHED_PROCESS,
@@ -22,15 +21,4 @@ export const setSearchedProcess = (searchedProcess) => dispatch => {
         type : SET_SEARCHED_PROCESS,
         payload : searchedProcess
     })
-}
-
-export const getProcess = (id) => (dispatch, getState) => {
-    axios.get(`/api/models/processossimilaresreport/?processo_tj=${id}`, tokenConfig(getState))
-    .then(res => {
-        dispatch({
-            type : GET_PROCESS,
-            payload : res.data
-        })
-    })
-    .catch(err => dispatch(returnError(err.response.data, err.response.status)));
 }

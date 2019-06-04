@@ -5,8 +5,8 @@ import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
 import { withStyles, CssBaseline, Box, TextField, Grid, Button, CircularProgress } from '@material-ui/core';
 import { createMessage, returnError } from '../../actions/message';
-import { getProcess, clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
-
+import { clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
+import { setLoading } from '../../actions/loading';
 import MaskedInput from 'react-text-mask';
 import { buildTokenHeader } from '../../actions/auth';
 
@@ -29,17 +29,6 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-    },
-    progresWrapper: {
-        position: 'relative',
-    },
-    buttonProgress: {
-        // color: green[500],
-        position: 'relative',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
     },
     button: {       
         marginTop: theme.spacing(2.5),
@@ -97,6 +86,7 @@ class SearchProcessPage extends Component {
     onClick = e => {
         e.preventDefault();
         this.setState({searched:true, loading:true, found:false});
+        this.props.setLoading();
         const { token } = this.props
         const { processo } = this.state;
         axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(token))
@@ -109,9 +99,11 @@ class SearchProcessPage extends Component {
                 this.props.clearSearchedProcess();
             }
             this.setState({loading:false,found});
+            this.props.setLoading();
         })
         .catch(err => {
             // this.setState({loading:false, found:false, searched : false});
+            this.props.setLoading();
             this.props.returnError(err.response.data, err.response.status);
         });
     }
@@ -171,14 +163,11 @@ class SearchProcessPage extends Component {
                                 }}
                                 >
                             </TextField>
-                            <div className={classes.wrapper}>
-                                <Button size='large' type="button" disabled={!canSearch || loading} color="primary" 
-                                    className={classes.button} onClick={this.onClick} variant="contained" 
-                                    >
-                                        Consultar Processo 
-                                </Button>
-                                { loading ? <CircularProgress size={24} className={classes.buttonProgress}/> : undefined}
-                            </div>
+                            <Button size='large' type="button" disabled={!canSearch || loading} color="primary" 
+                                className={classes.button} onClick={this.onClick} variant="contained" 
+                                >
+                                    Consultar Processo 
+                            </Button>
                         </form>
                     </Box>
                     </Grid>
@@ -198,16 +187,15 @@ const mapStateToProps = (state) => ({
     token : state.authReducer.token,
     isAuthenticated: state.authReducer.isAuthenticated,
     searchedProcess : state.similarProcessesReducer.searchedProcess,
-    loading : state.similarProcessesReducer.loading
+    // isLoading : state.loadingReducer.isLoading
 })
 
 const mapDispatchToProps = {
-    getProcess,
     returnError,
     createMessage,
     clearSearchedProcess,
     setSearchedProcess,
-    setLoadingProcess,
+    setLoading,
 }
 
 

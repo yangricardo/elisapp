@@ -25,7 +25,6 @@ class LoginAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data)
         user = serializer.validated(request.data)
         token = AuthToken.objects.create(user)
         return Response({
