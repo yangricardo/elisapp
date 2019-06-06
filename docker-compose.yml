@@ -5,7 +5,7 @@ services:
   
   postgres:
     restart: always
-    image: yangricardo/elisdb:latest
+    image: postgres:latest
     container_name: elisapp_postgres
     hostname: postgres
     expose:

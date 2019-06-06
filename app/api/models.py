@@ -82,10 +82,9 @@ class Competencia(models.Model):
 
 
 class Processo(models.Model):
-    id_proc = models.IntegerField(primary_key=True)
-    cod_proc = models.CharField(max_length=18, db_index=True, unique=True)
-    cod_cnj = models.CharField(
-        max_length=25, db_index=True, unique=True, blank=True, null=True)
+    id_proc = models.IntegerField(db_index=True,unique=True)
+    cod_proc =models.IntegerField(primary_key=True, db_index=True, unique=True)
+    cod_cnj = models.IntegerField(db_index=True, unique=True, blank=True, null=True)
     data_cad = models.DateTimeField(blank=True,null=True,auto_now=False,auto_now_add=False)
     serventia = models.ForeignKey(
         Serventia,related_name='serventia_processo', db_index=True, blank=True, null=True, on_delete=models.DO_NOTHING)
@@ -98,7 +97,7 @@ class Processo(models.Model):
     objects = models.Manager
 
     def __str__(self):
-        return '%s : %s' % (self.cod_proc, self.cod_cnj) 
+        return '%d : %d' % (self.cod_proc, self.cod_cnj) 
 
 class TipoMovimento(models.Model):
     cod_tip_mov = models.IntegerField(primary_key=True)

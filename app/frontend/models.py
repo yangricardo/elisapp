@@ -10,13 +10,15 @@ class DBView(models.Model):
 
 
 class ProcessoDBView(DBView):
-    processo_tj = models.CharField(max_length=18, db_index=True)
-    processo_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
+    processo_tj = models.IntegerField(db_index=True)
+    processo_cnj = models.IntegerField(db_index=True, blank=True, null=True)
 
     class Meta:
         abstract = True    
 
 class AdvogadoProcesso(ProcessoDBView):
+    processo_tj = models.ForeignKey(tj_models.Processo, to_field='cod_proc',related_name='advogado_processo_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_cnj = models.ForeignKey(tj_models.Processo, to_field='cod_cnj',related_name='advogado_processo_cnj_view',db_index=True, on_delete=models.DO_NOTHING)
     nome = models.TextField(db_index=True)
     oab = models.TextField(db_index=True)
     polo = models.CharField(max_length=1, blank=True, null=True)
@@ -30,6 +32,8 @@ class AdvogadoProcesso(ProcessoDBView):
 
 
 class DocumentoProcesso(ProcessoDBView):
+    processo_tj = models.ForeignKey(tj_models.Processo, to_field='cod_proc',related_name='documento_processo_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_cnj = models.ForeignKey(tj_models.Processo, to_field='cod_cnj',related_name='documento_processo_cnj_view',db_index=True, on_delete=models.DO_NOTHING)
     cod_documento = models.TextField(primary_key=True)
     id_tipo_documento = models.CharField(max_length=1, blank=True, null=True)
     tipo_documento = models.CharField(max_length=210)
@@ -43,6 +47,8 @@ class DocumentoProcesso(ProcessoDBView):
 
 
 class PersonagemProcesso(ProcessoDBView):
+    processo_tj = models.ForeignKey(tj_models.Processo, to_field='cod_proc',related_name='personagem_processo_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_cnj = models.ForeignKey(tj_models.Processo, to_field='cod_cnj',related_name='personagem_processo_cnj_view',db_index=True, on_delete=models.DO_NOTHING)
     nome_personagem = models.TextField(db_index=True)
     tipo_personagem = models.CharField(max_length=25)
     participacao = models.CharField(max_length=1)
@@ -56,6 +62,8 @@ class PersonagemProcesso(ProcessoDBView):
 
 
 class Sentenca(ProcessoDBView):
+    processo_tj = models.ForeignKey(tj_models.Processo, to_field='cod_proc',related_name='sentenca_processo_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_cnj = models.ForeignKey(tj_models.Processo, to_field='cod_cnj',related_name='sentenca_processo_cnj_view',db_index=True, on_delete=models.DO_NOTHING)
     texto_sentenca = models.TextField()
     ato_juiz = models.CharField(max_length=20)
     nome_juiz = models.CharField(max_length=100)
@@ -72,10 +80,14 @@ class Sentenca(ProcessoDBView):
 
 class ProcessoSimilar(DBView):
     similaridade = models.FloatField(blank=False, null=False)
-    processo_base_tj = models.CharField(max_length=18, db_index=True)
-    processo_base_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
-    processo_similar_tj = models.CharField(max_length=18, db_index=True)
-    processo_similar_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
+    processo_base_tj = models.ForeignKey(tj_models.Processo, to_field='cod_proc',related_name='processo_base_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_base_cnj = models.ForeignKey(tj_models.Processo, to_field='cod_cnj',related_name='processo_base_cnj_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_similar_tj = models.ForeignKey(tj_models.Processo, to_field='cod_proc',related_name='processo_similar_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_similar_cnj = models.ForeignKey(tj_models.Processo, to_field='cod_cnj',related_name='processo_similar_cnj_view',db_index=True, on_delete=models.DO_NOTHING)
+    processo_base_tj = models.IntegerField(db_index=True)
+    processo_base_cnj = models.IntegerField(db_index=True, blank=True, null=True)
+    processo_similar_tj = models.IntegerField(db_index=True)
+    processo_similar_cnj = models.IntegerField(db_index=True, blank=True, null=True)
     processo_base_comarca = models.CharField(max_length=50, db_index=True, blank=True, null=True)
     processo_similar_comarca = models.CharField(max_length=50, db_index=True, blank=True, null=True)
     processo_base_serventia = models.CharField(max_length=80, db_index=True, blank=True, null=True)
@@ -200,7 +212,7 @@ class PersonagemDisponivel(DBView):
 
 
 class ProcessoEstatistica(DBView):
-    processo_tj = models.CharField(primary_key=True, max_length=18, db_index=True)
+    processo_tj = models.ForeignKey(tj_models.Processo, to_field='cod_proc',related_name='processo_base_view',db_index=True, on_delete=models.DO_NOTHING)
     referencia = models.IntegerField()
     referenciado = models.IntegerField()
 

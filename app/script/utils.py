@@ -180,11 +180,49 @@ class TJData:
         return dfs
 
     @staticmethod
+    def rebuild_cod_proc(cod_proc):
+        cod_proc = list(re.match(r"(\d{4})(\.?)(\d{3})(\.?)(\d{6})(-?)(\d)",str(cod_proc)).groups())
+        cod_proc[1] = '.'
+        cod_proc[3] = '.'
+        cod_proc[5] = '-'
+        return "".join(cod_proc)
+
+    @staticmethod
+    def cod_proc_to_int(cod_proc):
+        cod_proc = list(re.match(r"(\d{4})(\.?)(\d{3})(\.?)(\d{6})(-?)(\d)",str(cod_proc)).groups())
+        cod_proc.pop(5)
+        cod_proc.pop(3)
+        cod_proc.pop(1)
+        return int("".join(cod_proc))
+
+    @staticmethod
+    def rebuild_cod_cnj(cod_cnj):
+        cod_cnj = list(re.match(r"(\d{0,7})(-?)(\d{2})(\.?)(\d{4})(\.?)(\d)(\.?)(\d{2})(\.?)(\d{4})",str(cod_cnj)).groups())
+        cod_cnj[0] = (7-len(cod_cnj[0]))*'0'+cod_cnj[0]
+        cod_cnj[1] = '-'
+        cod_cnj[3] = '.'
+        cod_cnj[5] = '.'
+        cod_cnj[7] = '.'
+        cod_cnj[9] = '.'
+        return "".join(cod_cnj)
+
+    @staticmethod
+    def cod_cnj_to_int(cod_proc):
+        cod_cnj = list(re.match(r"(\d{0,7})(-?)(\d{2})(\.?)(\d{4})(\.?)(\d)(\.?)(\d{2})(\.?)(\d{4})",str(cod_proc)).groups())
+        cod_cnj.pop(9)
+        cod_cnj.pop(7)
+        cod_cnj.pop(5)
+        cod_cnj.pop(3)
+        cod_cnj.pop(1)
+        return int("".join(cod_cnj))
+
+    @staticmethod
     def clean_processo(file, kwargs):
         df = TJData.read_csv(file,usecols=kwargs.get('usecols'))
         df = df.rename(columns=lambda x : x.lower())
         df = df.rename(columns={'cod_comp':'competencia','cod_serv':'serventia','cod_assunto':'assunto','cod_classe':'classe'})
-        # df.cod_proc = TJData.to_utf8_bytes(df.cod_proc)
+        df.cod_proc = df.cod_proc.apply(lambda x : TJData.cod_proc_to_int(x))
+        df.cod_cnj = df.cod_cnj.apply(lambda x : TJData.cod_cnj_to_int(x))
         df.id_proc = df.id_proc.apply(lambda x : str(x))
         df.serventia = df.serventia.apply(lambda x : str(x))
         df.data_cad = TJData.to_datetime_iso_format(df.data_cad)
@@ -207,6 +245,7 @@ class TJData:
         tipos_andamento = kwargs.get('tipos_andamento')
         df = TJData.read_csv(file,usecols=usecols)
         df = df.rename(columns=lambda x : x.lower())
+        df.cod_proc = df.cod_proc.apply(lambda x : TJData.cod_proc_to_int(x))
         # filtra pelas sentenças
         df = df[df.cod_tip_ato=='2']
         usecols = list(map(lambda x : x.lower(),usecols))
@@ -214,6 +253,7 @@ class TJData:
             # se existir planilha clob auxiliar, realiza a junção das tabelas para completar o TXT_DESCR
             df_clob = TJData.read_csv(TJData.clob_to_merge(file,files_clob_list,clob_pattern))
             df_clob = df_clob.rename(columns=lambda x : str(x).lower())
+            df_clob.cod_proc = df_clob.cod_proc.apply(lambda x : TJData.cod_proc_to_int(x))
             df.ordem = df.ordem.astype(str)
             df_clob.ordem = df_clob.ordem.astype(str)
             df = df.merge(df_clob, on=merge_on, how='outer')
@@ -229,7 +269,7 @@ class TJData:
             df = df[usecols]
         finally:
             # limpa linhas sujas
-            df = df[df.cod_proc.str.match(r'\d{4}.\d{3}.\d{6}-\d\w?')]
+            # df = df[df.cod_proc.str.match(r'\d{4}.\d{3}.\d{6}-\d\w?')]
             # se por algum motivo TXT_DESCR ainda estiver nulo, utiliza TXT_DESCR_RES para preencher
             df.txt_descr = df.txt_descr.fillna(df.txt_descr_res)
             # ajusta codificação para utf8 (texto ainda com escapes)
