@@ -6,9 +6,14 @@ build:
 	pipenv run pip freeze > config/app/requirements.txt
 	docker build -t yangricardo/elisapp:latest -f config/app/Dockerfile .
 
-push:
+push-app:
 	docker push yangricardo/elisapp:latest
+push-db:
 	docker push yangricardo/elisdb:latest
+
+push:
+	make push-app
+	make push-db
 
 deploy:
 	eb deploy
@@ -46,7 +51,7 @@ npm-install:
 
 npm-run-dev:
 	# docker-compose exec app npm run dev-watch
-	cd app & npm run dev-watch
+	bash -c "cd app & npm run dev-watch"
 
 app-logs:
 	docker-compose logs app

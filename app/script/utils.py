@@ -273,10 +273,8 @@ def setup_env():
 class ElisAPI:
     def __init__(self, host, username, password):
         self.host = host
-        self.resources = json.loads(requests.get(self.host+'/auth').text)
-        self.resources.update(json.loads(
-            requests.get(self.host+'/api/models').text))
-        r = requests.post(self.resources['login'], json={
+        self.resources = json.loads(requests.get(self.host+'/api/models').text)
+        r = requests.post(self.host+'/auth/login/', json={
             "username": str(username),
             "password": str(password)
         })

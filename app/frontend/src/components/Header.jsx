@@ -36,7 +36,6 @@ const style = theme => ({
     content: {
         zIndex: 0,
         flexGrow: 1,
-        padding: theme.spacing(2),
         height: '100vh',
         overflow: 'hidden'
     },

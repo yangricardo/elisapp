@@ -16,6 +16,7 @@ const styles = theme => ({
         height: 'auto',
         width: 'auto',
         display: 'block',
+        marginRight: theme.spacing(2),
     },
     similarList : {
         maxHeight : 300,
@@ -74,13 +75,13 @@ class DetailSentencesPage extends Component {
                 alignItems="baseline" 
                 spacing={2}
             >
-                <Grid item md={5} >
+                <Grid item md={5}>
                     <SentencaDetail/>
                 </Grid>
-                <Grid item md={5} >
+                <Grid item md={5}>
                     <SentencaDetail isSimilar/>
                 </Grid>
-                <Grid item md={2} >
+                <Grid item md={2}>
                         <Grid container direction="column" 
                         justify="center"
                         alignItems="baseline" 
@@ -97,10 +98,8 @@ class DetailSentencesPage extends Component {
                                 processos_similares.map((item,index)=>{
                                 return (
                                 <ListItem key={index} disable={this.state.loading.toString()} button onClick={this.onListClick.bind(this, item)}>
-                                    <ListItemIcon>
-                                        <Chip size="small" label={`${item[0]}%`}/>
-                                    </ListItemIcon>
                                     <ListItemText primary={item[2]} />
+                                    <Divider component="li" />
                                 </ListItem>
                                 )})
                                 : undefined
