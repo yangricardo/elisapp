@@ -56,6 +56,8 @@ export const SectionBox = props => {
 export const HtmlTooltip = withStyles(theme => ({
     tooltip: {
       backgroundColor: '#f5f5f9',
+      borderRadius: 10,
+      boxShadow: '1.5px 1.5px 1.5px 1.5px rgba(0, 0, 0, 0.35)',
       color: 'rgba(0, 0, 0, 0.87)',
       maxWidth: 600,
       fontSize: theme.typography.pxToRem(22),
@@ -74,15 +76,16 @@ export const ButtonToolTip = props => {
                 title={
                     <Fragment>
                         {props.text.split("\n").map((item, key) => {
-                            return  <Typography color="inherit" key={key}>
+                            return  item !== undefined ?
+                                    <Typography color="inherit" key={key}>
                                         {item}<br/>
-                                    </Typography>})
-                  }</Fragment> 
+                                    </Typography> : undefined
+                        })}</Fragment> 
                 }
                 placement="bottom"
             >
                 <Fab variant="extended" disable={disable.toString()} size="small" color={props.bgcolor}>
-                    <Info/>&nbsp;{props.button}
+                    <Info/>&nbsp;{props.button !== undefined ? props.button : undefined}
                 </Fab>
             </HtmlTooltip>
         </div>

@@ -1,29 +1,53 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { buildTokenHeader } from '../../actions/auth';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
-import { withStyles, Paper, Typography,LinearProgress, Grid, Button,List, ListItem, ListItemText, ListItemIcon, Divider,Chip } from '@material-ui/core';
+import { withStyles, Paper, Typography,Box, Grid, List, ListItem, ListItemText, ListItemIcon, Divider,Chip, createMuiTheme, Button } from '@material-ui/core';
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
 import { setLoading } from '../../actions/loading';
-import { clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
-import SimilarList from './DetailSentenceHelpers.jsx';
+import { clearSearchedProcess, setSearchedProcess } from '../../actions/similarprocesses';
+import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
+import { ThemeProvider } from '@material-ui/styles';
 
 const styles = theme => ({
     content: {
-        height: 'auto',
-        width: 'auto',
-        display: 'block',
+        height : 'auto',
+        overflowY: 'auto',
+        overflowX: 'hidden'
+    },
+    gridRow : {
+        display:'block',
     },
     similarList : {
-        maxHeight : 300,
+        maxHeight : 418,
         width : 'auto',
         overflowY : 'auto',
-        backgroundColor: theme.palette.background.paper,
     }
 })
+
+export const similarTheme = createMuiTheme({
+    palette: {
+        sim100: {
+            main: teal[800],
+            contrastText: common.white,
+        },
+        sim70:{
+            main: teal[300],
+            contrastText: common.white,
+        },
+        sim50:{
+            main: amber[800],
+            contrastText: common.white,
+        },
+        sim30: {
+            main: deepOrange[500],
+            contrastText: common.white,
+        }
+    },
+});
 
 class DetailSentencesPage extends Component {
     constructor (props){
@@ -36,7 +60,7 @@ class DetailSentencesPage extends Component {
     onListClick = e => {
         console.log(e)
         const urlRE = new RegExp('https?:\\/\\/(\\w\\.?)+');
-        const similarProcessURL = e[1].replace(urlRE,"")
+        const similarProcessURL = e.id.replace(urlRE,"")
         const { token } = this.props
         this.setState({loading:true})
         this.props.setLoading();
@@ -68,44 +92,66 @@ class DetailSentencesPage extends Component {
 
         const { similaridade , processos_similares } = searchedProcess;
         return (
-            <div className={classes.content} >
+            <div >
             <Grid container direction="row" 
                 justify="center"
                 alignItems="baseline" 
                 spacing={2}
             >
-                <Grid item md={5} >
+                <Grid item md={5} xs={10} className={classes.gridRow}>
                     <SentencaDetail/>
                 </Grid>
-                <Grid item md={5} >
+                <Grid item md={5} xs={10} className={classes.gridRow}>
                     <SentencaDetail isSimilar/>
                 </Grid>
-                <Grid item md={2} >
+                <Grid item md={2} className={classes.gridRow}>
                         <Grid container direction="column" 
                         justify="center"
-                        alignItems="baseline" 
-                        spacing={2}
+                        alignItems="center"
+                        alignContent="stretch" 
+                        spacing={4}
                     >
-                        <Grid item xs>
-                            <Paper>
-                                <Typography>{similaridade}</Typography>
-                            </Paper>
+                        <Grid item xs className={classes.gridRow} >
+                            <Typography variant='caption'>Índice de Similaridade</Typography>
+                            <ThemeProvider theme={similarTheme}> 
+                            <Box 
+                            color={(similaridade <= 30 ? 'sim30' : similaridade <= 50 ? 'sim50' : similaridade <= 70 ? 'sim70' : 'sim100')+'.main'} >
+                                <Typography variant='h2'>
+                                    {similaridade}%
+                                </Typography>
+                            </Box>
+                            </ThemeProvider>
                         </Grid>
                         <Grid item xs>
-                        <List dense className={classes.similarList}>
+                            <Button className={classes.gridRow} variant="outlined" color="primary">
+                            Avaliar Similaridade
+                            </Button>
+                        </Grid>
+                        <Grid item xs className={classes.gridRow}>
+                            <Button variant="outlined" color="primary">
+                            Salvar para Análise
+                            </Button>
+                        </Grid>
+                        <Grid item xs>
+                        <Typography variant='caption'>{`${processos_similares.length} processos similares`}</Typography>
+                        <Box boxShadow={2} borderRadius={10} component={List} dense className={classes.similarList}>
                             { processos_similares !== undefined ?
                                 processos_similares.map((item,index)=>{
                                 return (
-                                <ListItem key={index} disable={this.state.loading.toString()} button onClick={this.onListClick.bind(this, item)}>
-                                    <ListItemIcon>
-                                        <Chip size="small" label={`${item[0]}%`}/>
-                                    </ListItemIcon>
-                                    <ListItemText primary={item[2]} />
-                                </ListItem>
+                                <Fragment key={index} >
+                                    <ListItem 
+                                        button onClick={this.onListClick.bind(this, item)}
+                                        style={{backgroundColor : (item.similaridade <= 30 ? deepOrange[50] : item.similaridade <= 50 ? amber[50] : teal[50]) }}
+                                        selected={item.processo_similar_tj === searchedProcess.processo_similar_tj} 
+                                        disable={this.state.loading.toString()}>
+                                        <ListItemText primary={item.processo_similar_tj} secondary={item.processo_similar_cnj}/>
+                                    </ListItem>
+                                    <Divider component="li"  light />
+                                </Fragment>
                                 )})
                                 : undefined
                             }
-                        </List>
+                        </Box>
                         </Grid>
                     </Grid>
                 </Grid>

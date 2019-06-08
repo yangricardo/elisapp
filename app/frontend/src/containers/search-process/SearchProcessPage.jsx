@@ -13,14 +13,13 @@ import { buildTokenHeader } from '../../actions/auth';
 const styles = theme => ({
     main: {
         width: 'auto',
-        display: 'block', // Fix IE 11 issue.
-        marginLeft: theme.spacing(3),
-        marginRight: theme.spacing(3),
+        display: 'flex', // Fix IE 11 issue.
     },
     paper: {
-        // marginTop: theme.spacing(30),
+        marginLeft: theme.spacing(-2),
+        marginTop: theme.spacing(20),
         display: 'flex',
-        flexDirection: 'row',
+        alignContent: 'center',
         alignItems: 'center',
         borderColor: 'primary',
         width: 600,
@@ -139,8 +138,8 @@ class SearchProcessPage extends Component {
                 <Grid item xs/>
                 <Grid item xs={5} >
                 <Grid container direction="column" justify="center"
-                        alignItems="center" alignContent="center"   spacing={5}>
-                    <Grid item xs/>
+                        alignItems="center" alignContent="center" spacing={5}>
+                    <Grid item xs md/>
                     <Grid item md={10}>
                     <Box borderColor="primary.main"
                         border={2}
@@ -171,7 +170,7 @@ class SearchProcessPage extends Component {
                         </form>
                     </Box>
                     </Grid>
-                    <Grid item xs/>
+                    <Grid item xs md/>
                 </Grid>
                 </Grid>
                 <Grid item xs/>

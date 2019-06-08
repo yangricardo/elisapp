@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { returnError, createMessage } from "./message";
 import store from '../store';
-import {USER_LOADED, USER_LOADING, AUTH_ERROR, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_FAIL } from './types'
+import {USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_FAIL, LOAD_ASYNC } from './types'
 
 // CHECK TOKEN & LOAD USER
 export const loadUser = () => (dispatch, getState) => {
 	// User Loading
-	dispatch({ type: USER_LOADING });
+	dispatch({ type: LOAD_ASYNC });
 
 	axios
 	.get("/auth/user/", tokenConfig(getState))
@@ -15,12 +15,14 @@ export const loadUser = () => (dispatch, getState) => {
 			type: USER_LOADED,
 			payload: res.data
 		});
+		dispatch({ type: LOAD_ASYNC });
 	})
 	.catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
 		dispatch({
 			type: AUTH_ERROR
 		});
+		dispatch({ type: LOAD_ASYNC });
 	});
 };
 

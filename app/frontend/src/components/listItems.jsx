@@ -22,11 +22,5 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Grupos de Sentenças" />
     </ListItem>
-    <ListItem button component={LinkRouter} to="/detalharsentencas">
-      <ListItemIcon>
-        <GroupWork />
-      </ListItemIcon>
-      <ListItemText primary="Detail" />
-    </ListItem>
   </Fragment>
 );

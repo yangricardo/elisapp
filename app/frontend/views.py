@@ -72,6 +72,7 @@ def build_processo_extra_data(processo_base,processo_similar):
     sentencas_similar = get_sentencas_serializer(processo_similar)
     estatistica_base = get_estatistica_serializer(processo_base)
     estatistica_similar = get_estatistica_serializer(processo_similar)
+    
     return {
         'advogados_base':advogados_base,
         'advogados_similar':advogados_similar,
@@ -82,7 +83,7 @@ def build_processo_extra_data(processo_base,processo_similar):
         'sentencas_base':sentencas_base,
         'sentencas_similar':sentencas_similar,
         'estatistica_base':estatistica_base,
-        'estatistica_similar':estatistica_similar
+        'estatistica_similar':estatistica_similar,
     }
 
 class LargeResultsSetPagination(pagination.PageNumberPagination):
@@ -103,15 +104,10 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
         instance = self.get_object()
         serializer = self.get_serializer(instance).data
         serializer.update(build_processo_extra_data(instance.processo_base_tj,instance.processo_similar_tj))
-        processos_similares = models.ProcessoSimilar.objects.filter(processo_base_tj=instance.processo_base_tj)
-        processos_similares = self.get_serializer(instance=processos_similares, many=True).data
-        processos_similares = list(map(lambda ps: 
-            (   ps['similaridade'], 
-                ps['id'], 
-                ps['processo_similar_tj'], ps['processo_similar_cnj']
-            ),processos_similares)
-        )
-        serializer.update({'processos_similares':processos_similares})
+        serializer.update({'processos_similares' : serializers.ListaSimilaresSerializer(
+                models.ProcessoSimilar.objects.filter(processo_base_tj=instance.processo_base_tj),
+                many=True, context={'request': request}
+            ).data})
         return Response(serializer)
 
     @method_decorator(cache_page(CACHE_TTL))
@@ -147,7 +143,10 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
             serializer = self.get_serializer(instance=page, many=True).data
             if serializer:
                 serializer[0].update(build_processo_extra_data(page[0].processo_base_tj,page[0].processo_similar_tj))
-                serializer[0].update({'processos_similares':processos_similares})
+                serializer[0].update({'processos_similares' : serializers.ListaSimilaresSerializer(
+                    models.ProcessoSimilar.objects.filter(processo_base_tj=page[0].processo_base_tj),
+                    many=True, context={'request': request}
+                ).data})
             return self.get_paginated_response(serializer)
 
 # Create your views here.

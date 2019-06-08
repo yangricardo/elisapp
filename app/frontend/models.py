@@ -17,8 +17,8 @@ class ProcessoDBView(DBView):
         abstract = True    
 
 class AdvogadoProcesso(ProcessoDBView):
-    nome = models.TextField(db_index=True)
-    oab = models.TextField(db_index=True)
+    nome = models.TextField(db_index=True,null=True, blank=True)
+    oab = models.TextField(db_index=True,null=True, blank=True)
     polo = models.CharField(max_length=1, blank=True, null=True)
     
     def __str__(self):
@@ -32,7 +32,7 @@ class AdvogadoProcesso(ProcessoDBView):
 class DocumentoProcesso(ProcessoDBView):
     cod_documento = models.TextField(primary_key=True)
     id_tipo_documento = models.CharField(max_length=1, blank=True, null=True)
-    tipo_documento = models.CharField(max_length=210)
+    tipo_documento = models.CharField(max_length=210,null=True, blank=True)
 
     def __str__(self):
         return f'{self.cod_documento} - {self.tipo_documento} - {self.processo_tj} - {self.processo_cnj}'
@@ -43,9 +43,9 @@ class DocumentoProcesso(ProcessoDBView):
 
 
 class PersonagemProcesso(ProcessoDBView):
-    nome_personagem = models.TextField(db_index=True)
-    tipo_personagem = models.CharField(max_length=25)
-    participacao = models.CharField(max_length=1)
+    nome_personagem = models.TextField(db_index=True,null=True, blank=True)
+    tipo_personagem = models.CharField(max_length=25,null=True, blank=True)
+    participacao = models.CharField(max_length=1, null=True, blank=True)
 
     def __str__(self):
         return f'{self.nome_personagem} - {self.tipo_personagem}- {self.participacao} - {self.processo_tj} - {self.processo_cnj}'
@@ -57,10 +57,10 @@ class PersonagemProcesso(ProcessoDBView):
 
 class Sentenca(ProcessoDBView):
     texto_sentenca = models.TextField()
-    ato_juiz = models.CharField(max_length=20)
-    nome_juiz = models.CharField(max_length=100)
-    matricula_juiz = models.TextField()
-    cargo_juiz = models.CharField(max_length=50)
+    ato_juiz = models.CharField(max_length=20,null=True, blank=True)
+    nome_juiz = models.CharField(max_length=100,null=True, blank=True)
+    matricula_juiz = models.TextField(null=True, blank=True)
+    cargo_juiz = models.CharField(max_length=50,null=True, blank=True)
 
     def __str__(self):
         return f'{self.nome_juiz} - {self.cargo_juiz} - {self.ato_juiz} - {self.processo_tj} - {self.processo_cnj}'
@@ -72,20 +72,20 @@ class Sentenca(ProcessoDBView):
 
 class ProcessoSimilar(DBView):
     similaridade = models.FloatField(blank=False, null=False)
-    processo_base_tj = models.CharField(max_length=18, db_index=True)
+    processo_base_tj = models.CharField(max_length=18, db_index=True,null=True, blank=True)
     processo_base_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
-    processo_similar_tj = models.CharField(max_length=18, db_index=True)
+    processo_similar_tj = models.CharField(max_length=18, db_index=True,null=True, blank=True)
     processo_similar_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
     processo_base_comarca = models.CharField(max_length=50, db_index=True, blank=True, null=True)
     processo_similar_comarca = models.CharField(max_length=50, db_index=True, blank=True, null=True)
     processo_base_serventia = models.CharField(max_length=80, db_index=True, blank=True, null=True)
     processo_similar_serventia = models.CharField(max_length=80, db_index=True, blank=True, null=True)
-    processo_base_assunto = models.TextField()
-    processo_similar_assunto = models.TextField()
-    processo_base_classe = models.TextField()
-    processo_similar_classe = models.TextField()
-    processo_base_competencia = models.TextField()
-    processo_similar_competencia = models.TextField()
+    processo_base_assunto = models.TextField(null=True, blank=True)
+    processo_similar_assunto = models.TextField(null=True, blank=True)
+    processo_base_classe = models.TextField(null=True, blank=True)
+    processo_similar_classe = models.TextField(null=True, blank=True)
+    processo_base_competencia = models.TextField(null=True, blank=True)
+    processo_similar_competencia = models.TextField(null=True, blank=True)
     
     def __str__(self):
         return f'{self.similaridade} - {self.processo_base_tj} - {self.processo_similar_tj} - {self.processo_base_cnj} - {self.processo_similar_cnj}'

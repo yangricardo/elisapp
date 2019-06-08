@@ -33,14 +33,8 @@ const SentencaDetail = props => {
 
     const _advogados = advogados
         .map(advogado => {
-                return `• ${advogado.nome} - ${advogado.oab}`
-        })
-        .concat(
-            personagens
-                .filter(personagem => {return personagem.participacao === 'T';})
-                .map(personagem => { return `• ${personagem.nome_personagem}` })
-            )
-        .join('\n')
+                return `• ${advogado.oab}: ${advogado.nome} ${advogado.polo == 'A' ? '[Autor]' : advogado.polo == 'P' ? '[Réu]' : ''}`
+        }).join('\n')
 
     const reus = personagens
             .filter(personagem => {return personagem.participacao === 'P';})
@@ -73,7 +67,7 @@ const SentencaDetail = props => {
                                 <ProcessLabel cod={cod_tj} />
                             </Grid>
                             <Grid item>
-                                <ProcessLabel cod={cod_cnj} cnj/>
+                                <ProcessLabel cod={cod_cnj !== undefined ? cod_cnj : '-'} cnj/>
                             </Grid>
                         </Grid>
                         </SectionBox>
@@ -86,16 +80,16 @@ const SentencaDetail = props => {
                             spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor}  button='Comarca' text={comarca} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Comarca' text={comarca !== undefined ? comarca : undefined} />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip bgcolor={bgcolor}  button='Serventia' text={serventia} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Serventia' text={serventia !== undefined ? serventia : undefined} />
                             </Grid>
                             <Grid item >
-                                <ButtonToolTip bgcolor={bgcolor}  button='Classe' text={classe} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Classe' text={classe !== undefined ? classe : undefined} />
                             </Grid>
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor}  button='Assunto' text={assunto} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Assunto' text={assunto !== undefined ? assunto : undefined} />
                             </Grid>
                         </Grid>
                         </SectionBox>
@@ -108,7 +102,7 @@ const SentencaDetail = props => {
                             spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor}  button='Juiz' text={`${sentencas[sentenca].nome_juiz} - ${sentencas[sentenca].cargo_juiz}`} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Juiz' text={ sentencas[sentenca].nome_juiz !== undefined ? `${sentencas[sentenca].nome_juiz} - ${sentencas[sentenca].cargo_juiz}` : undefined} />
                             </Grid>
                             <Grid item>
                                 <ButtonToolTip bgcolor={bgcolor}  button='Advogado' text={_advogados} />
@@ -130,20 +124,20 @@ const SentencaDetail = props => {
                             spacing={2}
                         >
                             <Grid item>
-                                <ButtonToolTip bgcolor={bgcolor}  button='Ato' text={`${sentencas[sentenca].ato_juiz}`} />
+                                <ButtonToolTip bgcolor={bgcolor}  button='Ato' text={sentencas[sentenca].ato_juiz !== undefined ? `${sentencas[sentenca].ato_juiz}` : undefined} />
                             </Grid>
                             <Grid item>
-                                <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${iniciais[0]}`}>
+                                <Fab variant="extended" size="small" color={bgcolor} disabled={iniciais[0]===undefined} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${iniciais[0]}`}>
                                     <LinkIcon/>&nbsp;Inicial
                                 </Fab>
                             </Grid>
                             <Grid item >
-                                <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${contestacoes[0]}`}>
+                                <Fab variant="extended" size="small" color={bgcolor} disabled={contestacoes[0]===undefined} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${contestacoes[0]}`}>
                                     <LinkIcon/>&nbsp;Contestação
                                 </Fab>
                             </Grid>
                             <Grid item >
-                                <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://www4.tjrj.jus.br/consultaProcessoWebV2/consultaMov.do?v=2&numProcesso=${cod_cnj}&acessoIP=internet&tipoUsuario=`}>
+                                <Fab variant="extended" size="small" color={bgcolor} target="_blank" href={`http://www4.tjrj.jus.br/consultaProcessoWebV2/consultaMov.do?v=2&numProcesso=${cod_tj}&acessoIP=internet&tipoUsuario=`}>
                                     <LinkIcon/>&nbsp;Movimentos
                                 </Fab>
                             </Grid>
