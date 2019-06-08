@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-import json
+import json, re
 import logging
 from builtins import object
 from functools import wraps
@@ -20,6 +20,7 @@ from knox.auth import TokenAuthentication
 from rest_framework import mixins, pagination, permissions, status, viewsets
 from rest_framework.response import Response
 from . import models, serializers
+from backend.celery import cache_pages
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)

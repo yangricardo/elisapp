@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {GET_PROCESS, CLEAR_SEARCHED_PROCESS, LOADING_PROCESS_DATA, SET_SEARCHED_PROCESS} from './types';
+import {CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS} from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
 
@@ -21,4 +21,5 @@ export const setSearchedProcess = (searchedProcess) => dispatch => {
         type : SET_SEARCHED_PROCESS,
         payload : searchedProcess
     })
+    // preload
 }

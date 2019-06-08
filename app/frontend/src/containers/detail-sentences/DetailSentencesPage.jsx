@@ -59,22 +59,28 @@ class DetailSentencesPage extends Component {
 
     onListClick = e => {
         console.log(e)
+        const { token, cachedSimilarProcesses, setSearchedProcess, setLoading, returnError } = this.props
         const urlRE = new RegExp('https?:\\/\\/(\\w\\.?)+');
-        const similarProcessURL = e.id.replace(urlRE,"")
-        const { token } = this.props
-        this.setState({loading:true})
-        this.props.setLoading();
-        axios.get(similarProcessURL, buildTokenHeader(token))
-        .then(res => {
-            this.props.setSearchedProcess(res.data);
-            this.setState({loading:false})
-            this.props.setLoading();
-        })
-        .catch(err => {
-            this.props.returnError(err.response.data, err.response.status);
-            this.setState({loading:false})
-            this.props.setLoading();
-        });
+        const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
+        const id = similarProcessIDRE.exec(e.id)[2]
+        if (id  in cachedSimilarProcesses ){
+           setSearchedProcess(cachedSimilarProcesses[id]);
+        } else {
+            const similarProcessURL = e.id.replace(urlRE,"")
+            this.setState({loading:true})
+            setLoading();
+            axios.get(similarProcessURL, buildTokenHeader(token))
+            .then(res => {
+                setSearchedProcess(res.data);
+                this.setState({loading:false})
+                setLoading();
+            })
+            .catch(err => {
+                this.props.returnError(err.response.data, err.response.status);
+                this.setState({loading:false})
+                setLoading();
+            });
+        }
     }
 
 
@@ -167,6 +173,7 @@ const mapStateToProps = (state) => ({
     isAuthenticated: state.authReducer.isAuthenticated,
     token : state.authReducer.token,
     searchedProcess : state.similarProcessesReducer.searchedProcess,
+    cachedSimilarProcesses : state.similarProcessesReducer.cachedSimilarProcesses
 })
 
 const mapDispatchToProps = {

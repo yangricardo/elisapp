@@ -22,4 +22,3 @@ WORKDIR /app
 COPY app /app/
 RUN npm i
 RUN npm run dev
-ENTRYPOINT [ "sh" , "/config/on-container-start.sh"]
