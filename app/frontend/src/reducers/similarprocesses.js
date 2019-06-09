@@ -1,4 +1,4 @@
-import { GET_PROCESS, SET_SEARCHED_PROCESS, CLEAR_SEARCHED_PROCESS } from "../actions/types";
+import { CACHE_SIMILAR_PROCESS, SET_SEARCHED_PROCESS, CLEAR_SEARCHED_PROCESS } from "../actions/types";
 
 const initialState = {
     searchedProcess : {},
@@ -6,16 +6,20 @@ const initialState = {
 }
 
 export default function(state = initialState, action) {
+    const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
+    var id;
     switch(action.type) {
-        case GET_PROCESS: 
+        case CACHE_SIMILAR_PROCESS: 
+            id = similarProcessIDRE.exec(action.payload.id)[2]
             return {
                 ...state,
-                searchedProcess : action.payload.results[0] || {}
+                cachedSimilarProcesses : {
+                    ...state.cachedSimilarProcesses, 
+                    [id]: action.payload
+                }
             }
         case SET_SEARCHED_PROCESS:
-                const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
-                const id = similarProcessIDRE.exec(action.payload.id)[2]
-
+            id = similarProcessIDRE.exec(action.payload.id)[2]
             return {
                 ...state,
                 searchedProcess : action.payload,
@@ -23,7 +27,7 @@ export default function(state = initialState, action) {
                     ...state.cachedSimilarProcesses, 
                     [id]: action.payload
                 }
-            }    
+            }
         case CLEAR_SEARCHED_PROCESS:
             return {
                 ...state,

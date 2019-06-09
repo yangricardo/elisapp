@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
 import { withStyles, CssBaseline, Box, TextField, Grid, Button, CircularProgress } from '@material-ui/core';
 import { createMessage, returnError } from '../../actions/message';
-import { clearSearchedProcess, setSearchedProcess, setLoadingProcess } from '../../actions/similarprocesses';
+import { clearSearchedProcess, setSearchedProcess } from '../../actions/similarprocesses';
 import { setLoading } from '../../actions/loading';
 import MaskedInput from 'react-text-mask';
 import { buildTokenHeader } from '../../actions/auth';
@@ -90,15 +90,17 @@ class SearchProcessPage extends Component {
         const { processo } = this.state;
         axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(token))
         .then(res => {
-            const { results } = res.data;
-            const found = results[0] !== undefined
-            if (found){
-                this.props.setSearchedProcess(results[0]);
-            } else {
-                this.props.clearSearchedProcess();
+            if (res !== undefined){
+                const { results } = res.data;
+                const found = results[0] !== undefined
+                if (found){
+                    this.props.setSearchedProcess(results[0]);
+                } else {
+                    this.props.clearSearchedProcess();
+                }
+                this.setState({loading:false,found});
+                this.props.setLoading();
             }
-            this.setState({loading:false,found});
-            this.props.setLoading();
         })
         .catch(err => {
             // this.setState({loading:false, found:false, searched : false});

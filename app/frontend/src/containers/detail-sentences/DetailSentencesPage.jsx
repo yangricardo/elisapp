@@ -8,7 +8,7 @@ import { withStyles, Paper, Typography,Box, Grid, List, ListItem, ListItemText, 
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
 import { setLoading } from '../../actions/loading';
-import { clearSearchedProcess, setSearchedProcess } from '../../actions/similarprocesses';
+import { clearSearchedProcess, setSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
 import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
 
@@ -55,6 +55,7 @@ class DetailSentencesPage extends Component {
         this.state = {
             loading : false
         }
+        this.props.loadSimilarProcesses()
     }
 
     onListClick = e => {
@@ -182,6 +183,7 @@ const mapDispatchToProps = {
     clearSearchedProcess,
     setSearchedProcess,
     setLoading,
+    loadSimilarProcesses
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailSentencesPage));
