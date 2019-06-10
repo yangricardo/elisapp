@@ -86,7 +86,7 @@ class SearchProcessPage extends Component {
 
     onClick = e => {
         e.preventDefault();
-        const {token, setSimilarProcessResults,loadSimilarProcesses,clearSearchedProcess,setLoading,returnError} = this.props
+        const {token, setSimilarProcessResults,loadSimilarProcesses,clearSearchedProcess,setLoading,createMessage,returnError} = this.props
         const { processo } = this.state;
         setLoading();
         this.setState({searched:true, loading:true})
@@ -97,29 +97,19 @@ class SearchProcessPage extends Component {
                 const {results} = res.data
                 setSimilarProcessResults(results);
                 loadSimilarProcesses(results[0]['processo_base_tj'], true)
+                this.setState({found})
             } else {
                 clearSearchedProcess();
+                createMessage({ notFound: "Código de Processo Não Disponível" });
             }
-            this.setState({found, loading:false})
+            this.setState({loading:false})
         })
         .catch(err => {
             setLoading();
-            console.log(err)
-            // returnError(err.response.data, err.response.status);
+            this.setState({loading:false})
+            createMessage({ notFound: "Código de Processo Não Disponível" });
+            returnError(err.response.data, err.response.status);
         });
-    }
-
-    // shouldComponentUpdate(nextProps) {
-    //     if (this.props.found && !loading && nextProps.searchedProcess !== {} && nextProps.similarProcess !== {}){
-    //         return false
-    //     }
-    //     return true
-    // }
-
-    componentDidUpdate(prevProps,prevState) {
-        if (prevState.found && !prevState.loading && prevProps.searchedProcess.hasOwnProperty('processo_tj') && prevProps.similarProcess.hasOwnProperty('processo_tj')){
-            this.props.history.push('/detalharsentencas')
-        }
     }
 
     componentWillUnmount() {
@@ -137,10 +127,6 @@ class SearchProcessPage extends Component {
         if (found && !loading && this.props.searchedProcess.hasOwnProperty('processo_tj') && this.props.similarProcess.hasOwnProperty('processo_tj')){
             return <Redirect to='/detalharsentencas'/>
         }
-        
-        // if (searched && !found & !loading) {
-        //     createMessage({ notFound: "Código de Processo Não Disponível" });
-        // }
 
         return (
             <main className={classes.main}>
