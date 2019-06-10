@@ -6,7 +6,9 @@ import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
 import { withStyles, CssBaseline, Box, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage, returnError } from '../../actions/message';
-import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
+import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses, cachedProcesses ,
+    setSearchedProcess,
+    setSimilarProcess,} from '../../actions/similarprocesses';
 import { setLoading } from '../../actions/loading';
 import MaskedInput from 'react-text-mask';
 import { buildTokenHeader } from '../../actions/auth';
@@ -74,48 +76,53 @@ class SearchProcessPage extends Component {
     }
 
     onChange = e => {
-        this._isMounted = true
         const reTJ = new RegExp('\\d{4}\\.\\d{3}\\.\\d{6}-\\d(\\s|\\w)?');
-        if(this._isMounted)
-            this.setState({
-                [e.target.name]: e.target.value,
-                canSearch : reTJ.test(e.target.value)
-                ,searched : false, loading : false, found: false
-            })
+        this.setState({
+            [e.target.name]: e.target.value,
+            canSearch : reTJ.test(e.target.value)
+            ,searched : false, loading : false, found: false
+        })
     }
 
     onClick = e => {
         e.preventDefault();
-        const {token, setSimilarProcessResults,loadSimilarProcesses,clearSearchedProcess,setLoading,createMessage,returnError} = this.props
+        const {token, cachedProcesses, setSimilarProcessResults,loadSimilarProcesses,setSearchedProcess,
+            setSimilarProcess,clearSearchedProcess,setLoading,createMessage,returnError} = this.props
         const { processo } = this.state;
         setLoading();
         this.setState({searched:true, loading:true})
-        axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(token))
-        .then(res => {
-            const found = res.data.results !== undefined
-            if (found) {
-                const {results} = res.data
-                setSimilarProcessResults(results);
-                loadSimilarProcesses(results[0]['processo_base_tj'], true)
-                this.setState({found})
-            } else {
-                clearSearchedProcess();
-                createMessage({ notFound: "Código de Processo Não Disponível" });
+        if (cachedProcesses.hasOwnProperty(processo.trim())){
+            const searchedProcess = cachedProcesses[processo.trim()]
+            if (cachedProcesses.hasOwnProperty(searchedProcess.processos_similares[0].processo_similar_tj)){
+                const similarProcess = cachedProcesses[searchedProcess.processos_similares[0].processo_similar_tj]
+                setSearchedProcess(searchedProcess);
+                setSimilarProcess(similarProcess);
+                this.setState({found:true, loading:false})
             }
-            this.setState({loading:false})
-        })
-        .catch(err => {
-            setLoading();
-            this.setState({loading:false})
-            createMessage({ notFound: "Código de Processo Não Disponível" });
-            returnError(err.response.data, err.response.status);
-        });
+        } else {
+            axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(token))
+            .then(res => {
+                const found = res.data.results !== undefined
+                if (found) {
+                    const {results} = res.data
+                    setSimilarProcessResults(results);
+                    loadSimilarProcesses(results[0]['processo_base_tj'], true)
+                    this.setState({found})
+                } else {
+                    clearSearchedProcess();
+                    createMessage({ notFound: "Código de Processo Não Disponível" });
+                    setLoading();
+                }
+                this.setState({loading:false})
+            })
+            .catch(err => {
+                setLoading();
+                this.setState({loading:false})
+                createMessage({ notFound: "Código de Processo Não Disponível" });
+                returnError(err.response.data, err.response.status);
+            });
+        }
     }
-
-    componentWillUnmount() {
-        this._isMounted = false
-    }
-
 
     render() {
         const {loading, searched, found, canSearch } = this.state
@@ -125,6 +132,7 @@ class SearchProcessPage extends Component {
             return <Redirect to="/login"/>
         }
         if (found && !loading && this.props.searchedProcess.hasOwnProperty('processo_tj') && this.props.similarProcess.hasOwnProperty('processo_tj')){
+            setLoading();
             return <Redirect to='/detalharsentencas'/>
         }
 
@@ -185,6 +193,7 @@ const mapStateToProps = (state) => ({
     isAuthenticated: state.authReducer.isAuthenticated,
     searchedProcess : state.similarProcessesReducer.searchedProcess,
     similarProcess : state.similarProcessesReducer.similarProcess,
+    cachedProcesses : state.similarProcessesReducer.cachedProcesses,
 })
 
 const mapDispatchToProps = {
@@ -193,7 +202,9 @@ const mapDispatchToProps = {
     clearSearchedProcess,
     loadSimilarProcesses,
     setLoading,
-    setSimilarProcessResults
+    setSimilarProcessResults,
+    setSearchedProcess,
+    setSimilarProcess,
 }
 
 

@@ -1,14 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import { buildTokenHeader } from '../../actions/auth';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
-import { withStyles, Paper, Typography,Box, Grid, List, ListItem, ListItemText, ListItemIcon, Divider,Chip, createMuiTheme, Button } from '@material-ui/core';
+import { withStyles, Typography,Box, Grid, List, ListItem, ListItemText, ListItemIcon, Divider,Chip, createMuiTheme, Button } from '@material-ui/core';
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
 import { setLoading } from '../../actions/loading';
-import { clearSearchedProcess, setSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
+import { setSimilarProcess, setSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
 import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
 
@@ -53,39 +51,25 @@ class DetailSentencesPage extends Component {
     constructor (props){
         super(props)
         this.state = {
-            loading : false
+            loading : false,
         }
-    }
-    componentDidMount(){
-        loadSimilarProcesses = (this.props.searchedProcess.processos_similares)
-        loadSimilarProcesses = (this.props.similarProcess.processos_similares)
+        this.props.setLoading()
     }
 
-    // onListClick = e => {
-    //     console.log(e)
-    //     const { token, cachedSimilarProcesses, setSearchedProcess, setLoading, returnError } = this.props
-    //     const urlRE = new RegExp('https?:\\/\\/(\\w\\.?)+');
-    //     const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
-    //     const id = similarProcessIDRE.exec(e.id)[2]
-    //     if (id  in cachedSimilarProcesses ){
-    //        setSearchedProcess(cachedSimilarProcesses[id]);
-    //     } else {
-    //         const similarProcessURL = e.id.replace(urlRE,"")
-    //         this.setState({loading:true})
-    //         setLoading();
-    //         axios.get(similarProcessURL, buildTokenHeader(token))
-    //         .then(res => {
-    //             setSearchedProcess(res.data);
-    //             this.setState({loading:false})
-    //             setLoading();
-    //         })
-    //         .catch(err => {
-    //             this.props.returnError(err.response.data, err.response.status);
-    //             this.setState({loading:false})
-    //             setLoading();
-    //         });
-    //     }
-    // }
+    componentDidMount(){
+        const {loadSimilarProcesses, searchedProcess, setLoading} = this.props
+        loadSimilarProcesses(searchedProcess['processo_tj'], false)
+    }
+
+    onListClick = e => {
+        console.log(e)
+        const { cachedProcesses, setSimilarProcess, loadSimilarProcesses } = this.props
+        if (cachedProcesses.hasOwnProperty(e.processo_similar_tj) ){
+            setSimilarProcess(cachedProcesses[e.processo_similar_tj]);
+        } else {
+            loadSimilarProcesses(id, false)
+        }
+    }
 
 
     render() {
@@ -93,14 +77,19 @@ class DetailSentencesPage extends Component {
             this.props.createMessage({ loginRequired: "Login Required" });
             return <Redirect to="/login"/>
         }
-        const { classes, searchedProcess, similarProcess, token } = this.props;
+        const { classes, searchedProcess, similarProcess } = this.props;
         if(searchedProcess === {}){
             if (!searchedProcess.hasOwnProperty('id')){
                 return <Redirect to="/buscarprocesso"/>
             }
         }
+        const { processos_similares } = searchedProcess;
+        
+        const similaridade = processos_similares.filter( similarData => {
+            return similarData.processo_base_tj === searchedProcess.processo_tj &&
+                similarData.processo_similar_tj === similarProcess.processo_tj
+        } )[0].similaridade || undefined
 
-        const { similaridade , processos_similares } = searchedProcess;
         return (
             <div >
             <Grid container direction="row" 
@@ -127,7 +116,7 @@ class DetailSentencesPage extends Component {
                             <Box 
                             color={(similaridade <= 30 ? 'sim30' : similaridade <= 50 ? 'sim50' : similaridade <= 70 ? 'sim70' : 'sim100')+'.main'} >
                                 <Typography variant='h2'>
-                                    {similaridade}%
+                                    {similaridade ? `${similaridade}%`:''}
                                 </Typography>
                             </Box>
                             </ThemeProvider>
@@ -143,7 +132,7 @@ class DetailSentencesPage extends Component {
                             </Button>
                         </Grid>
                         <Grid item xs>
-                        {/* <Typography variant='caption'>{`${processos_similares.length} processos similares`}</Typography>
+                        <Typography variant='caption'>{`${processos_similares.length} processos similares`}</Typography>
                         <Box boxShadow={2} borderRadius={10} component={List} dense className={classes.similarList}>
                             { processos_similares !== undefined ?
                                 processos_similares.map((item,index)=>{
@@ -161,7 +150,7 @@ class DetailSentencesPage extends Component {
                                 )})
                                 : undefined
                             }
-                        </Box> */}
+                        </Box>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -182,17 +171,16 @@ const mapStateToProps = (state) => ({
     token : state.authReducer.token,
     searchedProcess : state.similarProcessesReducer.searchedProcess,
     similarProcess : state.similarProcessesReducer.similarProcess,
-    // cachedSimilarProcesses : state.similarProcessesReducer.cachedSimilarProcesses,
-    // cachedProcesses : state.similarProcessesReducer.cachedProcesses,
+    cachedProcesses: state.similarProcessesReducer.cachedProcesses,
 })
 
 const mapDispatchToProps = {
     returnError,
     createMessage,
-    // clearSearchedProcess,
-    // setSearchedProcess,
-    // setLoading,
-    // loadSimilarProcesses
+    setSearchedProcess,
+    setSimilarProcess,
+    setLoading,
+    loadSimilarProcesses
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailSentencesPage));

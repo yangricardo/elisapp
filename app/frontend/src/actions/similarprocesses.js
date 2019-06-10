@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {CLEAR_SEARCHED_PROCESS,SEARCH_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS} from './types';
+import {CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS} from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
 
@@ -29,14 +29,14 @@ export const searchProcess = (searchProcess,setSimilarProcessResults,loadSimilar
 }
 
 export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatch, getState) => {
-    const {cachedSimilarProcesses} = getState().similarProcessesReducer
+    const {cachedSimilarProcesses,cachedProcesses} = getState().similarProcessesReducer
     const similarProcesses = cachedSimilarProcesses[processoBaseTJ]
     
     const fetchProcessData = (processo) =>{
         const similarProcessURL = processo.id.replace(urlRE,"")
         const id = similarProcessURLRE.exec(processo.id)[2]
-        if (!(id in cachedSimilarProcesses)){
-
+        if (!(id in cachedSimilarProcesses) || !(id in cachedProcesses) ){
+            dispatch({type:LOAD_ASYNC})
             axios.get(similarProcessURL, tokenConfig(getState))
             .then(res => {
                 if (res.data !== undefined){
@@ -63,9 +63,11 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatc
                         type : SET_SIMILAR_PROCESS_RESULTS,
                         payload : processo_similar.processos_similares
                     })
+                    dispatch({type:LOAD_ASYNC})
                 }
             })
             .catch(err => {
+                dispatch({type:LOAD_ASYNC})
                 returnError(err.response.data, err.response.status);
             });
         }
