@@ -63,11 +63,9 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatc
                         type : SET_SIMILAR_PROCESS_RESULTS,
                         payload : processo_similar.processos_similares
                     })
-                    dispatch({type:LOAD_ASYNC})
                 }
             })
             .catch(err => {
-                dispatch({type:LOAD_ASYNC})
                 returnError(err.response.data, err.response.status);
             });
         }

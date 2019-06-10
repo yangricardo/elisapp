@@ -13,7 +13,6 @@ const SentencaDetail = props => {
     const bgcolor = isSimilar ? "secondary" : "primary"
     const indicatorColor = isSimilar ? "primary" : "secondary"
     const process = isSimilar ? similarProcess : searchedProcess
-    console.log(process)
     const cod_tj = process.processo_tj
     const cod_cnj = process.processo_cnj
     const assunto = process.assunto

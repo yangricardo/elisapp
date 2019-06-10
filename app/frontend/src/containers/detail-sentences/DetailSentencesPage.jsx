@@ -55,8 +55,10 @@ class DetailSentencesPage extends Component {
         this.state = {
             loading : false
         }
-        console.log(this.props.searchedProcess, this.props.similarProcess)
-        // this.props.loadSimilarProcesses(this.props.cachedSimilarProcesses[this.props.searchedProcess.processo_tj])
+    }
+    componentDidMount(){
+        loadSimilarProcesses = (this.props.searchedProcess.processos_similares)
+        loadSimilarProcesses = (this.props.similarProcess.processos_similares)
     }
 
     // onListClick = e => {
