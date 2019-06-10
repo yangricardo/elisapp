@@ -150,7 +150,7 @@ const SentencaDetail = props => {
                             alignItems="center"
                         >
                             <Grid item>
-                                <Box height={420} p={1.5} bgcolor="#f5f5f9" borderRadius={3} style={{overflow: 'auto', flexGrow:1 }}>
+                                <Box height={420} maxWidth={600} p={1.5} bgcolor="#f5f5f9" borderRadius={3} style={{overflow: 'auto', flexGrow:1 }}>
                                     <Typography variant='body1' wrap="nowrap">
                                         {sentencas[sentenca].texto_sentenca.split("\n").map((item, key) => {
                                                 return <Fragment key={key}>{item}<br/></Fragment>

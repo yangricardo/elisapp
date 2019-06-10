@@ -67,7 +67,7 @@ class DetailSentencesPage extends Component {
         if (cachedProcesses.hasOwnProperty(e.processo_similar_tj) ){
             setSimilarProcess(cachedProcesses[e.processo_similar_tj]);
         } else {
-            loadSimilarProcesses(id, false)
+            loadSimilarProcesses(e.processo_similar_tj, false)
         }
     }
 
