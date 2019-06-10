@@ -1,11 +1,12 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import PropTypes from 'prop-types'
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
-import { withStyles, CssBaseline, Box, TextField, Grid, Button, CircularProgress } from '@material-ui/core';
+import { withStyles, CssBaseline, Box, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage, returnError } from '../../actions/message';
-import { clearSearchedProcess, setSearchedProcess } from '../../actions/similarprocesses';
+import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
 import { setLoading } from '../../actions/loading';
 import MaskedInput from 'react-text-mask';
 import { buildTokenHeader } from '../../actions/auth';
@@ -39,7 +40,7 @@ const styles = theme => ({
 
 const TextMaskCustom = props => {
     const { inputRef, ...other } = props;
-  
+    
     return (
     <MaskedInput
         {...other}
@@ -60,7 +61,6 @@ inputRef: PropTypes.func.isRequired,
 };
 
 class SearchProcessPage extends Component {
-    
     constructor (props) {
         super(props);
         this.props.clearSearchedProcess();
@@ -74,63 +74,73 @@ class SearchProcessPage extends Component {
     }
 
     onChange = e => {
+        this._isMounted = true
         const reTJ = new RegExp('\\d{4}\\.\\d{3}\\.\\d{6}-\\d(\\s|\\w)?');
-        this.setState({
-            [e.target.name]: e.target.value,
-            canSearch : reTJ.test(e.target.value)
-            ,searched : false, loading : false, found: false
-        })
+        if(this._isMounted)
+            this.setState({
+                [e.target.name]: e.target.value,
+                canSearch : reTJ.test(e.target.value)
+                ,searched : false, loading : false, found: false
+            })
     }
 
     onClick = e => {
         e.preventDefault();
-        this.setState({searched:true, loading:true, found:false});
-        this.props.setLoading();
-        const { token } = this.props
+        const {token, setSimilarProcessResults,loadSimilarProcesses,clearSearchedProcess,setLoading,returnError} = this.props
         const { processo } = this.state;
+        setLoading();
+        this.setState({searched:true, loading:true})
         axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(token))
         .then(res => {
-            if (res !== undefined){
-                const { results } = res.data;
-                const found = results[0] !== undefined
-                if (found){
-                    this.props.setSearchedProcess(results[0]);
-                } else {
-                    this.props.clearSearchedProcess();
-                }
-                this.setState({loading:false,found});
-                this.props.setLoading();
+            const found = res.data.results !== undefined
+            if (found) {
+                const {results} = res.data
+                setSimilarProcessResults(results);
+                loadSimilarProcesses(results[0]['processo_base_tj'], true)
+            } else {
+                clearSearchedProcess();
             }
+            this.setState({found, loading:false})
         })
         .catch(err => {
-            // this.setState({loading:false, found:false, searched : false});
-            this.props.setLoading();
-            this.props.returnError(err.response.data, err.response.status);
+            setLoading();
+            console.log(err)
+            // returnError(err.response.data, err.response.status);
         });
     }
 
+    // shouldComponentUpdate(nextProps) {
+    //     if (this.props.found && !loading && nextProps.searchedProcess !== {} && nextProps.similarProcess !== {}){
+    //         return false
+    //     }
+    //     return true
+    // }
 
-    shouldComponentUpdate(nextState) {
-        if(nextState.loading & nextState.result !== null){
-            return false
+    componentDidUpdate(prevProps,prevState) {
+        if (prevState.found && !prevState.loading && prevProps.searchedProcess.hasOwnProperty('processo_tj') && prevProps.similarProcess.hasOwnProperty('processo_tj')){
+            this.props.history.push('/detalharsentencas')
         }
-        return true
     }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+
 
     render() {
         const {loading, searched, found, canSearch } = this.state
-        const {isAuthenticated, createMessage, classes } = this.props
+        const {isAuthenticated, createMessage, classes} = this.props
         if(!isAuthenticated){
             createMessage({ loginRequired: "Autenticação necessária" });
             return <Redirect to="/login"/>
         }
-
-        if (found){
-            return <Redirect to="/detalharsentencas"/>
-        } 
-        if (searched && !found & !loading) {
-            createMessage({ notFound: "Código de Processo Não Disponível" });
+        if (found && !loading && this.props.searchedProcess.hasOwnProperty('processo_tj') && this.props.similarProcess.hasOwnProperty('processo_tj')){
+            return <Redirect to='/detalharsentencas'/>
         }
+        
+        // if (searched && !found & !loading) {
+        //     createMessage({ notFound: "Código de Processo Não Disponível" });
+        // }
 
         return (
             <main className={classes.main}>
@@ -188,16 +198,17 @@ const mapStateToProps = (state) => ({
     token : state.authReducer.token,
     isAuthenticated: state.authReducer.isAuthenticated,
     searchedProcess : state.similarProcessesReducer.searchedProcess,
-    // isLoading : state.loadingReducer.isLoading
+    similarProcess : state.similarProcessesReducer.similarProcess,
 })
 
 const mapDispatchToProps = {
     returnError,
     createMessage,
     clearSearchedProcess,
-    setSearchedProcess,
+    loadSimilarProcesses,
     setLoading,
+    setSimilarProcessResults
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SearchProcessPage));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(SearchProcessPage)));

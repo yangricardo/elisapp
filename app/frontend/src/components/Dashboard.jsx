@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -67,34 +68,46 @@ function Dashboard(props) {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <Drawer
-                variant="permanent"
-                className={clsx(classes.drawer, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                })}
-                classes={{
-                    paper: clsx({
+            {
+                props.isAuthenticated ?
+                <Drawer
+                    variant="permanent"
+                    className={clsx(classes.drawer, {
                         [classes.drawerOpen]: open,
                         [classes.drawerClose]: !open,
-                    }),
-                }}
-                open={open}
-            >
-                <Toolbar />
-                <Divider />
-                <List>{mainListItems}</List>
-                <Divider />
-                <ListItem button onClick={open == false ? handleDrawerOpen : handleDrawerClose} >
-                    <ListItemIcon>
-                        {open ? <ChevronLeft /> : <ChevronRight />}
-                    </ListItemIcon>
-                    <ListItemText primary="Recolher menu" />
-                </ListItem>
-            </Drawer>
+                    })}
+                    classes={{
+                        paper: clsx({
+                            [classes.drawerOpen]: open,
+                            [classes.drawerClose]: !open,
+                        }),
+                    }}
+                    open={open}
+                >
+                    <Toolbar />
+                    <Divider />
+                    <List>{mainListItems}</List>
+                    <Divider />
+                    <ListItem button onClick={open == false ? handleDrawerOpen : handleDrawerClose} >
+                        <ListItemIcon>
+                            {open ? <ChevronLeft /> : <ChevronRight />}
+                        </ListItemIcon>
+                        <ListItemText primary="Recolher menu" />
+                    </ListItem>
+                </Drawer> : undefined
+            }
             <main className={classes.content} >{props.children}</main>
         </div>
     );
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.authReducer.isAuthenticated,
+    isLoading : state.loadingReducer.isLoading
+  })
+  
+  const mapDispatchToProps = {
+    
+  }
+  
+export default connect(mapStateToProps,mapDispatchToProps)(Dashboard)

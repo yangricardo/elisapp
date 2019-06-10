@@ -97,6 +97,9 @@ export const logout = () => (dispatch, getState) => {
 	})
 	.catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
+		dispatch({
+			type: AUTH_ERROR
+		});
 	});
 };
 

@@ -45,8 +45,7 @@ npm-install:
 	docker-compose exec app npm install
 
 npm-run-dev:
-	# docker-compose exec app npm run dev-watch
-	cd app & npm run dev-watch
+	cd app && npm run dev-watch && cd -
 
 app-logs:
 	docker-compose logs app

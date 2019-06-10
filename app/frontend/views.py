@@ -27,6 +27,12 @@ logger = logging.getLogger(__name__)
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
+def get_processo_serializer(processo):
+    # obtem advogados associados ao processo e serializa
+    return json.loads(json.dumps(serializers.ProcessoSerializer(
+                models.Processo.objects.get(processo_tj=processo)
+            ).data))
+
 def get_advogados_serializer(processo):
     # obtem advogados associados ao processo e serializa
     return json.loads(json.dumps(serializers.AdvogadoProcessoSerializer(
@@ -62,35 +68,47 @@ def get_estatistica_serializer(processo):
                 many=True
             ).data))
 
-def build_processo_extra_data(processo_base,processo_similar):
-    advogados_base = get_advogados_serializer(processo_base)
-    advogados_similar = get_advogados_serializer(processo_similar)
-    personagens_base = get_personagens_serializer(processo_base)
-    personagens_similar = get_personagens_serializer(processo_similar)
-    documentos_base = get_documentos_serializer(processo_base)
-    documentos_similar = get_documentos_serializer(processo_similar)
-    sentencas_base = get_sentencas_serializer(processo_base)
-    sentencas_similar = get_sentencas_serializer(processo_similar)
-    estatistica_base = get_estatistica_serializer(processo_base)
-    estatistica_similar = get_estatistica_serializer(processo_similar)
-    
+def get_processos_similares_serializer(processo, request):
+    return  json.loads(json.dumps(serializers.ProcessoSimilarSerializer(
+                models.ProcessoSimilar.objects.filter(processo_base_tj=processo).order_by('-similaridade'),
+                many=True, context={'request': request}
+            ).data))
+
+
+def build_processo_serializer(processo, request):
+    processo_serializer = get_processo_serializer(processo)
+    advogados = get_advogados_serializer(processo)
+    personagens = get_personagens_serializer(processo)
+    documentos = get_documentos_serializer(processo)
+    sentencas = get_sentencas_serializer(processo)
+    estatistica = get_estatistica_serializer(processo)
+    processos_similares = get_processos_similares_serializer(processo, request)
+
+    processo_serializer.update({
+        'advogados':advogados,
+        'personagens':personagens,
+        'documentos':documentos,
+        'sentencas':sentencas,
+        'estatistica':estatistica,
+        'processos_similares' : processos_similares
+    })
+
+    return processo_serializer
+
+
+def build_processo_similar(processo_base,processo_similar, request):
+    print(processo_base,processo_similar)
+    processo_base = build_processo_serializer(processo_base, request)
+    processo_similar = build_processo_serializer(processo_similar, request)
     return {
-        'advogados_base':advogados_base,
-        'advogados_similar':advogados_similar,
-        'personagens_base':personagens_base,
-        'personagens_similar':personagens_similar,
-        'documentos_base':documentos_base,
-        'documentos_similar':documentos_similar,
-        'sentencas_base':sentencas_base,
-        'sentencas_similar':sentencas_similar,
-        'estatistica_base':estatistica_base,
-        'estatistica_similar':estatistica_similar,
+        'processo_base':processo_base,
+        'processo_similar':processo_similar,
     }
 
 class LargeResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 1
+    page_size = 100
     page_size_query_param = 'page_size'
-    max_page_size = 1
+    max_page_size = 100
 
 
 class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin):
@@ -103,12 +121,7 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
     @method_decorator(cache_page(CACHE_TTL))
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance).data
-        serializer.update(build_processo_extra_data(instance.processo_base_tj,instance.processo_similar_tj))
-        serializer.update({'processos_similares' : serializers.ListaSimilaresSerializer(
-                models.ProcessoSimilar.objects.filter(processo_base_tj=instance.processo_base_tj),
-                many=True, context={'request': request}
-            ).data})
+        serializer = build_processo_similar(instance.processo_base_tj,instance.processo_similar_tj, request)
         return Response(serializer)
 
     @method_decorator(cache_page(CACHE_TTL))
@@ -130,25 +143,10 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
         if processo_similar_cnj is not None:
             queryset = queryset.filter(processo_similar_cnj=processo_similar_cnj)
 
-
-        processos_similares = self.get_serializer(instance=queryset, many=True).data
-        processos_similares = list(map(lambda ps: 
-            (   ps['similaridade'], 
-                ps['id'], 
-                ps['processo_similar_tj'], ps['processo_similar_cnj']
-            ),processos_similares)
-        )
-
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(instance=page, many=True).data
-            if serializer:
-                serializer[0].update(build_processo_extra_data(page[0].processo_base_tj,page[0].processo_similar_tj))
-                serializer[0].update({'processos_similares' : serializers.ListaSimilaresSerializer(
-                    models.ProcessoSimilar.objects.filter(processo_base_tj=page[0].processo_base_tj),
-                    many=True, context={'request': request}
-                ).data})
-            return self.get_paginated_response(serializer)
+            serializer = self.get_serializer(instance=page, many=True)
+            return self.get_paginated_response(serializer.data)
 
 # Create your views here.
 @ensure_csrf_cookie

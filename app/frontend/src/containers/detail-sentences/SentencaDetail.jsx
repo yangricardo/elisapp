@@ -4,26 +4,26 @@ import { connect } from 'react-redux'
 import { Box, Tooltip, Fab, Grid, Typography, AppBar, Tabs ,Tab } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { Link as LinkIcon } from '@material-ui/icons';
-import { detailProcessTheme,processLabelTheme,BorderBox,SectionBox,HtmlTooltip, ButtonToolTip, ProcessLabel } from './DetailSentenceHelpers';
+import { detailProcessTheme,BorderBox,SectionBox, ButtonToolTip, ProcessLabel } from './DetailSentenceHelpers';
 import { createMessage, returnError } from '../../actions/message';
-import { setSearchedProcess } from '../../actions/similarprocesses';
 
 const SentencaDetail = props => {
-    const { isSimilar, searchedProcess } = props;
+    const { isSimilar, searchedProcess, similarProcess } = props;
 
     const bgcolor = isSimilar ? "secondary" : "primary"
     const indicatorColor = isSimilar ? "primary" : "secondary"
-
-    const cod_tj = isSimilar ? searchedProcess.processo_similar_tj : searchedProcess.processo_base_tj
-    const cod_cnj = isSimilar ? searchedProcess.processo_similar_cnj : searchedProcess.processo_base_cnj
-    const assunto = isSimilar ? searchedProcess.processo_similar_assunto : searchedProcess.processo_base_assunto
-    const classe = isSimilar ? searchedProcess.processo_similar_classe : searchedProcess.processo_base_classe
-    const comarca = isSimilar ? searchedProcess.processo_similar_comarca : searchedProcess.processo_base_comarca
-    const serventia = isSimilar ? searchedProcess.processo_similar_serventia : searchedProcess.processo_base_serventia
-    const sentencas = isSimilar ? searchedProcess.sentencas_similar: searchedProcess.sentencas_base
-    const personagens = isSimilar ? searchedProcess.personagens_similar : searchedProcess.personagens_base
-    const advogados = isSimilar ? searchedProcess.advogados_similar : searchedProcess.advogados_base
-    const documentos = isSimilar ? searchedProcess.documentos_similar : searchedProcess.documentos_base
+    const process = isSimilar ? similarProcess : searchedProcess
+    console.log(process)
+    const cod_tj = process.processo_tj
+    const cod_cnj = process.processo_cnj
+    const assunto = process.assunto
+    const classe = process.classe
+    const comarca = process.comarca
+    const serventia = process.serventia
+    const sentencas = process.sentencas
+    const personagens = process.personagens
+    const advogados = process.advogados
+    const documentos = process.documentos
     
     const [sentenca, setSentenca] = React.useState(0);
 
@@ -187,13 +187,13 @@ SentencaDetail.propTypes = {
 
 const mapStateToProps = (state) => ({
     token : state.authReducer.token,
+    isAuthenticated: state.authReducer.isAuthenticated,
     searchedProcess : state.similarProcessesReducer.searchedProcess,
+    similarProcess : state.similarProcessesReducer.similarProcess,
 })
-
 const mapDispatchToProps = {
     returnError,
     createMessage,
-    setSearchedProcess,
 }
 
 

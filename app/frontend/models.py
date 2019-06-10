@@ -69,6 +69,21 @@ class Sentenca(ProcessoDBView):
         managed = False
         db_table = 'api_mview_sentencas'
 
+class Processo(ProcessoDBView):
+    processo_tj = models.CharField(primary_key=True,max_length=18, db_index=True)
+    comarca = models.CharField(max_length=50, db_index=True, blank=True, null=True)
+    serventia = models.CharField(max_length=80, db_index=True, blank=True, null=True)
+    assunto = models.TextField(null=True, blank=True)
+    classe = models.TextField(null=True, blank=True)
+    competencia = models.TextField(null=True, blank=True)    
+
+    def __str__(self):
+        return f'{self.processo_tj} - {self.processo_cnj} - {self.comarca} - {self.serventia} - {self.assunto} - {self.classe} - {self.competencia}'
+
+    class Meta:
+        managed = False
+        db_table = 'api_mview_processo'
+
 
 class ProcessoSimilar(DBView):
     similaridade = models.FloatField(blank=False, null=False)

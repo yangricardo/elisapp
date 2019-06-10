@@ -100,6 +100,10 @@ class ProcessoSimilarSerializer(serializers.ModelSerializer):
         model = views.ProcessoSimilar
         fields = '__all__'
 
+class ProcessoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = views.Processo
+        fields = '__all__'
 
 class ListaSimilaresSerializer(serializers.ModelSerializer):
     id = serializers.HyperlinkedIdentityField(read_only=True, view_name='processosimilar-detail')
