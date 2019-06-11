@@ -16,7 +16,7 @@ services:
       - db
     volumes:
       - postgres:/data
-      - ${PWD}/config/db/:/docker-entrypoint-initdb.d
+      # - ${PWD}/config/db/:/docker-entrypoint-initdb.d
 
   redis:
     restart: always
