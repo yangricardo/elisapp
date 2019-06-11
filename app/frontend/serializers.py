@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from . import models as views
+from . import models as views 
+from api import models as tj_models
 
 
 
@@ -110,3 +111,10 @@ class ListaSimilaresSerializer(serializers.ModelSerializer):
     class Meta:
         model = views.ProcessoSimilar
         fields = ('id', 'similaridade','processo_similar_tj','processo_similar_cnj')
+
+
+class AvaliacaoSimilaridadeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = views.AvaliacaoSimilaridade
+        fields = ('processo_similar','inicial','contestacao','sentenca','comentario')

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS} from './types';
+import {SUBMIT_RATING_FAIL, SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS} from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
 
@@ -106,5 +106,28 @@ export const setSimilarProcessResults = (similarProcessResults) => dispatch => {
     dispatch({
         type : SET_SIMILAR_PROCESS_RESULTS,
         payload : similarProcessResults
+    })
+}
+
+export const submitRating = (processo_similar, inicial, contestacao, sentenca, comentario) => (dispatch, getState) => {
+    const rating = {
+        processo_similar : similarProcessURLRE.exec(processo_similar.id)[2],
+        inicial,
+        contestacao,
+        sentenca,
+        comentario,
+    }
+    axios.post('/api/models/avaliacoes/',rating, tokenConfig(getState))
+    .then( res =>{
+        console.info(res)
+        dispatch({
+            type : SUBMIT_RATING_SUCCESS
+        })
+    })
+    .catch(err =>{
+        console.log(err)
+        dispatch({
+            type : SUBMIT_RATING_FAIL
+        })
     })
 }

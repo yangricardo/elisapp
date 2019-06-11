@@ -9,6 +9,8 @@ import { setLoading } from '../../actions/loading';
 import { setSimilarProcess, setSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
 import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
+import { Search } from '@material-ui/icons';
+import AvailSimilarProcess from './AvailSimilarProcess.jsx';
 
 const styles = theme => ({
     content: {
@@ -62,7 +64,6 @@ class DetailSentencesPage extends Component {
     }
 
     onListClick = e => {
-        console.log(e)
         const { cachedProcesses, setSimilarProcess, loadSimilarProcesses } = this.props
         if (cachedProcesses.hasOwnProperty(e.processo_similar_tj) ){
             setSimilarProcess(cachedProcesses[e.processo_similar_tj]);
@@ -101,7 +102,7 @@ class DetailSentencesPage extends Component {
                     <SentencaDetail/>
                 </Grid>
                 <Grid item md={5} xs={10} className={classes.gridRow}>
-                    <SentencaDetail isSimilar/>
+                    <SentencaDetail isSimilar sentenca={0}/>
                 </Grid>
                 <Grid item md={2} className={classes.gridRow}>
                         <Grid container direction="column" 
@@ -114,7 +115,7 @@ class DetailSentencesPage extends Component {
                             <Typography variant='caption'>Índice de Similaridade</Typography>
                             <ThemeProvider theme={similarTheme}> 
                             <Box 
-                            color={(similaridade <= 30 ? 'sim30' : similaridade <= 50 ? 'sim50' : similaridade <= 70 ? 'sim70' : 'sim100')+'.main'} >
+                            color={(similaridade <= 40 ? 'sim30' : similaridade <= 70 ? 'sim50' : 'sim100')+'.main'} >
                                 <Typography variant='h2'>
                                     {similaridade ? `${similaridade}%`:''}
                                 </Typography>
@@ -122,9 +123,9 @@ class DetailSentencesPage extends Component {
                             </ThemeProvider>
                         </Grid>
                         <Grid item xs>
-                            <Button className={classes.gridRow} variant="outlined" color="primary">
-                            Avaliar Similaridade
-                            </Button>
+                            <Box className={classes.gridRow}>
+                            <AvailSimilarProcess/>
+                            </Box>
                         </Grid>
                         <Grid item xs className={classes.gridRow}>
                             <Button variant="outlined" color="primary">
@@ -140,10 +141,18 @@ class DetailSentencesPage extends Component {
                                 <Fragment key={index} >
                                     <ListItem 
                                         button onClick={this.onListClick.bind(this, item)}
-                                        style={{backgroundColor : (item.similaridade <= 30 ? deepOrange[50] : item.similaridade <= 50 ? amber[50] : teal[50]) }}
-                                        selected={item.processo_similar_tj === searchedProcess.processo_similar_tj} 
+                                        style={{
+                                            backgroundColor : 
+                                                (item.similaridade <= 40 ? deepOrange[50] : item.similaridade <= 70 ? amber[50] : teal[50]),
+                                        }}
+                                        selected={item.processo_similar_tj === similarProcess.processo_tj} 
                                         disable={this.state.loading.toString()}>
-                                        <ListItemText primary={item.processo_similar_tj} secondary={item.processo_similar_cnj}/>
+                                        <ListItemText primary={
+                                            <Typography variant="button">
+                                            {item.processo_similar_tj}
+                                            { item.processo_similar_tj === similarProcess.processo_tj ? '  •': undefined }
+                                            </Typography>
+                                        } secondary={item.processo_similar_cnj}/>
                                     </ListItem>
                                     <Divider component="li"  light />
                                 </Fragment>

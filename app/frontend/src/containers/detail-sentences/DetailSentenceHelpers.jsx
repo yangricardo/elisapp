@@ -40,7 +40,7 @@ export const processLabelTheme = createMuiTheme({
   
 export const BorderBox = props => {
     return (
-        <Box bgcolor={`${props.bgcolor}.main`} borderRadius={10}>
+        <Box bgcolor={`${props.bgcolor}.main`} p={0.5} borderRadius={10}>
             {props.children}
         </Box>
     );

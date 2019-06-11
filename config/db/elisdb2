@@ -1,0 +1,3059 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 11.2 (Debian 11.2-1.pgdg90+1)
+-- Dumped by pg_dump version 11.2 (Debian 11.2-1.pgdg90+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: api_advogado; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_advogado (
+    cod_adv integer NOT NULL,
+    num_oab text NOT NULL,
+    nome_adv text NOT NULL
+);
+
+
+ALTER TABLE public.api_advogado OWNER TO elisdbadmin;
+
+--
+-- Name: api_advogadoprocesso; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_advogadoprocesso (
+    id integer NOT NULL,
+    tip_polo character varying(1),
+    advogado_id integer NOT NULL,
+    processo_id character varying(18) NOT NULL,
+    tipo_personagem_id integer NOT NULL
+);
+
+
+ALTER TABLE public.api_advogadoprocesso OWNER TO elisdbadmin;
+
+--
+-- Name: api_advogadoprocesso_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.api_advogadoprocesso_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_advogadoprocesso_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: api_advogadoprocesso_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.api_advogadoprocesso_id_seq OWNED BY public.api_advogadoprocesso.id;
+
+
+--
+-- Name: api_andamentoprocesso; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_andamentoprocesso (
+    id integer NOT NULL,
+    ordem integer NOT NULL,
+    dt_ato timestamp with time zone,
+    txt_descr text NOT NULL,
+    txt_descr_len integer NOT NULL,
+    ato_juiz_id integer,
+    juiz_id text,
+    processo_id character varying(18) NOT NULL,
+    serventia_id integer,
+    tipo_andamento_id integer,
+    tipo_ato_juiz_id integer,
+    tipo_decisao_recurso_id integer
+);
+
+
+ALTER TABLE public.api_andamentoprocesso OWNER TO elisdbadmin;
+
+--
+-- Name: api_andamentoprocesso_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.api_andamentoprocesso_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_andamentoprocesso_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: api_andamentoprocesso_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.api_andamentoprocesso_id_seq OWNED BY public.api_andamentoprocesso.id;
+
+
+--
+-- Name: api_assunto; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_assunto (
+    cod_assunto integer NOT NULL,
+    descr text NOT NULL,
+    assunto_pai_id integer
+);
+
+
+ALTER TABLE public.api_assunto OWNER TO elisdbadmin;
+
+--
+-- Name: api_atojuiz; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_atojuiz (
+    id integer NOT NULL,
+    cod_ato integer NOT NULL,
+    descr character varying(60) NOT NULL,
+    tipo_ato_juiz_id integer,
+    tipo_movimento_id integer
+);
+
+
+ALTER TABLE public.api_atojuiz OWNER TO elisdbadmin;
+
+--
+-- Name: api_atojuiz_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.api_atojuiz_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_atojuiz_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: api_atojuiz_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.api_atojuiz_id_seq OWNED BY public.api_atojuiz.id;
+
+
+--
+-- Name: api_cargo; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_cargo (
+    cod_carg integer NOT NULL,
+    descr character varying(50) NOT NULL
+);
+
+
+ALTER TABLE public.api_cargo OWNER TO elisdbadmin;
+
+--
+-- Name: api_classe; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_classe (
+    cod_classe integer NOT NULL,
+    descr text NOT NULL,
+    classe_pai_id integer,
+    cod_pers_ativo_id integer,
+    cod_pers_passivo_id integer
+);
+
+
+ALTER TABLE public.api_classe OWNER TO elisdbadmin;
+
+--
+-- Name: api_classeassunto; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_classeassunto (
+    id integer NOT NULL,
+    assunto_id integer NOT NULL,
+    classe_id integer NOT NULL
+);
+
+
+ALTER TABLE public.api_classeassunto OWNER TO elisdbadmin;
+
+--
+-- Name: api_classeassunto_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.api_classeassunto_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_classeassunto_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: api_classeassunto_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.api_classeassunto_id_seq OWNED BY public.api_classeassunto.id;
+
+
+--
+-- Name: api_comarca; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_comarca (
+    cod_coma integer NOT NULL,
+    desc_coma character varying(50) NOT NULL,
+    desc_redu character varying(3) NOT NULL
+);
+
+
+ALTER TABLE public.api_comarca OWNER TO elisdbadmin;
+
+--
+-- Name: api_competencia; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_competencia (
+    cod_comp integer NOT NULL,
+    desc_comp character varying(50) NOT NULL,
+    desc_res character varying(15) NOT NULL
+);
+
+
+ALTER TABLE public.api_competencia OWNER TO elisdbadmin;
+
+--
+-- Name: api_documentoprocesso; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_documentoprocesso (
+    cod_docto_elet text NOT NULL,
+    assunto_id integer NOT NULL,
+    classe_id integer NOT NULL,
+    competencia_id integer NOT NULL,
+    processo_id character varying(18) NOT NULL,
+    tipo_documento_id integer NOT NULL
+);
+
+
+ALTER TABLE public.api_documentoprocesso OWNER TO elisdbadmin;
+
+--
+-- Name: api_funcionario; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_funcionario (
+    num_matr text NOT NULL,
+    nome character varying(100) NOT NULL,
+    cod_carg_id integer
+);
+
+
+ALTER TABLE public.api_funcionario OWNER TO elisdbadmin;
+
+--
+-- Name: api_personagem; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_personagem (
+    cod_pers integer NOT NULL,
+    nome text NOT NULL
+);
+
+
+ALTER TABLE public.api_personagem OWNER TO elisdbadmin;
+
+--
+-- Name: api_personagemprocesso; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_personagemprocesso (
+    id integer NOT NULL,
+    personagem_id integer NOT NULL,
+    processo_id character varying(18) NOT NULL,
+    tipo_personagem_id integer NOT NULL
+);
+
+
+ALTER TABLE public.api_personagemprocesso OWNER TO elisdbadmin;
+
+--
+-- Name: api_personagemprocesso_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.api_personagemprocesso_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_personagemprocesso_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: api_personagemprocesso_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.api_personagemprocesso_id_seq OWNED BY public.api_personagemprocesso.id;
+
+
+--
+-- Name: api_processo; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_processo (
+    id_proc integer NOT NULL,
+    cod_proc character varying(18) NOT NULL,
+    cod_cnj character varying(25),
+    data_cad timestamp with time zone,
+    assunto_id integer,
+    classe_id integer,
+    competencia_id integer,
+    serventia_id integer
+);
+
+
+ALTER TABLE public.api_processo OWNER TO elisdbadmin;
+
+--
+-- Name: api_processossimilares; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_processossimilares (
+    id integer NOT NULL,
+    similaridade double precision NOT NULL,
+    processo_base_id character varying(18) NOT NULL,
+    processo_similar_id character varying(18) NOT NULL
+);
+
+
+ALTER TABLE public.api_processossimilares OWNER TO elisdbadmin;
+
+--
+-- Name: api_processossimilares_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.api_processossimilares_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_processossimilares_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: api_processossimilares_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.api_processossimilares_id_seq OWNED BY public.api_processossimilares.id;
+
+
+--
+-- Name: api_serventia; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_serventia (
+    cod_serv integer NOT NULL,
+    desc_serv character varying(80) NOT NULL,
+    desc_abre character varying(10),
+    comarca_id integer NOT NULL
+);
+
+
+ALTER TABLE public.api_serventia OWNER TO elisdbadmin;
+
+--
+-- Name: api_tipoandamento; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_tipoandamento (
+    cod_tip_and integer NOT NULL,
+    descr character varying(60) NOT NULL,
+    cod_tip_mov_id integer
+);
+
+
+ALTER TABLE public.api_tipoandamento OWNER TO elisdbadmin;
+
+--
+-- Name: api_tipoatojuiz; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_tipoatojuiz (
+    cod_tip_ato integer NOT NULL,
+    descr character varying(20) NOT NULL
+);
+
+
+ALTER TABLE public.api_tipoatojuiz OWNER TO elisdbadmin;
+
+--
+-- Name: api_tipodecisaorecurso; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_tipodecisaorecurso (
+    cod_tip_dec_rec integer NOT NULL,
+    descr character varying(25) NOT NULL
+);
+
+
+ALTER TABLE public.api_tipodecisaorecurso OWNER TO elisdbadmin;
+
+--
+-- Name: api_tipodocumento; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_tipodocumento (
+    id_tip_doc integer NOT NULL,
+    descr character varying(210) NOT NULL
+);
+
+
+ALTER TABLE public.api_tipodocumento OWNER TO elisdbadmin;
+
+--
+-- Name: api_tipomovimento; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_tipomovimento (
+    cod_tip_mov integer NOT NULL,
+    descr character varying(100) NOT NULL,
+    cod_tip_mov_pai_id integer
+);
+
+
+ALTER TABLE public.api_tipomovimento OWNER TO elisdbadmin;
+
+--
+-- Name: api_tipopersonagem; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.api_tipopersonagem (
+    cod_tip_pers integer NOT NULL,
+    desc_pers character varying(25) NOT NULL,
+    tipo_part character varying(1) NOT NULL,
+    cod_tip_pers_inv_id integer
+);
+
+
+ALTER TABLE public.api_tipopersonagem OWNER TO elisdbadmin;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO elisdbadmin;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO elisdbadmin;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO elisdbadmin;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO elisdbadmin;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO elisdbadmin;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO elisdbadmin;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO elisdbadmin;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO elisdbadmin;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO elisdbadmin;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO elisdbadmin;
+
+--
+-- Name: frontend_avaliacaosimilaridade; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.frontend_avaliacaosimilaridade (
+    id integer NOT NULL,
+    inicial integer NOT NULL,
+    contestacao integer NOT NULL,
+    sentenca integer NOT NULL,
+    comentario text NOT NULL,
+    data timestamp with time zone NOT NULL,
+    processo_similar_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.frontend_avaliacaosimilaridade OWNER TO elisdbadmin;
+
+--
+-- Name: frontend_avaliacaosimilaridade_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.frontend_avaliacaosimilaridade_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.frontend_avaliacaosimilaridade_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: frontend_avaliacaosimilaridade_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.frontend_avaliacaosimilaridade_id_seq OWNED BY public.frontend_avaliacaosimilaridade.id;
+
+
+--
+-- Name: knox_authtoken; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.knox_authtoken (
+    digest character varying(128) NOT NULL,
+    salt character varying(16) NOT NULL,
+    created timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    expiry timestamp with time zone,
+    token_key character varying(8) NOT NULL
+);
+
+
+ALTER TABLE public.knox_authtoken OWNER TO elisdbadmin;
+
+--
+-- Name: leads_lead; Type: TABLE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE TABLE public.leads_lead (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    email character varying(100) NOT NULL,
+    message character varying(500) NOT NULL,
+    created_at date NOT NULL,
+    owner_id integer
+);
+
+
+ALTER TABLE public.leads_lead OWNER TO elisdbadmin;
+
+--
+-- Name: leads_lead_id_seq; Type: SEQUENCE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE SEQUENCE public.leads_lead_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.leads_lead_id_seq OWNER TO elisdbadmin;
+
+--
+-- Name: leads_lead_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: elisdbadmin
+--
+
+ALTER SEQUENCE public.leads_lead_id_seq OWNED BY public.leads_lead.id;
+
+
+--
+-- Name: api_advogadoprocesso id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_advogadoprocesso ALTER COLUMN id SET DEFAULT nextval('public.api_advogadoprocesso_id_seq'::regclass);
+
+
+--
+-- Name: api_andamentoprocesso id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso ALTER COLUMN id SET DEFAULT nextval('public.api_andamentoprocesso_id_seq'::regclass);
+
+
+--
+-- Name: api_atojuiz id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_atojuiz ALTER COLUMN id SET DEFAULT nextval('public.api_atojuiz_id_seq'::regclass);
+
+
+--
+-- Name: api_classeassunto id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classeassunto ALTER COLUMN id SET DEFAULT nextval('public.api_classeassunto_id_seq'::regclass);
+
+
+--
+-- Name: api_personagemprocesso id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_personagemprocesso ALTER COLUMN id SET DEFAULT nextval('public.api_personagemprocesso_id_seq'::regclass);
+
+
+--
+-- Name: api_processossimilares id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processossimilares ALTER COLUMN id SET DEFAULT nextval('public.api_processossimilares_id_seq'::regclass);
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: frontend_avaliacaosimilaridade id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.frontend_avaliacaosimilaridade ALTER COLUMN id SET DEFAULT nextval('public.frontend_avaliacaosimilaridade_id_seq'::regclass);
+
+
+--
+-- Name: leads_lead id; Type: DEFAULT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.leads_lead ALTER COLUMN id SET DEFAULT nextval('public.leads_lead_id_seq'::regclass);
+
+
+--
+-- Data for Name: api_advogado; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_advogado (cod_adv, num_oab, nome_adv) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_advogadoprocesso; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_advogadoprocesso (id, tip_polo, advogado_id, processo_id, tipo_personagem_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_andamentoprocesso; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_andamentoprocesso (id, ordem, dt_ato, txt_descr, txt_descr_len, ato_juiz_id, juiz_id, processo_id, serventia_id, tipo_andamento_id, tipo_ato_juiz_id, tipo_decisao_recurso_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_assunto; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_assunto (cod_assunto, descr, assunto_pai_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_atojuiz; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_atojuiz (id, cod_ato, descr, tipo_ato_juiz_id, tipo_movimento_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_cargo; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_cargo (cod_carg, descr) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_classe; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_classe (cod_classe, descr, classe_pai_id, cod_pers_ativo_id, cod_pers_passivo_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_classeassunto; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_classeassunto (id, assunto_id, classe_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_comarca; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_comarca (cod_coma, desc_coma, desc_redu) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_competencia; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_competencia (cod_comp, desc_comp, desc_res) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_documentoprocesso; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_documentoprocesso (cod_docto_elet, assunto_id, classe_id, competencia_id, processo_id, tipo_documento_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_funcionario; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_funcionario (num_matr, nome, cod_carg_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_personagem; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_personagem (cod_pers, nome) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_personagemprocesso; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_personagemprocesso (id, personagem_id, processo_id, tipo_personagem_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_processo; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_processo (id_proc, cod_proc, cod_cnj, data_cad, assunto_id, classe_id, competencia_id, serventia_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_processossimilares; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_processossimilares (id, similaridade, processo_base_id, processo_similar_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_serventia; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_serventia (cod_serv, desc_serv, desc_abre, comarca_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_tipoandamento; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_tipoandamento (cod_tip_and, descr, cod_tip_mov_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_tipoatojuiz; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_tipoatojuiz (cod_tip_ato, descr) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_tipodecisaorecurso; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_tipodecisaorecurso (cod_tip_dec_rec, descr) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_tipodocumento; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_tipodocumento (id_tip_doc, descr) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_tipomovimento; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_tipomovimento (cod_tip_mov, descr, cod_tip_mov_pai_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: api_tipopersonagem; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.api_tipopersonagem (cod_tip_pers, desc_pers, tipo_part, cod_tip_pers_inv_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add advogado	7	add_advogado
+26	Can change advogado	7	change_advogado
+27	Can delete advogado	7	delete_advogado
+28	Can view advogado	7	view_advogado
+29	Can add assunto	8	add_assunto
+30	Can change assunto	8	change_assunto
+31	Can delete assunto	8	delete_assunto
+32	Can view assunto	8	view_assunto
+33	Can add cargo	9	add_cargo
+34	Can change cargo	9	change_cargo
+35	Can delete cargo	9	delete_cargo
+36	Can view cargo	9	view_cargo
+37	Can add classe	10	add_classe
+38	Can change classe	10	change_classe
+39	Can delete classe	10	delete_classe
+40	Can view classe	10	view_classe
+41	Can add comarca	11	add_comarca
+42	Can change comarca	11	change_comarca
+43	Can delete comarca	11	delete_comarca
+44	Can view comarca	11	view_comarca
+45	Can add competencia	12	add_competencia
+46	Can change competencia	12	change_competencia
+47	Can delete competencia	12	delete_competencia
+48	Can view competencia	12	view_competencia
+49	Can add personagem	13	add_personagem
+50	Can change personagem	13	change_personagem
+51	Can delete personagem	13	delete_personagem
+52	Can view personagem	13	view_personagem
+53	Can add processo	14	add_processo
+54	Can change processo	14	change_processo
+55	Can delete processo	14	delete_processo
+56	Can view processo	14	view_processo
+57	Can add tipo ato juiz	15	add_tipoatojuiz
+58	Can change tipo ato juiz	15	change_tipoatojuiz
+59	Can delete tipo ato juiz	15	delete_tipoatojuiz
+60	Can view tipo ato juiz	15	view_tipoatojuiz
+61	Can add tipo decisao recurso	16	add_tipodecisaorecurso
+62	Can change tipo decisao recurso	16	change_tipodecisaorecurso
+63	Can delete tipo decisao recurso	16	delete_tipodecisaorecurso
+64	Can view tipo decisao recurso	16	view_tipodecisaorecurso
+65	Can add tipo documento	17	add_tipodocumento
+66	Can change tipo documento	17	change_tipodocumento
+67	Can delete tipo documento	17	delete_tipodocumento
+68	Can view tipo documento	17	view_tipodocumento
+69	Can add tipo personagem	18	add_tipopersonagem
+70	Can change tipo personagem	18	change_tipopersonagem
+71	Can delete tipo personagem	18	delete_tipopersonagem
+72	Can view tipo personagem	18	view_tipopersonagem
+73	Can add tipo movimento	19	add_tipomovimento
+74	Can change tipo movimento	19	change_tipomovimento
+75	Can delete tipo movimento	19	delete_tipomovimento
+76	Can view tipo movimento	19	view_tipomovimento
+77	Can add tipo andamento	20	add_tipoandamento
+78	Can change tipo andamento	20	change_tipoandamento
+79	Can delete tipo andamento	20	delete_tipoandamento
+80	Can view tipo andamento	20	view_tipoandamento
+81	Can add serventia	21	add_serventia
+82	Can change serventia	21	change_serventia
+83	Can delete serventia	21	delete_serventia
+84	Can view serventia	21	view_serventia
+85	Can add processos similares	22	add_processossimilares
+86	Can change processos similares	22	change_processossimilares
+87	Can delete processos similares	22	delete_processossimilares
+88	Can view processos similares	22	view_processossimilares
+89	Can add funcionario	23	add_funcionario
+90	Can change funcionario	23	change_funcionario
+91	Can delete funcionario	23	delete_funcionario
+92	Can view funcionario	23	view_funcionario
+93	Can add documento processo	24	add_documentoprocesso
+94	Can change documento processo	24	change_documentoprocesso
+95	Can delete documento processo	24	delete_documentoprocesso
+96	Can view documento processo	24	view_documentoprocesso
+97	Can add ato juiz	25	add_atojuiz
+98	Can change ato juiz	25	change_atojuiz
+99	Can delete ato juiz	25	delete_atojuiz
+100	Can view ato juiz	25	view_atojuiz
+101	Can add personagem processo	26	add_personagemprocesso
+102	Can change personagem processo	26	change_personagemprocesso
+103	Can delete personagem processo	26	delete_personagemprocesso
+104	Can view personagem processo	26	view_personagemprocesso
+105	Can add classe assunto	27	add_classeassunto
+106	Can change classe assunto	27	change_classeassunto
+107	Can delete classe assunto	27	delete_classeassunto
+108	Can view classe assunto	27	view_classeassunto
+109	Can add andamento processo	28	add_andamentoprocesso
+110	Can change andamento processo	28	change_andamentoprocesso
+111	Can delete andamento processo	28	delete_andamentoprocesso
+112	Can view andamento processo	28	view_andamentoprocesso
+113	Can add advogado processo	29	add_advogadoprocesso
+114	Can change advogado processo	29	change_advogadoprocesso
+115	Can delete advogado processo	29	delete_advogadoprocesso
+116	Can view advogado processo	29	view_advogadoprocesso
+117	Can add lead	30	add_lead
+118	Can change lead	30	change_lead
+119	Can delete lead	30	delete_lead
+120	Can view lead	30	view_lead
+121	Can add advogado disponivel	31	add_advogadodisponivel
+122	Can change advogado disponivel	31	change_advogadodisponivel
+123	Can delete advogado disponivel	31	delete_advogadodisponivel
+124	Can view advogado disponivel	31	view_advogadodisponivel
+125	Can add advogado processo	32	add_advogadoprocesso
+126	Can change advogado processo	32	change_advogadoprocesso
+127	Can delete advogado processo	32	delete_advogadoprocesso
+128	Can view advogado processo	32	view_advogadoprocesso
+129	Can add ano disponivel	33	add_anodisponivel
+130	Can change ano disponivel	33	change_anodisponivel
+131	Can delete ano disponivel	33	delete_anodisponivel
+132	Can view ano disponivel	33	view_anodisponivel
+133	Can add assunto disponivel	34	add_assuntodisponivel
+134	Can change assunto disponivel	34	change_assuntodisponivel
+135	Can delete assunto disponivel	34	delete_assuntodisponivel
+136	Can view assunto disponivel	34	view_assuntodisponivel
+137	Can add classe disponivel	35	add_classedisponivel
+138	Can change classe disponivel	35	change_classedisponivel
+139	Can delete classe disponivel	35	delete_classedisponivel
+140	Can view classe disponivel	35	view_classedisponivel
+141	Can add comarcas disponivel	36	add_comarcasdisponivel
+142	Can change comarcas disponivel	36	change_comarcasdisponivel
+143	Can delete comarcas disponivel	36	delete_comarcasdisponivel
+144	Can view comarcas disponivel	36	view_comarcasdisponivel
+145	Can add competencia disponivel	37	add_competenciadisponivel
+146	Can change competencia disponivel	37	change_competenciadisponivel
+147	Can delete competencia disponivel	37	delete_competenciadisponivel
+148	Can view competencia disponivel	37	view_competenciadisponivel
+149	Can add documento processo	38	add_documentoprocesso
+150	Can change documento processo	38	change_documentoprocesso
+151	Can delete documento processo	38	delete_documentoprocesso
+152	Can view documento processo	38	view_documentoprocesso
+153	Can add juiz disponivel	39	add_juizdisponivel
+154	Can change juiz disponivel	39	change_juizdisponivel
+155	Can delete juiz disponivel	39	delete_juizdisponivel
+156	Can view juiz disponivel	39	view_juizdisponivel
+157	Can add personagem disponivel	40	add_personagemdisponivel
+158	Can change personagem disponivel	40	change_personagemdisponivel
+159	Can delete personagem disponivel	40	delete_personagemdisponivel
+160	Can view personagem disponivel	40	view_personagemdisponivel
+161	Can add personagem processo	41	add_personagemprocesso
+162	Can change personagem processo	41	change_personagemprocesso
+163	Can delete personagem processo	41	delete_personagemprocesso
+164	Can view personagem processo	41	view_personagemprocesso
+165	Can add processo	42	add_processo
+166	Can change processo	42	change_processo
+167	Can delete processo	42	delete_processo
+168	Can view processo	42	view_processo
+169	Can add processo estatistica	43	add_processoestatistica
+170	Can change processo estatistica	43	change_processoestatistica
+171	Can delete processo estatistica	43	delete_processoestatistica
+172	Can view processo estatistica	43	view_processoestatistica
+173	Can add processo similar	44	add_processosimilar
+174	Can change processo similar	44	change_processosimilar
+175	Can delete processo similar	44	delete_processosimilar
+176	Can view processo similar	44	view_processosimilar
+177	Can add sentenca	45	add_sentenca
+178	Can change sentenca	45	change_sentenca
+179	Can delete sentenca	45	delete_sentenca
+180	Can view sentenca	45	view_sentenca
+181	Can add serventia disponivel	46	add_serventiadisponivel
+182	Can change serventia disponivel	46	change_serventiadisponivel
+183	Can delete serventia disponivel	46	delete_serventiadisponivel
+184	Can view serventia disponivel	46	view_serventiadisponivel
+185	Can add avaliacao similaridade	47	add_avaliacaosimilaridade
+186	Can change avaliacao similaridade	47	change_avaliacaosimilaridade
+187	Can delete avaliacao similaridade	47	delete_avaliacaosimilaridade
+188	Can view avaliacao similaridade	47	view_avaliacaosimilaridade
+189	Can add auth token	48	add_authtoken
+190	Can change auth token	48	change_authtoken
+191	Can delete auth token	48	delete_authtoken
+192	Can view auth token	48	view_authtoken
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	api	advogado
+8	api	assunto
+9	api	cargo
+10	api	classe
+11	api	comarca
+12	api	competencia
+13	api	personagem
+14	api	processo
+15	api	tipoatojuiz
+16	api	tipodecisaorecurso
+17	api	tipodocumento
+18	api	tipopersonagem
+19	api	tipomovimento
+20	api	tipoandamento
+21	api	serventia
+22	api	processossimilares
+23	api	funcionario
+24	api	documentoprocesso
+25	api	atojuiz
+26	api	personagemprocesso
+27	api	classeassunto
+28	api	andamentoprocesso
+29	api	advogadoprocesso
+30	leads	lead
+31	frontend	advogadodisponivel
+32	frontend	advogadoprocesso
+33	frontend	anodisponivel
+34	frontend	assuntodisponivel
+35	frontend	classedisponivel
+36	frontend	comarcasdisponivel
+37	frontend	competenciadisponivel
+38	frontend	documentoprocesso
+39	frontend	juizdisponivel
+40	frontend	personagemdisponivel
+41	frontend	personagemprocesso
+42	frontend	processo
+43	frontend	processoestatistica
+44	frontend	processosimilar
+45	frontend	sentenca
+46	frontend	serventiadisponivel
+47	frontend	avaliacaosimilaridade
+48	knox	authtoken
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2019-06-11 02:13:30.425526+00
+2	auth	0001_initial	2019-06-11 02:13:30.493785+00
+3	admin	0001_initial	2019-06-11 02:13:30.585587+00
+4	admin	0002_logentry_remove_auto_add	2019-06-11 02:13:30.61316+00
+5	admin	0003_logentry_add_action_flag_choices	2019-06-11 02:13:30.665852+00
+6	api	0001_initial	2019-06-11 02:13:30.995866+00
+7	contenttypes	0002_remove_content_type_name	2019-06-11 02:13:31.418472+00
+8	auth	0002_alter_permission_name_max_length	2019-06-11 02:13:31.431806+00
+9	auth	0003_alter_user_email_max_length	2019-06-11 02:13:31.457809+00
+10	auth	0004_alter_user_username_opts	2019-06-11 02:13:31.481912+00
+11	auth	0005_alter_user_last_login_null	2019-06-11 02:13:31.504017+00
+12	auth	0006_require_contenttypes_0002	2019-06-11 02:13:31.511457+00
+13	auth	0007_alter_validators_add_error_messages	2019-06-11 02:13:31.529512+00
+14	auth	0008_alter_user_username_max_length	2019-06-11 02:13:31.557423+00
+15	auth	0009_alter_user_last_name_max_length	2019-06-11 02:13:31.584547+00
+16	auth	0010_alter_group_name_max_length	2019-06-11 02:13:31.60793+00
+17	auth	0011_update_proxy_permissions	2019-06-11 02:13:31.669332+00
+18	frontend	0001_initial	2019-06-11 02:13:31.783173+00
+19	frontend	0002_auto_20190610_2227	2019-06-11 02:13:31.815807+00
+20	knox	0001_initial	2019-06-11 02:13:31.863015+00
+21	knox	0002_auto_20150916_1425	2019-06-11 02:13:31.931348+00
+22	knox	0003_auto_20150916_1526	2019-06-11 02:13:31.980628+00
+23	knox	0004_authtoken_expires	2019-06-11 02:13:32.003128+00
+24	knox	0005_authtoken_token_key	2019-06-11 02:13:32.02496+00
+25	knox	0006_auto_20160818_0932	2019-06-11 02:13:32.105818+00
+26	knox	0007_auto_20190111_0542	2019-06-11 02:13:32.152406+00
+27	leads	0001_initial	2019-06-11 02:13:32.173463+00
+28	leads	0002_auto_20190326_0526	2019-06-11 02:13:32.188144+00
+29	leads	0003_lead_owner	2019-06-11 02:13:32.235816+00
+30	sessions	0001_initial	2019-06-11 02:13:32.265522+00
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+\.
+
+
+--
+-- Data for Name: frontend_avaliacaosimilaridade; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.frontend_avaliacaosimilaridade (id, inicial, contestacao, sentenca, comentario, data, processo_similar_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: knox_authtoken; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.knox_authtoken (digest, salt, created, user_id, expiry, token_key) FROM stdin;
+\.
+
+
+--
+-- Data for Name: leads_lead; Type: TABLE DATA; Schema: public; Owner: elisdbadmin
+--
+
+COPY public.leads_lead (id, name, email, message, created_at, owner_id) FROM stdin;
+\.
+
+
+--
+-- Name: api_advogadoprocesso_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.api_advogadoprocesso_id_seq', 1, false);
+
+
+--
+-- Name: api_andamentoprocesso_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.api_andamentoprocesso_id_seq', 1, false);
+
+
+--
+-- Name: api_atojuiz_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.api_atojuiz_id_seq', 1, false);
+
+
+--
+-- Name: api_classeassunto_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.api_classeassunto_id_seq', 1, false);
+
+
+--
+-- Name: api_personagemprocesso_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.api_personagemprocesso_id_seq', 1, false);
+
+
+--
+-- Name: api_processossimilares_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.api_processossimilares_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 192, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, false);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 48, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 30, true);
+
+
+--
+-- Name: frontend_avaliacaosimilaridade_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.frontend_avaliacaosimilaridade_id_seq', 1, false);
+
+
+--
+-- Name: leads_lead_id_seq; Type: SEQUENCE SET; Schema: public; Owner: elisdbadmin
+--
+
+SELECT pg_catalog.setval('public.leads_lead_id_seq', 1, false);
+
+
+--
+-- Name: api_advogado api_advogado_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_advogado
+    ADD CONSTRAINT api_advogado_pkey PRIMARY KEY (cod_adv);
+
+
+--
+-- Name: api_advogadoprocesso api_advogadoprocesso_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_advogadoprocesso
+    ADD CONSTRAINT api_advogadoprocesso_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_advogadoprocesso api_advogadoprocesso_processo_id_advogado_id_92ec7297_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_advogadoprocesso
+    ADD CONSTRAINT api_advogadoprocesso_processo_id_advogado_id_92ec7297_uniq UNIQUE (processo_id, advogado_id);
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocesso_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocesso_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocesso_processo_id_ordem_txt_de_4aaa654b_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocesso_processo_id_ordem_txt_de_4aaa654b_uniq UNIQUE (processo_id, ordem, txt_descr_len);
+
+
+--
+-- Name: api_assunto api_assunto_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_assunto
+    ADD CONSTRAINT api_assunto_pkey PRIMARY KEY (cod_assunto);
+
+
+--
+-- Name: api_atojuiz api_atojuiz_cod_ato_tipo_ato_juiz_id_2c3b4bd3_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_atojuiz
+    ADD CONSTRAINT api_atojuiz_cod_ato_tipo_ato_juiz_id_2c3b4bd3_uniq UNIQUE (cod_ato, tipo_ato_juiz_id, tipo_movimento_id);
+
+
+--
+-- Name: api_atojuiz api_atojuiz_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_atojuiz
+    ADD CONSTRAINT api_atojuiz_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_cargo api_cargo_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_cargo
+    ADD CONSTRAINT api_cargo_pkey PRIMARY KEY (cod_carg);
+
+
+--
+-- Name: api_classe api_classe_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classe
+    ADD CONSTRAINT api_classe_pkey PRIMARY KEY (cod_classe);
+
+
+--
+-- Name: api_classeassunto api_classeassunto_classe_id_assunto_id_bb23d898_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classeassunto
+    ADD CONSTRAINT api_classeassunto_classe_id_assunto_id_bb23d898_uniq UNIQUE (classe_id, assunto_id);
+
+
+--
+-- Name: api_classeassunto api_classeassunto_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classeassunto
+    ADD CONSTRAINT api_classeassunto_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_comarca api_comarca_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_comarca
+    ADD CONSTRAINT api_comarca_pkey PRIMARY KEY (cod_coma);
+
+
+--
+-- Name: api_competencia api_competencia_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_competencia
+    ADD CONSTRAINT api_competencia_pkey PRIMARY KEY (cod_comp);
+
+
+--
+-- Name: api_documentoprocesso api_documentoprocesso_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_documentoprocesso
+    ADD CONSTRAINT api_documentoprocesso_pkey PRIMARY KEY (cod_docto_elet);
+
+
+--
+-- Name: api_funcionario api_funcionario_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_funcionario
+    ADD CONSTRAINT api_funcionario_pkey PRIMARY KEY (num_matr);
+
+
+--
+-- Name: api_personagem api_personagem_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_personagem
+    ADD CONSTRAINT api_personagem_pkey PRIMARY KEY (cod_pers);
+
+
+--
+-- Name: api_personagemprocesso api_personagemprocesso_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_personagemprocesso
+    ADD CONSTRAINT api_personagemprocesso_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_personagemprocesso api_personagemprocesso_processo_id_personagem_id_4f6cfb39_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_personagemprocesso
+    ADD CONSTRAINT api_personagemprocesso_processo_id_personagem_id_4f6cfb39_uniq UNIQUE (processo_id, personagem_id);
+
+
+--
+-- Name: api_processo api_processo_cod_cnj_key; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processo
+    ADD CONSTRAINT api_processo_cod_cnj_key UNIQUE (cod_cnj);
+
+
+--
+-- Name: api_processo api_processo_cod_proc_key; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processo
+    ADD CONSTRAINT api_processo_cod_proc_key UNIQUE (cod_proc);
+
+
+--
+-- Name: api_processo api_processo_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processo
+    ADD CONSTRAINT api_processo_pkey PRIMARY KEY (id_proc);
+
+
+--
+-- Name: api_processossimilares api_processossimilares_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processossimilares
+    ADD CONSTRAINT api_processossimilares_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_serventia api_serventia_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_serventia
+    ADD CONSTRAINT api_serventia_pkey PRIMARY KEY (cod_serv);
+
+
+--
+-- Name: api_tipoandamento api_tipoandamento_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipoandamento
+    ADD CONSTRAINT api_tipoandamento_pkey PRIMARY KEY (cod_tip_and);
+
+
+--
+-- Name: api_tipoatojuiz api_tipoatojuiz_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipoatojuiz
+    ADD CONSTRAINT api_tipoatojuiz_pkey PRIMARY KEY (cod_tip_ato);
+
+
+--
+-- Name: api_tipodecisaorecurso api_tipodecisaorecurso_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipodecisaorecurso
+    ADD CONSTRAINT api_tipodecisaorecurso_pkey PRIMARY KEY (cod_tip_dec_rec);
+
+
+--
+-- Name: api_tipodocumento api_tipodocumento_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipodocumento
+    ADD CONSTRAINT api_tipodocumento_pkey PRIMARY KEY (id_tip_doc);
+
+
+--
+-- Name: api_tipomovimento api_tipomovimento_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipomovimento
+    ADD CONSTRAINT api_tipomovimento_pkey PRIMARY KEY (cod_tip_mov);
+
+
+--
+-- Name: api_tipopersonagem api_tipopersonagem_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipopersonagem
+    ADD CONSTRAINT api_tipopersonagem_pkey PRIMARY KEY (cod_tip_pers);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: frontend_avaliacaosimilaridade frontend_avaliacaosimilaridade_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.frontend_avaliacaosimilaridade
+    ADD CONSTRAINT frontend_avaliacaosimilaridade_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: knox_authtoken knox_authtoken_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.knox_authtoken
+    ADD CONSTRAINT knox_authtoken_pkey PRIMARY KEY (digest);
+
+
+--
+-- Name: knox_authtoken knox_authtoken_salt_key; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.knox_authtoken
+    ADD CONSTRAINT knox_authtoken_salt_key UNIQUE (salt);
+
+
+--
+-- Name: leads_lead leads_lead_email_key; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.leads_lead
+    ADD CONSTRAINT leads_lead_email_key UNIQUE (email);
+
+
+--
+-- Name: leads_lead leads_lead_pkey; Type: CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.leads_lead
+    ADD CONSTRAINT leads_lead_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_advogado_nome_adv_f080874b; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogado_nome_adv_f080874b ON public.api_advogado USING btree (nome_adv);
+
+
+--
+-- Name: api_advogado_nome_adv_f080874b_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogado_nome_adv_f080874b_like ON public.api_advogado USING btree (nome_adv text_pattern_ops);
+
+
+--
+-- Name: api_advogado_num_oab_b5c4ff28; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogado_num_oab_b5c4ff28 ON public.api_advogado USING btree (num_oab);
+
+
+--
+-- Name: api_advogado_num_oab_b5c4ff28_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogado_num_oab_b5c4ff28_like ON public.api_advogado USING btree (num_oab text_pattern_ops);
+
+
+--
+-- Name: api_advogadoprocesso_advogado_id_715631e0; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogadoprocesso_advogado_id_715631e0 ON public.api_advogadoprocesso USING btree (advogado_id);
+
+
+--
+-- Name: api_advogadoprocesso_processo_id_101d88fb; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogadoprocesso_processo_id_101d88fb ON public.api_advogadoprocesso USING btree (processo_id);
+
+
+--
+-- Name: api_advogadoprocesso_processo_id_101d88fb_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogadoprocesso_processo_id_101d88fb_like ON public.api_advogadoprocesso USING btree (processo_id varchar_pattern_ops);
+
+
+--
+-- Name: api_advogadoprocesso_tipo_personagem_id_cd59dc40; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_advogadoprocesso_tipo_personagem_id_cd59dc40 ON public.api_advogadoprocesso USING btree (tipo_personagem_id);
+
+
+--
+-- Name: api_andamentoprocesso_ato_juiz_id_f985f8b1; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_ato_juiz_id_f985f8b1 ON public.api_andamentoprocesso USING btree (ato_juiz_id);
+
+
+--
+-- Name: api_andamentoprocesso_juiz_id_2be2d4c0; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_juiz_id_2be2d4c0 ON public.api_andamentoprocesso USING btree (juiz_id);
+
+
+--
+-- Name: api_andamentoprocesso_juiz_id_2be2d4c0_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_juiz_id_2be2d4c0_like ON public.api_andamentoprocesso USING btree (juiz_id text_pattern_ops);
+
+
+--
+-- Name: api_andamentoprocesso_processo_id_d95ebfe3; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_processo_id_d95ebfe3 ON public.api_andamentoprocesso USING btree (processo_id);
+
+
+--
+-- Name: api_andamentoprocesso_processo_id_d95ebfe3_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_processo_id_d95ebfe3_like ON public.api_andamentoprocesso USING btree (processo_id varchar_pattern_ops);
+
+
+--
+-- Name: api_andamentoprocesso_serventia_id_7f16b316; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_serventia_id_7f16b316 ON public.api_andamentoprocesso USING btree (serventia_id);
+
+
+--
+-- Name: api_andamentoprocesso_tipo_andamento_id_cc849fa3; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_tipo_andamento_id_cc849fa3 ON public.api_andamentoprocesso USING btree (tipo_andamento_id);
+
+
+--
+-- Name: api_andamentoprocesso_tipo_ato_juiz_id_3e719b39; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_tipo_ato_juiz_id_3e719b39 ON public.api_andamentoprocesso USING btree (tipo_ato_juiz_id);
+
+
+--
+-- Name: api_andamentoprocesso_tipo_decisao_recurso_id_d8121b82; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_andamentoprocesso_tipo_decisao_recurso_id_d8121b82 ON public.api_andamentoprocesso USING btree (tipo_decisao_recurso_id);
+
+
+--
+-- Name: api_assunto_assunto_pai_id_87d13e30; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_assunto_assunto_pai_id_87d13e30 ON public.api_assunto USING btree (assunto_pai_id);
+
+
+--
+-- Name: api_atojuiz_tipo_ato_juiz_id_4d1ca5cb; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_atojuiz_tipo_ato_juiz_id_4d1ca5cb ON public.api_atojuiz USING btree (tipo_ato_juiz_id);
+
+
+--
+-- Name: api_atojuiz_tipo_movimento_id_02a7130c; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_atojuiz_tipo_movimento_id_02a7130c ON public.api_atojuiz USING btree (tipo_movimento_id);
+
+
+--
+-- Name: api_classe_classe_pai_id_21a233c7; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_classe_classe_pai_id_21a233c7 ON public.api_classe USING btree (classe_pai_id);
+
+
+--
+-- Name: api_classe_cod_pers_ativo_id_c29046b6; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_classe_cod_pers_ativo_id_c29046b6 ON public.api_classe USING btree (cod_pers_ativo_id);
+
+
+--
+-- Name: api_classe_cod_pers_passivo_id_85589cb8; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_classe_cod_pers_passivo_id_85589cb8 ON public.api_classe USING btree (cod_pers_passivo_id);
+
+
+--
+-- Name: api_classeassunto_assunto_id_0f8743cb; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_classeassunto_assunto_id_0f8743cb ON public.api_classeassunto USING btree (assunto_id);
+
+
+--
+-- Name: api_classeassunto_classe_id_6ee9dac8; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_classeassunto_classe_id_6ee9dac8 ON public.api_classeassunto USING btree (classe_id);
+
+
+--
+-- Name: api_documentoprocesso_assunto_id_7441b506; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_documentoprocesso_assunto_id_7441b506 ON public.api_documentoprocesso USING btree (assunto_id);
+
+
+--
+-- Name: api_documentoprocesso_classe_id_76b43488; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_documentoprocesso_classe_id_76b43488 ON public.api_documentoprocesso USING btree (classe_id);
+
+
+--
+-- Name: api_documentoprocesso_cod_docto_elet_2dca2e17_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_documentoprocesso_cod_docto_elet_2dca2e17_like ON public.api_documentoprocesso USING btree (cod_docto_elet text_pattern_ops);
+
+
+--
+-- Name: api_documentoprocesso_competencia_id_a06180c2; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_documentoprocesso_competencia_id_a06180c2 ON public.api_documentoprocesso USING btree (competencia_id);
+
+
+--
+-- Name: api_documentoprocesso_processo_id_989e3b94; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_documentoprocesso_processo_id_989e3b94 ON public.api_documentoprocesso USING btree (processo_id);
+
+
+--
+-- Name: api_documentoprocesso_processo_id_989e3b94_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_documentoprocesso_processo_id_989e3b94_like ON public.api_documentoprocesso USING btree (processo_id varchar_pattern_ops);
+
+
+--
+-- Name: api_documentoprocesso_tipo_documento_id_fbce891c; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_documentoprocesso_tipo_documento_id_fbce891c ON public.api_documentoprocesso USING btree (tipo_documento_id);
+
+
+--
+-- Name: api_funcionario_cod_carg_id_f9e13885; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_funcionario_cod_carg_id_f9e13885 ON public.api_funcionario USING btree (cod_carg_id);
+
+
+--
+-- Name: api_funcionario_num_matr_c04faba3_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_funcionario_num_matr_c04faba3_like ON public.api_funcionario USING btree (num_matr text_pattern_ops);
+
+
+--
+-- Name: api_personagem_nome_6a36a828; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_personagem_nome_6a36a828 ON public.api_personagem USING btree (nome);
+
+
+--
+-- Name: api_personagem_nome_6a36a828_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_personagem_nome_6a36a828_like ON public.api_personagem USING btree (nome text_pattern_ops);
+
+
+--
+-- Name: api_personagemprocesso_personagem_id_b9e58ff4; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_personagemprocesso_personagem_id_b9e58ff4 ON public.api_personagemprocesso USING btree (personagem_id);
+
+
+--
+-- Name: api_personagemprocesso_processo_id_e79c4330; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_personagemprocesso_processo_id_e79c4330 ON public.api_personagemprocesso USING btree (processo_id);
+
+
+--
+-- Name: api_personagemprocesso_processo_id_e79c4330_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_personagemprocesso_processo_id_e79c4330_like ON public.api_personagemprocesso USING btree (processo_id varchar_pattern_ops);
+
+
+--
+-- Name: api_personagemprocesso_tipo_personagem_id_e9c2d775; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_personagemprocesso_tipo_personagem_id_e9c2d775 ON public.api_personagemprocesso USING btree (tipo_personagem_id);
+
+
+--
+-- Name: api_processo_assunto_id_bb791abc; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processo_assunto_id_bb791abc ON public.api_processo USING btree (assunto_id);
+
+
+--
+-- Name: api_processo_classe_id_560d82bb; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processo_classe_id_560d82bb ON public.api_processo USING btree (classe_id);
+
+
+--
+-- Name: api_processo_cod_cnj_64be6b09_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processo_cod_cnj_64be6b09_like ON public.api_processo USING btree (cod_cnj varchar_pattern_ops);
+
+
+--
+-- Name: api_processo_cod_proc_972cf35a_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processo_cod_proc_972cf35a_like ON public.api_processo USING btree (cod_proc varchar_pattern_ops);
+
+
+--
+-- Name: api_processo_competencia_id_546603cb; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processo_competencia_id_546603cb ON public.api_processo USING btree (competencia_id);
+
+
+--
+-- Name: api_processo_serventia_id_05073f3f; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processo_serventia_id_05073f3f ON public.api_processo USING btree (serventia_id);
+
+
+--
+-- Name: api_processossimilares_processo_base_id_b7d92ad3; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processossimilares_processo_base_id_b7d92ad3 ON public.api_processossimilares USING btree (processo_base_id);
+
+
+--
+-- Name: api_processossimilares_processo_base_id_b7d92ad3_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processossimilares_processo_base_id_b7d92ad3_like ON public.api_processossimilares USING btree (processo_base_id varchar_pattern_ops);
+
+
+--
+-- Name: api_processossimilares_processo_similar_id_a83cb884; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processossimilares_processo_similar_id_a83cb884 ON public.api_processossimilares USING btree (processo_similar_id);
+
+
+--
+-- Name: api_processossimilares_processo_similar_id_a83cb884_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_processossimilares_processo_similar_id_a83cb884_like ON public.api_processossimilares USING btree (processo_similar_id varchar_pattern_ops);
+
+
+--
+-- Name: api_serventia_comarca_id_776a14f3; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_serventia_comarca_id_776a14f3 ON public.api_serventia USING btree (comarca_id);
+
+
+--
+-- Name: api_tipoandamento_cod_tip_mov_id_e62c86f0; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_tipoandamento_cod_tip_mov_id_e62c86f0 ON public.api_tipoandamento USING btree (cod_tip_mov_id);
+
+
+--
+-- Name: api_tipomovimento_cod_tip_mov_pai_id_ad9c6816; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_tipomovimento_cod_tip_mov_pai_id_ad9c6816 ON public.api_tipomovimento USING btree (cod_tip_mov_pai_id);
+
+
+--
+-- Name: api_tipopersonagem_cod_tip_pers_inv_id_cf8773af; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX api_tipopersonagem_cod_tip_pers_inv_id_cf8773af ON public.api_tipopersonagem USING btree (cod_tip_pers_inv_id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: frontend_avaliacaosimilaridade_processo_similar_id_9947f8ef; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX frontend_avaliacaosimilaridade_processo_similar_id_9947f8ef ON public.frontend_avaliacaosimilaridade USING btree (processo_similar_id);
+
+
+--
+-- Name: frontend_avaliacaosimilaridade_user_id_99f9324c; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX frontend_avaliacaosimilaridade_user_id_99f9324c ON public.frontend_avaliacaosimilaridade USING btree (user_id);
+
+
+--
+-- Name: knox_authtoken_digest_188c7e77_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX knox_authtoken_digest_188c7e77_like ON public.knox_authtoken USING btree (digest varchar_pattern_ops);
+
+
+--
+-- Name: knox_authtoken_salt_3d9f48ac_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX knox_authtoken_salt_3d9f48ac_like ON public.knox_authtoken USING btree (salt varchar_pattern_ops);
+
+
+--
+-- Name: knox_authtoken_token_key_8f4f7d47; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX knox_authtoken_token_key_8f4f7d47 ON public.knox_authtoken USING btree (token_key);
+
+
+--
+-- Name: knox_authtoken_token_key_8f4f7d47_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX knox_authtoken_token_key_8f4f7d47_like ON public.knox_authtoken USING btree (token_key varchar_pattern_ops);
+
+
+--
+-- Name: knox_authtoken_user_id_e5a5d899; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX knox_authtoken_user_id_e5a5d899 ON public.knox_authtoken USING btree (user_id);
+
+
+--
+-- Name: leads_lead_email_93d5b817_like; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX leads_lead_email_93d5b817_like ON public.leads_lead USING btree (email varchar_pattern_ops);
+
+
+--
+-- Name: leads_lead_owner_id_1f4568d0; Type: INDEX; Schema: public; Owner: elisdbadmin
+--
+
+CREATE INDEX leads_lead_owner_id_1f4568d0 ON public.leads_lead USING btree (owner_id);
+
+
+--
+-- Name: api_advogadoprocesso api_advogadoprocesso_advogado_id_715631e0_fk_api_advog; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_advogadoprocesso
+    ADD CONSTRAINT api_advogadoprocesso_advogado_id_715631e0_fk_api_advog FOREIGN KEY (advogado_id) REFERENCES public.api_advogado(cod_adv) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_advogadoprocesso api_advogadoprocesso_processo_id_101d88fb_fk_api_proce; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_advogadoprocesso
+    ADD CONSTRAINT api_advogadoprocesso_processo_id_101d88fb_fk_api_proce FOREIGN KEY (processo_id) REFERENCES public.api_processo(cod_proc) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_advogadoprocesso api_advogadoprocesso_tipo_personagem_id_cd59dc40_fk_api_tipop; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_advogadoprocesso
+    ADD CONSTRAINT api_advogadoprocesso_tipo_personagem_id_cd59dc40_fk_api_tipop FOREIGN KEY (tipo_personagem_id) REFERENCES public.api_tipopersonagem(cod_tip_pers) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocess_juiz_id_2be2d4c0_fk_api_funci; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocess_juiz_id_2be2d4c0_fk_api_funci FOREIGN KEY (juiz_id) REFERENCES public.api_funcionario(num_matr) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocess_processo_id_d95ebfe3_fk_api_proce; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocess_processo_id_d95ebfe3_fk_api_proce FOREIGN KEY (processo_id) REFERENCES public.api_processo(cod_proc) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocess_serventia_id_7f16b316_fk_api_serve; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocess_serventia_id_7f16b316_fk_api_serve FOREIGN KEY (serventia_id) REFERENCES public.api_serventia(cod_serv) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocess_tipo_andamento_id_cc849fa3_fk_api_tipoa; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocess_tipo_andamento_id_cc849fa3_fk_api_tipoa FOREIGN KEY (tipo_andamento_id) REFERENCES public.api_tipoandamento(cod_tip_and) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocess_tipo_ato_juiz_id_3e719b39_fk_api_tipoa; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocess_tipo_ato_juiz_id_3e719b39_fk_api_tipoa FOREIGN KEY (tipo_ato_juiz_id) REFERENCES public.api_tipoatojuiz(cod_tip_ato) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocess_tipo_decisao_recurso_d8121b82_fk_api_tipod; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocess_tipo_decisao_recurso_d8121b82_fk_api_tipod FOREIGN KEY (tipo_decisao_recurso_id) REFERENCES public.api_tipodecisaorecurso(cod_tip_dec_rec) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_andamentoprocesso api_andamentoprocesso_ato_juiz_id_f985f8b1_fk_api_atojuiz_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_andamentoprocesso
+    ADD CONSTRAINT api_andamentoprocesso_ato_juiz_id_f985f8b1_fk_api_atojuiz_id FOREIGN KEY (ato_juiz_id) REFERENCES public.api_atojuiz(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_assunto api_assunto_assunto_pai_id_87d13e30_fk_api_assunto_cod_assunto; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_assunto
+    ADD CONSTRAINT api_assunto_assunto_pai_id_87d13e30_fk_api_assunto_cod_assunto FOREIGN KEY (assunto_pai_id) REFERENCES public.api_assunto(cod_assunto) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_atojuiz api_atojuiz_tipo_ato_juiz_id_4d1ca5cb_fk_api_tipoa; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_atojuiz
+    ADD CONSTRAINT api_atojuiz_tipo_ato_juiz_id_4d1ca5cb_fk_api_tipoa FOREIGN KEY (tipo_ato_juiz_id) REFERENCES public.api_tipoatojuiz(cod_tip_ato) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_atojuiz api_atojuiz_tipo_movimento_id_02a7130c_fk_api_tipom; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_atojuiz
+    ADD CONSTRAINT api_atojuiz_tipo_movimento_id_02a7130c_fk_api_tipom FOREIGN KEY (tipo_movimento_id) REFERENCES public.api_tipomovimento(cod_tip_mov) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_classe api_classe_classe_pai_id_21a233c7_fk_api_classe_cod_classe; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classe
+    ADD CONSTRAINT api_classe_classe_pai_id_21a233c7_fk_api_classe_cod_classe FOREIGN KEY (classe_pai_id) REFERENCES public.api_classe(cod_classe) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_classe api_classe_cod_pers_ativo_id_c29046b6_fk_api_tipop; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classe
+    ADD CONSTRAINT api_classe_cod_pers_ativo_id_c29046b6_fk_api_tipop FOREIGN KEY (cod_pers_ativo_id) REFERENCES public.api_tipopersonagem(cod_tip_pers) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_classe api_classe_cod_pers_passivo_id_85589cb8_fk_api_tipop; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classe
+    ADD CONSTRAINT api_classe_cod_pers_passivo_id_85589cb8_fk_api_tipop FOREIGN KEY (cod_pers_passivo_id) REFERENCES public.api_tipopersonagem(cod_tip_pers) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_classeassunto api_classeassunto_assunto_id_0f8743cb_fk_api_assun; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classeassunto
+    ADD CONSTRAINT api_classeassunto_assunto_id_0f8743cb_fk_api_assun FOREIGN KEY (assunto_id) REFERENCES public.api_assunto(cod_assunto) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_classeassunto api_classeassunto_classe_id_6ee9dac8_fk_api_classe_cod_classe; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_classeassunto
+    ADD CONSTRAINT api_classeassunto_classe_id_6ee9dac8_fk_api_classe_cod_classe FOREIGN KEY (classe_id) REFERENCES public.api_classe(cod_classe) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_documentoprocesso api_documentoprocess_assunto_id_7441b506_fk_api_assun; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_documentoprocesso
+    ADD CONSTRAINT api_documentoprocess_assunto_id_7441b506_fk_api_assun FOREIGN KEY (assunto_id) REFERENCES public.api_assunto(cod_assunto) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_documentoprocesso api_documentoprocess_classe_id_76b43488_fk_api_class; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_documentoprocesso
+    ADD CONSTRAINT api_documentoprocess_classe_id_76b43488_fk_api_class FOREIGN KEY (classe_id) REFERENCES public.api_classe(cod_classe) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_documentoprocesso api_documentoprocess_competencia_id_a06180c2_fk_api_compe; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_documentoprocesso
+    ADD CONSTRAINT api_documentoprocess_competencia_id_a06180c2_fk_api_compe FOREIGN KEY (competencia_id) REFERENCES public.api_competencia(cod_comp) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_documentoprocesso api_documentoprocess_processo_id_989e3b94_fk_api_proce; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_documentoprocesso
+    ADD CONSTRAINT api_documentoprocess_processo_id_989e3b94_fk_api_proce FOREIGN KEY (processo_id) REFERENCES public.api_processo(cod_proc) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_documentoprocesso api_documentoprocess_tipo_documento_id_fbce891c_fk_api_tipod; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_documentoprocesso
+    ADD CONSTRAINT api_documentoprocess_tipo_documento_id_fbce891c_fk_api_tipod FOREIGN KEY (tipo_documento_id) REFERENCES public.api_tipodocumento(id_tip_doc) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_funcionario api_funcionario_cod_carg_id_f9e13885_fk_api_cargo_cod_carg; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_funcionario
+    ADD CONSTRAINT api_funcionario_cod_carg_id_f9e13885_fk_api_cargo_cod_carg FOREIGN KEY (cod_carg_id) REFERENCES public.api_cargo(cod_carg) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_personagemprocesso api_personagemproces_personagem_id_b9e58ff4_fk_api_perso; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_personagemprocesso
+    ADD CONSTRAINT api_personagemproces_personagem_id_b9e58ff4_fk_api_perso FOREIGN KEY (personagem_id) REFERENCES public.api_personagem(cod_pers) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_personagemprocesso api_personagemproces_processo_id_e79c4330_fk_api_proce; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_personagemprocesso
+    ADD CONSTRAINT api_personagemproces_processo_id_e79c4330_fk_api_proce FOREIGN KEY (processo_id) REFERENCES public.api_processo(cod_proc) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_personagemprocesso api_personagemproces_tipo_personagem_id_e9c2d775_fk_api_tipop; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_personagemprocesso
+    ADD CONSTRAINT api_personagemproces_tipo_personagem_id_e9c2d775_fk_api_tipop FOREIGN KEY (tipo_personagem_id) REFERENCES public.api_tipopersonagem(cod_tip_pers) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_processo api_processo_assunto_id_bb791abc_fk_api_assunto_cod_assunto; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processo
+    ADD CONSTRAINT api_processo_assunto_id_bb791abc_fk_api_assunto_cod_assunto FOREIGN KEY (assunto_id) REFERENCES public.api_assunto(cod_assunto) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_processo api_processo_classe_id_560d82bb_fk_api_classe_cod_classe; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processo
+    ADD CONSTRAINT api_processo_classe_id_560d82bb_fk_api_classe_cod_classe FOREIGN KEY (classe_id) REFERENCES public.api_classe(cod_classe) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_processo api_processo_competencia_id_546603cb_fk_api_compe; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processo
+    ADD CONSTRAINT api_processo_competencia_id_546603cb_fk_api_compe FOREIGN KEY (competencia_id) REFERENCES public.api_competencia(cod_comp) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_processo api_processo_serventia_id_05073f3f_fk_api_serventia_cod_serv; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processo
+    ADD CONSTRAINT api_processo_serventia_id_05073f3f_fk_api_serventia_cod_serv FOREIGN KEY (serventia_id) REFERENCES public.api_serventia(cod_serv) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_processossimilares api_processossimilar_processo_base_id_b7d92ad3_fk_api_proce; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processossimilares
+    ADD CONSTRAINT api_processossimilar_processo_base_id_b7d92ad3_fk_api_proce FOREIGN KEY (processo_base_id) REFERENCES public.api_processo(cod_proc) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_processossimilares api_processossimilar_processo_similar_id_a83cb884_fk_api_proce; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_processossimilares
+    ADD CONSTRAINT api_processossimilar_processo_similar_id_a83cb884_fk_api_proce FOREIGN KEY (processo_similar_id) REFERENCES public.api_processo(cod_proc) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_serventia api_serventia_comarca_id_776a14f3_fk_api_comarca_cod_coma; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_serventia
+    ADD CONSTRAINT api_serventia_comarca_id_776a14f3_fk_api_comarca_cod_coma FOREIGN KEY (comarca_id) REFERENCES public.api_comarca(cod_coma) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_tipoandamento api_tipoandamento_cod_tip_mov_id_e62c86f0_fk_api_tipom; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipoandamento
+    ADD CONSTRAINT api_tipoandamento_cod_tip_mov_id_e62c86f0_fk_api_tipom FOREIGN KEY (cod_tip_mov_id) REFERENCES public.api_tipomovimento(cod_tip_mov) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_tipomovimento api_tipomovimento_cod_tip_mov_pai_id_ad9c6816_fk_api_tipom; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipomovimento
+    ADD CONSTRAINT api_tipomovimento_cod_tip_mov_pai_id_ad9c6816_fk_api_tipom FOREIGN KEY (cod_tip_mov_pai_id) REFERENCES public.api_tipomovimento(cod_tip_mov) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_tipopersonagem api_tipopersonagem_cod_tip_pers_inv_id_cf8773af_fk_api_tipop; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.api_tipopersonagem
+    ADD CONSTRAINT api_tipopersonagem_cod_tip_pers_inv_id_cf8773af_fk_api_tipop FOREIGN KEY (cod_tip_pers_inv_id) REFERENCES public.api_tipopersonagem(cod_tip_pers) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: frontend_avaliacaosimilaridade frontend_avaliacaosi_processo_similar_id_9947f8ef_fk_api_proce; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.frontend_avaliacaosimilaridade
+    ADD CONSTRAINT frontend_avaliacaosi_processo_similar_id_9947f8ef_fk_api_proce FOREIGN KEY (processo_similar_id) REFERENCES public.api_processossimilares(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: frontend_avaliacaosimilaridade frontend_avaliacaosimilaridade_user_id_99f9324c_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.frontend_avaliacaosimilaridade
+    ADD CONSTRAINT frontend_avaliacaosimilaridade_user_id_99f9324c_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: knox_authtoken knox_authtoken_user_id_e5a5d899_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.knox_authtoken
+    ADD CONSTRAINT knox_authtoken_user_id_e5a5d899_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: leads_lead leads_lead_owner_id_1f4568d0_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: elisdbadmin
+--
+
+ALTER TABLE ONLY public.leads_lead
+    ADD CONSTRAINT leads_lead_owner_id_1f4568d0_fk_auth_user_id FOREIGN KEY (owner_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

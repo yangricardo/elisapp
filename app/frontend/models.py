@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from api import models as tj_models
 # Create your models here.
 
@@ -225,3 +227,17 @@ class ProcessoEstatistica(DBView):
     class Meta:
         managed = False
         db_table = 'api_view_processo_estatistica'
+
+
+class AvaliacaoSimilaridade(models.Model):
+    id = models.AutoField(primary_key=True)
+    processo_similar = models.ForeignKey(tj_models.ProcessosSimilares, on_delete=models.CASCADE )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    inicial = models.IntegerField()
+    contestacao = models.IntegerField()
+    sentenca = models.IntegerField()
+    comentario = models.TextField()
+    data = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager
+    class Meta:
+        managed = True

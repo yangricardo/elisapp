@@ -19,7 +19,8 @@ from django.db.models.functions import Coalesce
 from knox.auth import TokenAuthentication
 from rest_framework import mixins, pagination, permissions, status, viewsets
 from rest_framework.response import Response
-from . import models, serializers
+from . import models, serializers, permissions as api_permissions
+from api import models as tj_models
 from backend.celery import cache_pages
 
 # Get an instance of a logger
@@ -97,7 +98,6 @@ def build_processo_serializer(processo, request):
 
 
 def build_processo_similar(processo_base,processo_similar, request):
-    print(processo_base,processo_similar)
     processo_base = build_processo_serializer(processo_base, request)
     processo_similar = build_processo_serializer(processo_similar, request)
     return {
@@ -147,6 +147,16 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
         if page is not None:
             serializer = self.get_serializer(instance=page, many=True)
             return self.get_paginated_response(serializer.data)
+
+
+class AvaliacaoSimilaridadeViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated, api_permissions.IsOwnerOrReadOnly)
+    queryset = models.AvaliacaoSimilaridade.objects.all()
+    serializer_class = serializers.AvaliacaoSimilaridadeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 # Create your views here.
 @ensure_csrf_cookie

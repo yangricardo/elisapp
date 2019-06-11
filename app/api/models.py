@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.fields.related import ForeignKey
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 

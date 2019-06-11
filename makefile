@@ -86,7 +86,7 @@ run-debug:
 	docker-compose exec app python manage-debug.py runserver --noreload 0.0.0.0:9000
 
 backup-db:
-	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb > config/db/elisdb.sql
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb > config/db/elisdb2.sql
 
 restore-db:
 	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb < config/db/elisdb.sql
