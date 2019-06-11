@@ -35,7 +35,7 @@ pipenv-install:
 	pipenv install
 
 pipenv-update:
-	pipenv update-outdated
+	pipenv update --outdated
 	pipenv update
 
 npm-update:
