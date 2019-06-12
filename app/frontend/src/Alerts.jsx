@@ -40,12 +40,16 @@ class Alerts extends Component {
           this.snackAlert(message.login,'info')
         if(message.register)
           this.snackAlert(message.register,'info')
+        if(message.authError)
+          this.snackAlert(message.authError,'error')
         if(message.logout)
           this.snackAlert(message.logout,'info')          
         if(message.notFound)
           this.snackAlert(message.notFound,'error')
         if(message.loginRequired)
           this.snackAlert(message.loginRequired,'error')
+        if(message.loading)
+          this.snackAlert(message.loading,'warning')
     }
   }
 

@@ -9,7 +9,7 @@ import { createMessage, returnError } from '../../actions/message';
 import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses, cachedProcesses ,
     setSearchedProcess,
     setSimilarProcess,} from '../../actions/similarprocesses';
-import { setLoading } from '../../actions/loading';
+import { setLoadingTrue, setLoadingFalse } from '../../actions/loading';
 import MaskedInput from 'react-text-mask';
 import { buildTokenHeader } from '../../actions/auth';
 
@@ -85,10 +85,11 @@ class SearchProcessPage extends Component {
 
     onClick = e => {
         e.preventDefault();
-        const {token, cachedProcesses, setSimilarProcessResults,loadSimilarProcesses,setSearchedProcess,
-            setSimilarProcess,clearSearchedProcess,setLoading,createMessage,returnError} = this.props
+        const {token, cachedProcesses, setSimilarProcessResults,loadSimilarProcesses,
+            setSearchedProcess, setSimilarProcess,clearSearchedProcess,setLoadingFalse,
+            setLoadingTrue,createMessage,returnError} = this.props
         const { processo } = this.state;
-        setLoading();
+        setLoadingTrue();
         this.setState({searched:true})
         if (cachedProcesses.hasOwnProperty(processo.trim())){
             const searchedProcess = cachedProcesses[processo.trim()]
@@ -114,11 +115,11 @@ class SearchProcessPage extends Component {
                     clearSearchedProcess();
                     createMessage({ notFound: "Código de Processo Não Disponível" });
                     this.setState({found,canSearch:true})
-                    setLoading();
+                    setLoadingFalse();
                 }
             })
             .catch(err => {
-                setLoading();
+                setLoadingFalse();
                 this.setState({loading:false, canSearch:true})
                 createMessage({ notFound: "Código de Processo Não Disponível" });
                 returnError(err.response.data, err.response.status);
@@ -134,7 +135,6 @@ class SearchProcessPage extends Component {
             return <Redirect to="/login"/>
         }
         if (found && !canSearch && this.props.searchedProcess.hasOwnProperty('processo_tj') && this.props.similarProcess.hasOwnProperty('processo_tj')){
-            setLoading();
             return <Redirect to='/detalharsentencas'/>
         }
 
@@ -203,7 +203,8 @@ const mapDispatchToProps = {
     createMessage,
     clearSearchedProcess,
     loadSimilarProcesses,
-    setLoading,
+    setLoadingFalse,
+    setLoadingTrue,
     setSimilarProcessResults,
     setSearchedProcess,
     setSimilarProcess,

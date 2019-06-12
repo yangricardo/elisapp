@@ -64,17 +64,18 @@ class DetailSentencesPage extends Component {
     }
 
     onListClick = e => {
-        const { cachedProcesses, setSimilarProcess, loadSimilarProcesses } = this.props
+        const { cachedProcesses, setSimilarProcess, loadSimilarProcesses, createMessage } = this.props
         if (cachedProcesses.hasOwnProperty(e.processo_similar_tj) ){
             setSimilarProcess(cachedProcesses[e.processo_similar_tj]);
         } else {
             loadSimilarProcesses(e.processo_similar_tj, false)
+            createMessage({loading: `Por favor aguarde enquanto os dados do processo de ${e.processo_similar_tj} estão sendo carregados.`})
         }
     }
 
     render() {
         if(!this.props.isAuthenticated){
-            this.props.createMessage({ loginRequired: "Login Required" });
+            this.props.createMessage({ loginRequired: "Autenticação Necessária" });
             return <Redirect to="/login"/>
         }
         const { classes, searchedProcess, similarProcess, cachedProcesses } = this.props;

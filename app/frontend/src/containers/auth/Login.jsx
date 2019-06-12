@@ -76,7 +76,7 @@ class Login extends Component {
                 </Typography>
                 <form onSubmit={this.onSubmit} className={classes.form}>
                     <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="username">Username</InputLabel>
+                        <InputLabel htmlFor="username">Nome de Usuário</InputLabel>
                         <Input  id="username" 
                                 name="username" 
                                 autoComplete="username" 
@@ -85,7 +85,7 @@ class Login extends Component {
                                 value={username}/>
                     </FormControl>
                     <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <InputLabel htmlFor="password">Senha</InputLabel>
                         <Input  name="password"
                                 type="password"
                                 id="password"
@@ -100,10 +100,10 @@ class Login extends Component {
                         color="primary"
                         className={classes.submit}
                     >
-                        Sign in
+                        Entrar
                     </Button>
                     <Typography>
-                        Don't have an account? <LinkRouter to="/register">Register</LinkRouter>
+                        Não possui conta? <LinkRouter to="/register">Registre-se</LinkRouter>
                     </Typography>
                 </form>    
             </Paper>

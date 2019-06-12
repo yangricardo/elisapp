@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { returnError, createMessage } from "./message";
 import store from '../store';
-import {USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_FAIL, LOAD_ASYNC } from './types'
+import {USER_LOADED, CREATE_MESSAGE, AUTH_ERROR, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_FAIL, LOAD_ASYNC_FALSE, LOAD_ASYNC_TRUE } from './types'
 
 // CHECK TOKEN & LOAD USER
 export const loadUser = () => (dispatch, getState) => {
 	// User Loading
-	dispatch({ type: LOAD_ASYNC });
+	dispatch({ type: LOAD_ASYNC_TRUE });
 
 	axios
 	.get("/auth/user/", tokenConfig(getState))
@@ -15,19 +15,23 @@ export const loadUser = () => (dispatch, getState) => {
 			type: USER_LOADED,
 			payload: res.data
 		});
-		dispatch({ type: LOAD_ASYNC });
+		dispatch({ type: LOAD_ASYNC_FALSE });
+		dispatch({
+			type: CREATE_MESSAGE,
+			payload: { login: `Seja bem vindo, ${res.data.user.username}` }
+		})
 	})
 	.catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
 		dispatch({
 			type: AUTH_ERROR
 		});
-		dispatch({ type: LOAD_ASYNC });
+		dispatch({ type: LOAD_ASYNC_FALSE });
 	});
 };
 
 // LOGIN USER
-export const login = (username, password) => dispatch => {
+export const login = (username, password) => (dispatch, getState) => {
 	// Headers
 	const config = {
 	headers: {
@@ -37,21 +41,26 @@ export const login = (username, password) => dispatch => {
 
 	// Request Body
 	const body = JSON.stringify({ username, password });
-
+	dispatch({ type: LOAD_ASYNC_TRUE });
 	axios
 	.post("/auth/login/", body, config)
 	.then(res => {
-		dispatch(createMessage({ login: "Login Success" }));
 		dispatch({
 			type: LOGIN_SUCCESS,
 			payload: res.data
 		});
+		dispatch({ type: LOAD_ASYNC_FALSE });
 	  })
 	  .catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
+		dispatch({ type: LOAD_ASYNC_FALSE });
 		dispatch({
 		  	type: LOGIN_FAIL
 		});
+		dispatch({
+			type: CREATE_MESSAGE,
+			payload: { authError: "Verifique o seu nome de usuário e senha e tente novamente." }
+		})
 	});
 };
 
@@ -66,26 +75,30 @@ export const register = ({ username, password, email }) => dispatch => {
 
 	// Request Body
 	const body = JSON.stringify({ username, email, password });
-
+	dispatch({ type: LOAD_ASYNC_TRUE });
 	axios
 	.post("/auth/register/", body, config)
 	.then(res => {
-		dispatch(createMessage({ register: "Register Success" }));
+		dispatch(createMessage({ register: "Seja bem vindo, seu cadastro foi feito com sucesso!" }));
 		dispatch({
 		type: REGISTER_SUCCESS,
 		payload: res.data
 		});
+		dispatch({ type: LOAD_ASYNC_FALSE });
 	})
 	.catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
 		dispatch({
 		type: REGISTER_FAIL
 		});
+		dispatch({ type: LOAD_ASYNC_FALSE });
+		dispatch(createMessage({ authError: "Por favor, verifique os seus dados de registro!" }));
 	});
 };
 
 // LOGOUT USER
 export const logout = () => (dispatch, getState) => {
+	dispatch({ type: LOAD_ASYNC_TRUE });
 	axios
 	.post("/auth/logout/", null, tokenConfig(getState))
 	.then(res => {
@@ -94,12 +107,15 @@ export const logout = () => (dispatch, getState) => {
 		dispatch({
 		type: LOGOUT_SUCCESS
 		});
+		dispatch({ type: LOAD_ASYNC_FALSE });
 	})
 	.catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
 		dispatch({
 			type: AUTH_ERROR
 		});
+		dispatch({ type: LOAD_ASYNC_FALSE });
+		dispatch(createMessage({ authError: "Credenciais inválidas, entre com seu nome de usuário e senha novamente" }));
 	});
 };
 

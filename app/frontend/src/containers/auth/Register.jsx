@@ -59,7 +59,7 @@ class Register extends Component {
         e.preventDefault();
         const { username, email, password, password2 } = this.state;
         if (password !== password2) {
-          this.props.createMessage({ passwordNotMatch: "Passwords do not match" });
+          this.props.createMessage({ passwordNotMatch: "Senha e Confirmação de Senha não são identicas" });
         } else {
           const newUser = {
             username,
@@ -83,11 +83,11 @@ class Register extends Component {
             <CssBaseline/>
             <Paper className={classes.paper}>
                 <Typography component="h1" variant="h5">
-                    Register
+                    Registro
                 </Typography>
                 <form onSubmit={this.onSubmit} className={classes.form}>
                     <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="username">Username</InputLabel>
+                        <InputLabel htmlFor="username">Nome de Usuário</InputLabel>
                         <Input  id="username" 
                                 name="username" 
                                 autoComplete="username" 
@@ -104,7 +104,7 @@ class Register extends Component {
                                 value={email}/>
                     </FormControl>
                     <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <InputLabel htmlFor="password">Senha</InputLabel>
                         <Input  name="password"
                                 type="password"
                                 id="password"
@@ -113,7 +113,7 @@ class Register extends Component {
                                 value={password}/>
                     </FormControl>
                     <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="password2"> Confirm Password</InputLabel>
+                        <InputLabel htmlFor="password2">Confirmação de Senha</InputLabel>
                         <Input  name="password2"
                                 type="password"
                                 id="password2"
@@ -127,10 +127,10 @@ class Register extends Component {
                         color="primary"
                         className={classes.submit}
                     >
-                        Sign in
+                        Registro
                     </Button>
                     <Typography>
-                        Already have an account? <LinkRouter to="/login">Login</LinkRouter>
+                        Já possui conta? <LinkRouter to="/login">Entrar com nome de usuário e senha</LinkRouter>
                     </Typography>
                 </form>    
             </Paper>
