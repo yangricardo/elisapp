@@ -5,11 +5,10 @@ import { Redirect } from "react-router-dom";
 import { withStyles, Typography,Box, Grid, List, ListItem, ListItemText, ListItemIcon, Divider,Chip, createMuiTheme, Button } from '@material-ui/core';
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
-import { setLoading, setLoadingTrue, setLoadingFalse } from '../../actions/loading';
+import { setLoadingTrue, setLoadingFalse } from '../../actions/loading';
 import { setSimilarProcess, setSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
 import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
-import { Search } from '@material-ui/icons';
 import AvailSimilarProcess from './AvailSimilarProcess.jsx';
 
 const styles = theme => ({
@@ -55,11 +54,11 @@ class DetailSentencesPage extends Component {
         this.state = {
             loading : false,
         }
-        this.props.setLoading()
+        this.props.setLoadingTrue()
     }
 
     componentDidMount(){
-        const {loadSimilarProcesses, searchedProcess, setLoading} = this.props
+        const {loadSimilarProcesses, searchedProcess} = this.props
         loadSimilarProcesses(searchedProcess['processo_tj'], false)
     }
 
@@ -68,8 +67,8 @@ class DetailSentencesPage extends Component {
         if (cachedProcesses.hasOwnProperty(e.processo_similar_tj) ){
             setSimilarProcess(cachedProcesses[e.processo_similar_tj]);
         } else {
+            createMessage({loading: `Por favor aguarde enquanto os dados do processo ${e.processo_similar_tj} estão sendo carregados.`})
             loadSimilarProcesses(e.processo_similar_tj, false)
-            createMessage({loading: `Por favor aguarde enquanto os dados do processo de ${e.processo_similar_tj} estão sendo carregados.`})
         }
     }
 
@@ -185,7 +184,6 @@ const mapDispatchToProps = {
     createMessage,
     setSearchedProcess,
     setSimilarProcess,
-    setLoading,
     setLoadingFalse,
     setLoadingTrue,
     loadSimilarProcesses

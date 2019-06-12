@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import { enqueueSnackbar } from './actions/snackbar'
+import { enqueueSnackbar, removeSnackbar } from './actions/snackbar'
 import { Close } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
 import Notifier from './notifier.js';
@@ -50,16 +50,23 @@ class Alerts extends Component {
           this.snackAlert(message.loginRequired,'error')
         if(message.loading)
           this.snackAlert(message.loading,'warning')
+          if(message.loadingFail)
+          this.snackAlert(message.loadingFail,'error')
+        if(message.ratingSuccess)
+          this.snackAlert(message.ratingSuccess,'success')
+        if(message.ratingSuccess)
+          this.snackAlert(message.ratingSuccess,'error')
     }
   }
 
   snackAlert(message,variant) {
-    this.props.enqueueSnackbar({
+    const key = this.props.enqueueSnackbar({
         message: message,
         options: {
             variant: variant,
+            preventDuplicate: true,
             action: (
-                <IconButton size="small" color="inherit"><Close/></IconButton>
+                <IconButton onClick={() => { this.props.removeSnackbar(key) }} size="small" color="inherit"><Close/></IconButton>
             ),
         },
     });
@@ -79,6 +86,6 @@ const mapStateToProps = (state) => ({
   message: state.messageReducer,
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ enqueueSnackbar }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ enqueueSnackbar,removeSnackbar }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Alerts)

@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { returnError, createMessage } from "./message";
-import store from '../store';
+import { returnError } from "./message";
 import {USER_LOADED, CREATE_MESSAGE, AUTH_ERROR, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_FAIL, LOAD_ASYNC_FALSE, LOAD_ASYNC_TRUE } from './types'
 
 // CHECK TOKEN & LOAD USER
@@ -16,10 +15,6 @@ export const loadUser = () => (dispatch, getState) => {
 			payload: res.data
 		});
 		dispatch({ type: LOAD_ASYNC_FALSE });
-		dispatch({
-			type: CREATE_MESSAGE,
-			payload: { login: `Seja bem vindo, ${res.data.user.username}` }
-		})
 	})
 	.catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
@@ -53,10 +48,10 @@ export const login = (username, password) => (dispatch, getState) => {
 	  })
 	  .catch(err => {
 		dispatch(returnError(err.response.data, err.response.status));
-		dispatch({ type: LOAD_ASYNC_FALSE });
+		dispatch({ type: LOAD_ASYNC_FALSE })
 		dispatch({
 		  	type: LOGIN_FAIL
-		});
+		})
 		dispatch({
 			type: CREATE_MESSAGE,
 			payload: { authError: "Verifique o seu nome de usuário e senha e tente novamente." }
@@ -79,7 +74,10 @@ export const register = ({ username, password, email }) => dispatch => {
 	axios
 	.post("/auth/register/", body, config)
 	.then(res => {
-		dispatch(createMessage({ register: "Seja bem vindo, seu cadastro foi feito com sucesso!" }));
+		dispatch({
+			type: CREATE_MESSAGE,
+			payload: { register: "Seja bem vindo, seu cadastro foi feito com sucesso!" }
+		})
 		dispatch({
 		type: REGISTER_SUCCESS,
 		payload: res.data
@@ -92,7 +90,10 @@ export const register = ({ username, password, email }) => dispatch => {
 		type: REGISTER_FAIL
 		});
 		dispatch({ type: LOAD_ASYNC_FALSE });
-		dispatch(createMessage({ authError: "Por favor, verifique os seus dados de registro!" }));
+		dispatch({
+			type: CREATE_MESSAGE,
+			payload: { authError: "Por favor, verifique os seus dados de registro!" }
+		})
 	});
 };
 
@@ -102,7 +103,10 @@ export const logout = () => (dispatch, getState) => {
 	axios
 	.post("/auth/logout/", null, tokenConfig(getState))
 	.then(res => {
-		dispatch(createMessage({ logout: "Logged Out" }));
+		dispatch({
+			type: CREATE_MESSAGE,
+			payload: { logout: "Logged Out" }
+		})
 		dispatch({ type: 'CLEAR_LEADS' });
 		dispatch({
 		type: LOGOUT_SUCCESS
@@ -115,7 +119,10 @@ export const logout = () => (dispatch, getState) => {
 			type: AUTH_ERROR
 		});
 		dispatch({ type: LOAD_ASYNC_FALSE });
-		dispatch(createMessage({ authError: "Credenciais inválidas, entre com seu nome de usuário e senha novamente" }));
+		dispatch({
+			type: CREATE_MESSAGE,
+			payload: { authError: "Credenciais inválidas, entre com seu nome de usuário e senha novamente" }
+		})
 	});
 };
 

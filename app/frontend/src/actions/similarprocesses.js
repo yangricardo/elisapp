@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {SUBMIT_RATING_FAIL, SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS} from './types';
+import {CREATE_MESSAGE, SUBMIT_RATING_FAIL, SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS} from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
 
@@ -66,6 +66,10 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatc
             })
             .catch(err => {
                 returnError(err.response.data, err.response.status);
+                dispatch({
+                    type: CREATE_MESSAGE,
+                    payload: { loadingFail: `Falha ao carregar dados do processo similar ${processo.processo_similar_tj}` }
+                })
             });
         }
     }
@@ -73,9 +77,10 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatc
     if (onSearch) {
         fetchProcessData(similarProcesses[0])
     } else {
-        for (let processo of similarProcesses) {
-            fetchProcessData(processo)
-        }
+        if (similarProcesses !== undefined)
+            for (let processo of similarProcesses) {
+                fetchProcessData(processo)
+            }
     }
 }
 
@@ -116,13 +121,19 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
     }
     axios.post('/api/models/avaliacoes/',rating, tokenConfig(getState))
     .then( res =>{
-        console.info(res)
+        dispatch({
+			type: CREATE_MESSAGE,
+			payload: { ratingSuccess: `Avaliação de Similaridade enviada com sucesso` }
+		})
         dispatch({
             type : SUBMIT_RATING_SUCCESS
         })
     })
     .catch(err =>{
-        console.log(err)
+        dispatch({
+			type: CREATE_MESSAGE,
+			payload: { ratingFail: `Falha ao enviar Avaliação de Similaridade` }
+		})
         dispatch({
             type : SUBMIT_RATING_FAIL
         })
