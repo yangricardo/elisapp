@@ -70,7 +70,6 @@ class SearchProcessPage extends Component {
             processo : "",
             found : false,
             searched : false,
-            loading : false, 
             canSearch : false,
         };
     }
@@ -80,7 +79,7 @@ class SearchProcessPage extends Component {
         this.setState({
             [e.target.name]: e.target.value,
             canSearch : reTJ.test(e.target.value)
-            ,searched : false, loading : false, found: false
+            ,searched : false,  found: false
         })
     }
 
@@ -90,14 +89,14 @@ class SearchProcessPage extends Component {
             setSimilarProcess,clearSearchedProcess,setLoading,createMessage,returnError} = this.props
         const { processo } = this.state;
         setLoading();
-        this.setState({searched:true, loading:true})
+        this.setState({searched:true})
         if (cachedProcesses.hasOwnProperty(processo.trim())){
             const searchedProcess = cachedProcesses[processo.trim()]
             if (cachedProcesses.hasOwnProperty(searchedProcess.processos_similares[0].processo_similar_tj)){
                 const similarProcess = cachedProcesses[searchedProcess.processos_similares[0].processo_similar_tj]
                 setSearchedProcess(searchedProcess);
                 setSimilarProcess(similarProcess);
-                this.setState({found:true, loading:false})
+                this.setState({found:true,  canSearch:false})
             }
         } else {
             axios.get(`/api/models/processossimilaresreport/?processo_tj=${processo.trim()}`, buildTokenHeader(token))
@@ -107,17 +106,20 @@ class SearchProcessPage extends Component {
                     const {results} = res.data
                     setSimilarProcessResults(results);
                     loadSimilarProcesses(results[0]['processo_base_tj'], true)
-                    this.setState({found})
+                    this.setState({
+                        found, 
+                        canSearch:false
+                    })
                 } else {
                     clearSearchedProcess();
                     createMessage({ notFound: "Código de Processo Não Disponível" });
+                    this.setState({found,canSearch:true})
                     setLoading();
                 }
-                this.setState({loading:false})
             })
             .catch(err => {
                 setLoading();
-                this.setState({loading:false})
+                this.setState({loading:false, canSearch:true})
                 createMessage({ notFound: "Código de Processo Não Disponível" });
                 returnError(err.response.data, err.response.status);
             });
@@ -131,7 +133,7 @@ class SearchProcessPage extends Component {
             createMessage({ loginRequired: "Autenticação necessária" });
             return <Redirect to="/login"/>
         }
-        if (found && !loading && this.props.searchedProcess.hasOwnProperty('processo_tj') && this.props.similarProcess.hasOwnProperty('processo_tj')){
+        if (found && !canSearch && this.props.searchedProcess.hasOwnProperty('processo_tj') && this.props.similarProcess.hasOwnProperty('processo_tj')){
             setLoading();
             return <Redirect to='/detalharsentencas'/>
         }
@@ -168,7 +170,7 @@ class SearchProcessPage extends Component {
                                 }}
                                 >
                             </TextField>
-                            <Button size='large' type="button" disabled={!canSearch || loading} color="primary" 
+                            <Button size='large' type="button" disabled={!canSearch} color="primary" 
                                 className={classes.button} onClick={this.onClick} variant="contained" 
                                 >
                                     Consultar Processo 

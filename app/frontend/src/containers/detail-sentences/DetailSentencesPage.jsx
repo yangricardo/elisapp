@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import { withStyles, Typography,Box, Grid, List, ListItem, ListItemText, ListItemIcon, Divider,Chip, createMuiTheme, Button } from '@material-ui/core';
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
-import { setLoading } from '../../actions/loading';
+import { setLoading, setLoadingTrue, setLoadingFalse } from '../../actions/loading';
 import { setSimilarProcess, setSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
 import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
@@ -72,13 +72,12 @@ class DetailSentencesPage extends Component {
         }
     }
 
-
     render() {
         if(!this.props.isAuthenticated){
             this.props.createMessage({ loginRequired: "Login Required" });
             return <Redirect to="/login"/>
         }
-        const { classes, searchedProcess, similarProcess } = this.props;
+        const { classes, searchedProcess, similarProcess, cachedProcesses } = this.props;
         if(searchedProcess === {}){
             if (!searchedProcess.hasOwnProperty('id')){
                 return <Redirect to="/buscarprocesso"/>
@@ -141,14 +140,11 @@ class DetailSentencesPage extends Component {
                                 <Fragment key={index} >
                                     <ListItem 
                                         button onClick={this.onListClick.bind(this, item)}
-                                        style={{
-                                            backgroundColor : 
-                                                (item.similaridade <= 40 ? deepOrange[50] : item.similaridade <= 70 ? amber[50] : teal[50]),
-                                        }}
                                         selected={item.processo_similar_tj === similarProcess.processo_tj} 
-                                        disable={this.state.loading.toString()}>
+                                        disable={cachedProcesses.hasOwnProperty(item.processo_similar_tj).toString()}>
                                         <ListItemText primary={
-                                            <Typography variant="button">
+                                           <Typography 
+                                           variant="button">{cachedProcesses.hasOwnProperty(item.processo_similar_tj)?this.props.setLoadingFalse():this.props.setLoadingTrue()}
                                             {item.processo_similar_tj}
                                             { item.processo_similar_tj === similarProcess.processo_tj ? '  •': undefined }
                                             </Typography>
@@ -189,6 +185,8 @@ const mapDispatchToProps = {
     setSearchedProcess,
     setSimilarProcess,
     setLoading,
+    setLoadingFalse,
+    setLoadingTrue,
     loadSimilarProcesses
 }
 

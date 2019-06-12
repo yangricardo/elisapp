@@ -1,4 +1,6 @@
 export const LOAD_ASYNC = 'LOAD_ASYNC';
+export const LOAD_ASYNC_TRUE = 'LOAD_ASYNC_TRUE';
+export const LOAD_ASYNC_FALSE = 'LOAD_ASYNC_FALSE';
 export const GET_ERRORS = 'GET_ERRORS';
 export const ENQUEUE_SNACKBAR = 'ENQUEUE_SNACKBAR';
 export const REMOVE_SNACKBAR = 'REMOVE_SNACKBAR';

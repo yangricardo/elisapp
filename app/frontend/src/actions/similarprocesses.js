@@ -36,7 +36,6 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatc
         const similarProcessURL = processo.id.replace(urlRE,"")
         const id = similarProcessURLRE.exec(processo.id)[2]
         if (!(id in cachedSimilarProcesses) || !(id in cachedProcesses) ){
-            dispatch({type:LOAD_ASYNC})
             axios.get(similarProcessURL, tokenConfig(getState))
             .then(res => {
                 if (res.data !== undefined){
@@ -63,11 +62,9 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatc
                         type : SET_SIMILAR_PROCESS_RESULTS,
                         payload : processo_similar.processos_similares
                     })
-                    dispatch({type:LOAD_ASYNC})
                 }
             })
             .catch(err => {
-                dispatch({type:LOAD_ASYNC})
                 returnError(err.response.data, err.response.status);
             });
         }
