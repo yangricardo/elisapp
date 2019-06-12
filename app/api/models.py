@@ -260,3 +260,21 @@ class ProcessosSimilares(models.Model):
 
     def __str__(self):
         return 'Base: %s\n%s\n%.2f' % (self.processo_base, self.processo_similar, self.similaridade) 
+
+
+class GrupoSimilar(models.Model):
+    descricao = models.CharField(max_length=150, db_index=True)
+    user = models.ForeignKey(User,db_index=True,on_delete=models.DO_NOTHING)
+    objects = models.Manager
+
+
+class GrupoSimilarUsuarios(models.Model):
+    grupo = models.ForeignKey(GrupoSimilar,db_index=True, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User,db_index=True,on_delete=models.DO_NOTHING)
+    objects = models.Manager
+
+
+class GrupoSimilarProcessos(models.Model):
+    grupo = models.ForeignKey(GrupoSimilar,db_index=True, on_delete=models.DO_NOTHING)
+    processo = models.ForeignKey(Processo,db_index=True, on_delete=models.DO_NOTHING)
+    objects = models.Manager

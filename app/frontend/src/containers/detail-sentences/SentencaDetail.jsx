@@ -181,7 +181,7 @@ class SentencaDetail extends Component {
                                         }
                                     </Typography>
                                 </Box>
-                                <Box maxWidth={550}>
+                                <Box maxWidth={530}>
                                 <AppBar position="static" color={bgcolor}>
                                 <Tabs
                                     value={sentenca}
