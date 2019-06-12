@@ -66,7 +66,7 @@ class Alerts extends Component {
             variant: variant,
             preventDuplicate: true,
             action: (
-                <IconButton onClick={() => { this.props.removeSnackbar(key) }} size="small" color="inherit"><Close/></IconButton>
+                <IconButton onClick={() => { this.props.closeSnackbar(key) }} size="small" color="inherit"><Close/></IconButton>
             ),
         },
     });
