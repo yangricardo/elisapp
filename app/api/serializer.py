@@ -159,3 +159,19 @@ class DescricaoProcessoSerializer(serializers.Serializer):
     class Meta:
         model = tj_model.Processo
         fields = ('cod_proc','cod_cnj','advogado_processo','personagem_processo','processo_andamento')
+
+
+class GrupoSimilarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.GrupoSimilar
+        fields = '__all__'
+
+class GrupoSimilarProcessosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.GrupoSimilarProcessos
+        fields = '__all__'
+
+class GrupoSimilarUsuariosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = tj_model.GrupoSimilarUsuarios
+        fields = '__all__'

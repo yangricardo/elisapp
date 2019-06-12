@@ -3,7 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=node,linux,macos,django,python,windows,jupyternotebook,visualstudiocode,jupyternotebooks
 
 elisdb.sql
-config/db/elisdb.sql
+elisdb.*.sql
 
 ### Django ###
 *.log

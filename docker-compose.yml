@@ -5,7 +5,7 @@ services:
   
   postgres:
     restart: always
-    image: postgres:latest #yangricardo/elisdb:latest
+    image: yangricardo/elisdb:latest #postgres:latest #
     container_name: elisapp_postgres
     hostname: postgres
     expose:
@@ -89,8 +89,8 @@ services:
     command: celery -A backend worker -E -l info
     volumes:
       - ./app:/app
-    ports:
-      - 5555:5555
+    expose:
+      - 5555
     depends_on:
       - app
       - redis

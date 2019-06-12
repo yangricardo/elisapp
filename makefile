@@ -22,6 +22,11 @@ stop:
 down:
 	docker-compose down
 
+prune:
+	docker container prune <<< y
+	docker image prune <<< y
+	docker volume prune <<< y
+
 create-network:
 	docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 elisapp_network
 
@@ -86,7 +91,22 @@ run-debug:
 	docker-compose exec app python manage-debug.py runserver --noreload 0.0.0.0:9000
 
 backup-db:
+	make backup-db-schema
+	make backup-db-data
+	make backup-db-views
+
+backup-full-db:
 	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb > config/db/elisdb.sql
+
+backup-db-data:
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin --data-only elisdb > config/db/elisdb.1.data.sql
+
+backup-db-schema:
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin --schema-only elisdb > config/db/elisdb.0.schema.sql
+
+backup-db-views:
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin -s -t 'api_mview*' elisdb > config/db/elisdb.2.api_mviews.sql
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin -s -t 'api_view*' elisdb > config/db/elisdb.3.api_views.sql
 
 restore-db:
 	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb < config/db/elisdb.sql

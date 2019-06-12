@@ -289,3 +289,18 @@ class RelatorioProcessosSimilaresViewSet(viewsets.GenericViewSet, viewsets.mixin
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class GrupoSimilarViewSet(TJModelViewSet):
+    queryset = tj_models.GrupoSimilar.objects.all()
+    serializer_class = serializer.GrupoSimilarSerializer
+
+
+class GrupoSimilarProcessosViewSet(TJModelViewSet):
+    queryset = tj_models.GrupoSimilarProcessos.objects.all()
+    serializer_class = serializer.GrupoSimilarProcessosSerializer
+
+
+class GrupoSimilarUsuariosViewSet(TJModelViewSet):
+    queryset = tj_models.GrupoSimilarUsuarios.objects.all()
+    serializer_class = serializer.GrupoSimilarUsuariosSerializer
