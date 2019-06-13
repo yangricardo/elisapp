@@ -127,6 +127,11 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
     @method_decorator(cache_page(CACHE_TTL))
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset()).order_by('-similaridade')
+        
+        random = self.request.query_params.get('random',None)
+        if random is not None:
+            queryset = queryset.order_by('?')[:int(random)]
+        
         processo_tj = self.request.query_params.get('processo_tj', None)
         if processo_tj is not None:
             queryset = queryset.filter(processo_base_tj=processo_tj)
