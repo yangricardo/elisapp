@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
 import PropTypes from 'prop-types'
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
-import { withStyles, CssBaseline, Box, TextField, Grid, Button } from '@material-ui/core';
+import { withStyles, CssBaseline, Box, List, Typography, Divider,ListItem, ListItemText, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage, returnError } from '../../actions/message';
 import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses, cachedProcesses ,
     setSearchedProcess,
@@ -12,6 +12,7 @@ import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses, c
 import { setLoadingTrue, setLoadingFalse } from '../../actions/loading';
 import MaskedInput from 'react-text-mask';
 import { buildTokenHeader } from '../../actions/auth';
+import {cyan} from '@material-ui/core/colors/';
 
 const styles = theme => ({
     main: {
@@ -19,7 +20,7 @@ const styles = theme => ({
         display: 'flex', // Fix IE 11 issue.
     },
     paper: {
-        marginLeft: theme.spacing(-2),
+        marginLeft: theme.spacing(-10),
         marginTop: theme.spacing(20),
         display: 'flex',
         alignContent: 'center',
@@ -74,13 +75,33 @@ class SearchProcessPage extends Component {
         };
     }
 
+    componentDidMount(){
+        axios.get(`/api/models/processossimilaresreport/?random=15`, buildTokenHeader(this.props.token))
+            .then(res => {
+                const found = res.data.results !== undefined
+                if (found) {
+                    this.setState({
+                        sugestions : res.data.results
+                    })
+                } 
+            })
+            .catch(err => {
+                setLoadingFalse();
+                returnError(err.response.data, err.response.status);
+            });
+    }
+
     onChange = e => {
         const reTJ = new RegExp('\\d{4}\\.\\d{3}\\.\\d{6}-\\d(\\s|\\w)?');
         this.setState({
-            [e.target.name]: e.target.value,
+            [e.target.name]: e.target.name === 'processo' ? e.target.value.replace("(\s+\.?-?)",'') : e.target.value,
             canSearch : reTJ.test(e.target.value)
             ,searched : false,  found: false
         })
+    }
+
+    onListClick = e => {
+        this.setState({processo:e.processo_base_tj, canSearch : true})
     }
 
     onClick = e => {
@@ -127,8 +148,30 @@ class SearchProcessPage extends Component {
         }
     }
 
+    sugestionBox = sugestions =>{
+        return (
+            sugestions !== undefined ?
+            <Box boxShadow={2} borderRadius={10} component={List} dense>
+            { sugestions !== undefined ?
+                sugestions.map((item,index)=>{
+                return (
+                <Fragment key={index} >
+                    <ListItem button onClick={this.onListClick.bind(this, item)}>
+                        <ListItemText primary={
+                            <Typography variant="button">{item.processo_base_tj}</Typography>
+                        }/>
+                    </ListItem>
+                    <Divider component="li"  light />
+                </Fragment>
+                )})
+                : undefined
+            }
+            </Box> : undefined
+        )
+    }
+
     render() {
-        const {loading, searched, found, canSearch } = this.state
+        const {loading, sugestions ,found, canSearch } = this.state
         const {isAuthenticated, createMessage, classes} = this.props
         if(!isAuthenticated){
             createMessage({ loginRequired: "Autenticação necessária" });
@@ -161,7 +204,7 @@ class SearchProcessPage extends Component {
                                 label="Processo"
                                 disabled={loading}
                                 className={classes.textField}
-                                value={this.state.name}
+                                value={this.state.processo}
                                 onChange={this.onChange}
                                 margin="normal"
                                 variant="outlined"
@@ -178,6 +221,24 @@ class SearchProcessPage extends Component {
                         </form>
                     </Box>
                     </Grid>
+                    <Grid item>
+                        <Box mt={2} maxWidth={600}>
+                            { 
+                                sugestions !== undefined ?
+                                <Fragment>
+                                <Typography variant='overline'>Sugestões de Processos</Typography>
+                                <Grid container
+                                    spacing={2}
+                                >
+                                    <Grid item>{this.sugestionBox(sugestions.slice(0,5))}</Grid>
+                                    <Grid item>{this.sugestionBox(sugestions.slice(5,10))}</Grid>
+                                    <Grid item>{this.sugestionBox(sugestions.slice(10,15))}</Grid>
+                                </Grid>
+                                </Fragment>
+                                : undefined
+                            }
+                            </Box>
+                        </Grid>
                     <Grid item xs md/>
                 </Grid>
                 </Grid>
