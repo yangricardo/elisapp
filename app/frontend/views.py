@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404 as _get_list_or_404, render
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.vary import vary_on_cookie
 from django.db.models.functions import Coalesce
@@ -21,7 +21,6 @@ from rest_framework import mixins, pagination, permissions, status, viewsets
 from rest_framework.response import Response
 from . import models, serializers, permissions as api_permissions
 from api import models as tj_models
-from backend.celery import cache_pages
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -156,12 +155,18 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
 
 class AvaliacaoSimilaridadeViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, api_permissions.IsOwnerOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, api_permissions.IsOwner)
     queryset = models.AvaliacaoSimilaridade.objects.all()
     serializer_class = serializers.AvaliacaoSimilaridadeSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(user=self.request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 # Create your views here.
 @ensure_csrf_cookie

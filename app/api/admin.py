@@ -1,5 +1,6 @@
 # from django.db.models.base import ModelBase
 from django.contrib import admin
+from . import models
 # from api import models
 
 # for model_name in dir(models):

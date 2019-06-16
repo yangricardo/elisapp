@@ -105,7 +105,7 @@ export const logout = () => (dispatch, getState) => {
 	.then(res => {
 		dispatch({
 			type: CREATE_MESSAGE,
-			payload: { logout: "Logged Out" }
+			payload: { logout: "Até a próxima!" }
 		})
 		dispatch({ type: 'CLEAR_LEADS' });
 		dispatch({

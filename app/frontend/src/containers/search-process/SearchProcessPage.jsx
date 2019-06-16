@@ -76,6 +76,7 @@ class SearchProcessPage extends Component {
     }
 
     componentDidMount(){
+        this.props.createMessage({ loadingSugestions: "Obtendo sugestões de processos, aguarde..." });
         axios.get(`/api/models/processossimilaresreport/?random=15`, buildTokenHeader(this.props.token))
             .then(res => {
                 const found = res.data.results !== undefined

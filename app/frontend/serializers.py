@@ -114,7 +114,7 @@ class ListaSimilaresSerializer(serializers.ModelSerializer):
 
 
 class AvaliacaoSimilaridadeSerializer(serializers.ModelSerializer):
-
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = views.AvaliacaoSimilaridade
-        fields = ('processo_similar','inicial','contestacao','sentenca','comentario')
+        fields = ('user','processo_similar','inicial','contestacao','sentenca','comentario')

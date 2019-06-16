@@ -1,5 +1,8 @@
 import axios from 'axios';
-import {CREATE_MESSAGE, SUBMIT_RATING_FAIL, SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS} from './types';
+import {CREATE_MESSAGE,SELECT_SIMILAR_PROCESSES, CLEAR_SELECTED_SIMILAR_PROCESSES,SUBMIT_RATING_FAIL, 
+    SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, 
+    LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS
+} from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
 
@@ -111,6 +114,17 @@ export const setSimilarProcessResults = (similarProcessResults) => dispatch => {
     })
 }
 
+export const selectSimilarProcesses = (selectedSimilarProcesses) => (dispatch, getState) => {
+    dispatch({
+        type : SELECT_SIMILAR_PROCESSES,
+        payload : selectedSimilarProcesses
+    })
+}
+
+export const clearSelectedSimilarProcesses = () => (dispatch) => {
+    dispatch({type:CLEAR_SELECTED_SIMILAR_PROCESSES})
+}
+
 export const submitRating = (processo_similar, inicial, contestacao, sentenca, comentario) => (dispatch, getState) => {
     const rating = {
         processo_similar : similarProcessURLRE.exec(processo_similar.id)[2],
@@ -137,5 +151,22 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
         dispatch({
             type : SUBMIT_RATING_FAIL
         })
+        dispatch(returnError(err.response.data, err.response.status))
+    })
+}
+
+export const getSimilarGroups = () => (dispatch) => {
+    axios.post('/api/models/gruposimilares/',rating, tokenConfig(getState))
+    .then( res =>{
+        dispatch({
+            type: GET_SIMILAR_GROUPS,
+            payload: res.data
+        })
+    })
+    .catch(err =>{
+        dispatch({
+			type: CREATE_MESSAGE,
+			payload: { fetchError: `Falha ao obter grupos de similaridade registrados` }
+		})
     })
 }

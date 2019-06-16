@@ -13,7 +13,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404 as _get_list_or_404
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 from django.views.decorators.vary import vary_on_cookie
 from knox.auth import TokenAuthentication
 from rest_framework import mixins, pagination, permissions, status, viewsets
@@ -23,6 +23,7 @@ from backend.celery import app
 
 from . import models as tj_models
 from . import serializer
+from frontend import permissions as api_permissions
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -48,6 +49,7 @@ class TJModelViewSet(viewsets.ModelViewSet):
         logger.info(serializer)
         return Response(serializer.data)
 
+    @method_decorator(never_cache)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
         if type(serializer.initial_data) is not list:
@@ -291,16 +293,30 @@ class RelatorioProcessosSimilaresViewSet(viewsets.GenericViewSet, viewsets.mixin
         return Response(serializer.data)
 
 
-class GrupoSimilarViewSet(TJModelViewSet):
+class UserModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated, api_permissions.IsOwner)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(user=self.request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class GrupoSimilarViewSet(UserModelViewSet):
     queryset = tj_models.GrupoSimilar.objects.all()
     serializer_class = serializer.GrupoSimilarSerializer
 
 
-class GrupoSimilarProcessosViewSet(TJModelViewSet):
+class GrupoSimilarProcessosViewSet(UserModelViewSet):
     queryset = tj_models.GrupoSimilarProcessos.objects.all()
     serializer_class = serializer.GrupoSimilarProcessosSerializer
+    
 
-
-class GrupoSimilarUsuariosViewSet(TJModelViewSet):
+class GrupoSimilarUsuariosViewSet(UserModelViewSet):
     queryset = tj_models.GrupoSimilarUsuarios.objects.all()
     serializer_class = serializer.GrupoSimilarUsuariosSerializer

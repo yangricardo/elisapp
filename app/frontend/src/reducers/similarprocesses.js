@@ -1,49 +1,77 @@
-import { CACHE_SIMILAR_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, CLEAR_SEARCHED_PROCESS, SET_SIMILAR_PROCESS_RESULTS } from "../actions/types";
+import { CACHE_SIMILAR_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, CLEAR_SEARCHED_PROCESS, 
+    SET_SIMILAR_PROCESS_RESULTS, CLEAR_SELECTED_SIMILAR_PROCESSES, SELECT_SIMILAR_PROCESSES,
+    GET_SIMILAR_GROUPS
+} from "../actions/types";
 
 const initialState = {
     searchedProcess : {},
     similarProcess : {},
+    similarGroups : [],
+    selectedSimilarProcesses : [],
     cachedSimilarProcesses : {},
     cachedProcesses : {}
 }
 
+// const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
+// var id;
+
+
 export default function(state = initialState, action) {
-    const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
-    var id;
+    const payload = action.payload
     switch(action.type) {
         case CACHE_SIMILAR_PROCESS: 
             return {
                 ...state,
                 cachedProcesses : {
                     ...state.cachedProcesses, 
-                    [action.payload.processo_tj]: action.payload
+                    [payload.processo_tj]: payload
                 }
             }
         case SET_SEARCHED_PROCESS:
             return {
                 ...state,
-                searchedProcess : action.payload,
+                searchedProcess : payload,
             }
         case SET_SIMILAR_PROCESS:
             return {
                 ...state,
-                similarProcess : action.payload,
+                similarProcess : payload,
             }
         case SET_SIMILAR_PROCESS_RESULTS:
-            const payload = action.payload
             const processoTJ =  Array.isArray(payload) ? payload[0].processo_base_tj : payload.processo_tj
             return {
                 ...state,
                 cachedSimilarProcesses : {
                     ...state.cachedSimilarProcesses, 
-                    [processoTJ]: action.payload
+                    [processoTJ]: payload
                 }
+            }
+        case SELECT_SIMILAR_PROCESSES :
+            return {
+                ...state,
+                selectedSimilarProcesses : [
+                    ...state.selectedSimilarProcesses,
+                    payload
+                ]
+            }
+        case CLEAR_SELECTED_SIMILAR_PROCESSES:
+            return {
+                ...state,
+                selectedSimilarProcesses : []
             }
         case CLEAR_SEARCHED_PROCESS:
             return {
                 ...state,
                 searchedProcess : {},
                 similarProcess : {}
+            }
+        case GET_SIMILAR_GROUPS:
+            return {
+                ...state,
+                similarGroups : [
+                    ...state.similarGroups,
+                    payload
+                ]
             }
         default:
             return state

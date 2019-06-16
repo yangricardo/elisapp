@@ -10,6 +10,7 @@ import { setSimilarProcess, setSearchedProcess, loadSimilarProcesses } from '../
 import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
 import AvailSimilarProcess from './AvailSimilarProcess.jsx';
+import NewSimilarGroup from './NewSimilarGroup.jsx';
 
 const styles = theme => ({
     content: {
@@ -51,8 +52,12 @@ export const similarTheme = createMuiTheme({
 class DetailSentencesPage extends Component {
     constructor (props){
         super(props)
+        const {searchedProcess, similarProcess} = this.props
         this.state = {
             loading : false,
+            similarProcesses : searchedProcess.processos_similares.filter(similar => {
+                return similar.processo_similar_tj === similarProcess.processo_tj
+            })[0]
         }
         this.props.setLoadingTrue()
     }
@@ -63,9 +68,14 @@ class DetailSentencesPage extends Component {
     }
 
     onListClick = e => {
-        const { cachedProcesses, setSimilarProcess, loadSimilarProcesses, createMessage } = this.props
+        const { cachedProcesses, searchedProcess, setSimilarProcess, loadSimilarProcesses, createMessage } = this.props
         if (cachedProcesses.hasOwnProperty(e.processo_similar_tj) ){
             setSimilarProcess(cachedProcesses[e.processo_similar_tj]);
+            this.setState({
+                similarProcesses : searchedProcess.processos_similares.filter(similar => {
+                    return similar.processo_similar_tj === e.processo_similar_tj
+                })[0]
+            })
         } else {
             createMessage({loading: `Por favor aguarde enquanto os dados do processo ${e.processo_similar_tj} estão sendo carregados.`})
             loadSimilarProcesses(e.processo_similar_tj, false)
@@ -84,11 +94,8 @@ class DetailSentencesPage extends Component {
             }
         }
         const { processos_similares } = searchedProcess;
-        
-        const similaridade = processos_similares.filter( similarData => {
-            return similarData.processo_base_tj === searchedProcess.processo_tj &&
-                similarData.processo_similar_tj === similarProcess.processo_tj
-        } )[0].similaridade || undefined
+
+        const {similaridade} = this.state.similarProcesses
 
         return (
             <div >
@@ -123,13 +130,11 @@ class DetailSentencesPage extends Component {
                         </Grid>
                         <Grid item xs>
                             <Box className={classes.gridRow}>
-                            <AvailSimilarProcess/>
+                            <AvailSimilarProcess similarProcesses={this.state.similarProcesses}/>
                             </Box>
                         </Grid>
                         <Grid item xs className={classes.gridRow}>
-                            <Button variant="outlined" color="primary">
-                            Salvar para Análise
-                            </Button>
+                            <NewSimilarGroup similarProcesses={this.state.similarProcesses}/>
                         </Grid>
                         <Grid item xs>
                         <Typography variant='caption'>{`${processos_similares.length} processos similares`}</Typography>

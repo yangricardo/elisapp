@@ -81,21 +81,21 @@ services:
       - postgres
       - redis
 
-  worker:
-    build:
-      context: .
-    container_name: elisapp_celery
-    image: yangricardo/elisapp:latest
-    command: celery -A backend worker -E -l info
-    volumes:
-      - ./app:/app
-    expose:
-      - 5555
-    depends_on:
-      - app
-      - redis
-    networks: 
-      - db
+  # worker:
+  #   build:
+  #     context: .
+  #   container_name: elisapp_celery
+  #   image: yangricardo/elisapp:latest
+  #   command: celery -A backend worker -E -l info
+  #   volumes:
+  #     - ./app:/app
+  #   expose:
+  #     - 5555
+  #   depends_on:
+  #     - app
+  #     - redis
+  #   networks: 
+  #     - db
 
   # Web server based on official nginx image
   # Connect external 8000 (which you can access from browser)

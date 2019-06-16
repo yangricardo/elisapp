@@ -48,14 +48,18 @@ class Alerts extends Component {
           this.snackAlert(message.notFound,'error')
         if(message.loginRequired)
           this.snackAlert(message.loginRequired,'error')
+        if(message.loadingSugestions)
+          this.snackAlert(message.loadingSugestions,'info')
         if(message.loading)
           this.snackAlert(message.loading,'warning')
-          if(message.loadingFail)
+        if(message.loadingFail)
           this.snackAlert(message.loadingFail,'error')
         if(message.ratingSuccess)
           this.snackAlert(message.ratingSuccess,'success')
-        if(message.ratingSuccess)
-          this.snackAlert(message.ratingSuccess,'error')
+        if(message.ratingFail)
+          this.snackAlert(message.ratingFail,'error')
+        if(message.fetchError)
+          this.snackAlert(message.fetchError,'error')
     }
   }
 

@@ -162,6 +162,7 @@ class DescricaoProcessoSerializer(serializers.Serializer):
 
 
 class GrupoSimilarSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = tj_model.GrupoSimilar
         fields = '__all__'
