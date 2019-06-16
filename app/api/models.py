@@ -271,6 +271,7 @@ class GrupoSimilar(models.Model):
 class GrupoSimilarUsuarios(models.Model):
     grupo = models.ForeignKey(GrupoSimilar,db_index=True, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User,db_index=True,on_delete=models.DO_NOTHING)
+    administrador = models.ForeignKey(User, related_name='administrador',db_index=True,on_delete=models.DO_NOTHING)
     objects = models.Manager
 
 

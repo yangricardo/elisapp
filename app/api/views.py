@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404 as _get_list_or_404
 from django.shortcuts import render
@@ -295,10 +296,7 @@ class RelatorioProcessosSimilaresViewSet(viewsets.GenericViewSet, viewsets.mixin
 
 class UserModelViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, api_permissions.IsOwner)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    permission_classes = (permissions.IsAuthenticated,)
 
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs):
@@ -311,12 +309,53 @@ class GrupoSimilarViewSet(UserModelViewSet):
     queryset = tj_models.GrupoSimilar.objects.all()
     serializer_class = serializer.GrupoSimilarSerializer
 
+    def perform_create(self, serializer):
+        grupo_similar = serializer.save(user=self.request.user)
+        tj_models.GrupoSimilarUsuarios.objects.create(grupo=grupo_similar,user=self.request.user,administrador=self.request.user)
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs):
+        queryset = tj_models.GrupoSimilarUsuarios.objects.filter(
+            Q(user=self.request.user) | Q(administrador=self.request.user) 
+        )
+
+        grupo = self.request.query_params.get('grupo', None)
+        if grupo is not None:
+            queryset = queryset.filter(grupo=grupo)
+
+        serialized = serializer.GrupoSimilarUsuariosDetailSerializer(queryset, many=True)
+        return Response(serialized.data)
+
 
 class GrupoSimilarProcessosViewSet(UserModelViewSet):
     queryset = tj_models.GrupoSimilarProcessos.objects.all()
     serializer_class = serializer.GrupoSimilarProcessosSerializer
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        grupo = self.request.query_params.get('grupo', None)
+        if grupo is not None:
+            queryset = queryset.filter(grupo=grupo)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
     
 
 class GrupoSimilarUsuariosViewSet(UserModelViewSet):
     queryset = tj_models.GrupoSimilarUsuarios.objects.all()
     serializer_class = serializer.GrupoSimilarUsuariosSerializer
+
+    @method_decorator(never_cache)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset()).filter(
+            Q(user=self.request.user) | Q(administrador=self.request.user) 
+        )
+
+        grupo = self.request.query_params.get('grupo', None)
+        if grupo is not None:
+            queryset = queryset.filter(grupo=grupo)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

@@ -176,3 +176,10 @@ class GrupoSimilarUsuariosSerializer(serializers.ModelSerializer):
     class Meta:
         model = tj_model.GrupoSimilarUsuarios
         fields = '__all__'
+
+
+class GrupoSimilarUsuariosDetailSerializer(serializers.ModelSerializer):
+    grupo = GrupoSimilarSerializer()
+    class Meta:
+        model = tj_model.GrupoSimilarUsuarios
+        fields = ('grupo',)
