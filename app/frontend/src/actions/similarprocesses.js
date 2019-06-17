@@ -171,7 +171,19 @@ export const getSimilarGroups = () => (dispatch,getState) => {
     })
 }
 
-export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch, getState) => {
+export const addSimilarProcessesToGroup = (similarProcesses,grupo) => (dispatch, getState) => {
+
+    const postProcessToGroup = (similarProcesses,groupId) => {
+        const id = similarProcessURLRE.exec(similarProcesses.id).groups[2]
+        console.log(id,grupo.id)
+        // axios.post('/api/models/processosgruposimilares/',{descricao:grupo.value},tokenConfig(getState))
+        //     .then(res => {
+
+        //     })
+        //     .catch(err=>{
+
+        //     })
+    }
     for (let grupo of grupos) {
         // console.log(grupo)
         if (grupo.label === grupo.value) {
@@ -186,6 +198,7 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                     type: CREATE_MESSAGE,
                     payload: { similarGroupCreated: `Grupo ${grupo.label} criado com sucesso` }
                 })
+                postProcessToGroup(similarProcesses,res.data)
             })
             .catch(err=>{
                 console.error(err)
@@ -194,6 +207,8 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                     payload: { fetchError: `Falha ao criar grupos de similaridade` }
                 })
             })
+        } else {
+            postProcessToGroup(similarProcesses,grupo.value)
         }
     }
 }
