@@ -171,19 +171,21 @@ export const getSimilarGroups = () => (dispatch,getState) => {
     })
 }
 
+const postProcessToGroup = (similarProcesses,group) => {
+    const id = similarProcessURLRE.exec(similarProcesses.id).groups[2]
+    console.log(id,group)
+    // axios.post('/api/models/processosgruposimilares/',{descricao:grupo.value},tokenConfig(getState))
+    //     .then(res => {
+
+    //     })
+    //     .catch(err=>{
+
+    //     })
+}
+
 export const addSimilarProcessesToGroup = (similarProcesses,grupo) => (dispatch, getState) => {
 
-    const postProcessToGroup = (similarProcesses,groupId) => {
-        const id = similarProcessURLRE.exec(similarProcesses.id).groups[2]
-        console.log(id,grupo.id)
-        // axios.post('/api/models/processosgruposimilares/',{descricao:grupo.value},tokenConfig(getState))
-        //     .then(res => {
-
-        //     })
-        //     .catch(err=>{
-
-        //     })
-    }
+    
     for (let grupo of grupos) {
         // console.log(grupo)
         if (grupo.label === grupo.value) {
