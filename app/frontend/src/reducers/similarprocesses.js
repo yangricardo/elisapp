@@ -1,6 +1,6 @@
 import { CACHE_SIMILAR_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, CLEAR_SEARCHED_PROCESS, 
     SET_SIMILAR_PROCESS_RESULTS, CLEAR_SELECTED_SIMILAR_PROCESSES, SELECT_SIMILAR_PROCESSES,
-    GET_SIMILAR_GROUPS
+    GET_SIMILAR_GROUPS,MULTI_SELECT_SIMILAR_PROCESSES, NEW_SIMILAR_GROUP
 } from "../actions/types";
 
 const initialState = {
@@ -49,6 +49,11 @@ export default function(state = initialState, action) {
         case SELECT_SIMILAR_PROCESSES :
             return {
                 ...state,
+                selectedSimilarProcesses : [payload]
+            }
+        case MULTI_SELECT_SIMILAR_PROCESSES :
+            return {
+                ...state,
                 selectedSimilarProcesses : [
                     ...state.selectedSimilarProcesses,
                     payload
@@ -66,6 +71,11 @@ export default function(state = initialState, action) {
                 similarProcess : {}
             }
         case GET_SIMILAR_GROUPS:
+            return {
+                ...state,
+                similarGroups : payload
+            }
+        case NEW_SIMILAR_GROUP:
             return {
                 ...state,
                 similarGroups : [

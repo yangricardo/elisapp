@@ -7,8 +7,7 @@ import { connect } from 'react-redux'
 import { withStyles, CssBaseline, Box, List, Typography, Divider,ListItem, ListItemText, TextField, Grid, Button } from '@material-ui/core';
 import { createMessage, returnError } from '../../actions/message';
 import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses, cachedProcesses ,
-    setSearchedProcess,
-    setSimilarProcess,} from '../../actions/similarprocesses';
+    setSearchedProcess,setSimilarProcess} from '../../actions/similarprocesses';
 import { setLoadingTrue, setLoadingFalse } from '../../actions/loading';
 import MaskedInput from 'react-text-mask';
 import { buildTokenHeader } from '../../actions/auth';

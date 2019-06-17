@@ -5,7 +5,7 @@ services:
   
   postgres:
     restart: always
-    image: yangricardo/elisdb:latest #postgres:latest #
+    image: yangricardo/elisdb:latest #postgres:latest
     container_name: elisapp_postgres
     hostname: postgres
     expose:
@@ -16,7 +16,6 @@ services:
       - db
     volumes:
       - postgres:/data
-      # - ${PWD}/config/db/:/docker-entrypoint-initdb.d
 
   redis:
     restart: always

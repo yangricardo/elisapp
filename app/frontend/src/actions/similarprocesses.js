@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {CREATE_MESSAGE,SELECT_SIMILAR_PROCESSES, CLEAR_SELECTED_SIMILAR_PROCESSES,SUBMIT_RATING_FAIL, 
     SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, 
-    LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS
+    LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS,NEW_SIMILAR_GROUP
 } from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
@@ -155,12 +155,12 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
     })
 }
 
-export const getSimilarGroups = () => (dispatch) => {
-    axios.post('/api/models/gruposimilares/',rating, tokenConfig(getState))
+export const getSimilarGroups = () => (dispatch,getState) => {
+    axios.get('/api/models/gruposimilares/', tokenConfig(getState))
     .then( res =>{
         dispatch({
             type: GET_SIMILAR_GROUPS,
-            payload: res.data
+            payload: res.data.map(data=>data.grupo)
         })
     })
     .catch(err =>{
@@ -169,4 +169,31 @@ export const getSimilarGroups = () => (dispatch) => {
 			payload: { fetchError: `Falha ao obter grupos de similaridade registrados` }
 		})
     })
+}
+
+export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch, getState) => {
+    for (let grupo of grupos) {
+        // console.log(grupo)
+        if (grupo.label === grupo.value) {
+            axios.post('/api/models/gruposimilares/',{descricao:grupo.value},tokenConfig(getState))
+            .then(res => {
+                console.log(res.data)
+                dispatch({
+                    type: NEW_SIMILAR_GROUP,
+                    payload : res.data
+                })
+                dispatch({
+                    type: CREATE_MESSAGE,
+                    payload: { similarGroupCreated: `Grupo ${grupo.label} criado com sucesso` }
+                })
+            })
+            .catch(err=>{
+                console.error(err)
+                dispatch({
+                    type: CREATE_MESSAGE,
+                    payload: { fetchError: `Falha ao criar grupos de similaridade` }
+                })
+            })
+        }
+    }
 }

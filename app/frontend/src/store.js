@@ -11,7 +11,9 @@ const actionSanitizer = (action) => (
       action.type === 'CACHE_SIMILAR_PROCESS' || 
       action.type === 'SET_SIMILAR_PROCESS_RESULTS'  ||
       action.type === 'SET_SIMILAR_PROCESS' || 
-      action.type === 'SET_SEARCHED_PROCESS'  
+      action.type === 'SET_SEARCHED_PROCESS' ||
+      action.type === 'GET_SIMILAR_GROUPS' ||
+      action.type === 'SELECT_SIMILAR_PROCESSES'
       ) && action.payload ?
     { ...action, payload: '<<LONG_BLOB>>' } : action
 );

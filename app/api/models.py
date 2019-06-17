@@ -277,5 +277,5 @@ class GrupoSimilarUsuarios(models.Model):
 
 class GrupoSimilarProcessos(models.Model):
     grupo = models.ForeignKey(GrupoSimilar,db_index=True, on_delete=models.DO_NOTHING)
-    processo = models.ForeignKey(Processo,db_index=True, on_delete=models.DO_NOTHING)
+    processos_similares = models.ForeignKey(ProcessosSimilares,db_index=True, on_delete=models.DO_NOTHING)
     objects = models.Manager

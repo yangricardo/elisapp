@@ -58,6 +58,8 @@ class Alerts extends Component {
           this.snackAlert(message.ratingSuccess,'success')
         if(message.ratingFail)
           this.snackAlert(message.ratingFail,'error')
+        if(message.similarGroupCreated)
+          this.snackAlert(message.similarGroupCreated,'success')
         if(message.fetchError)
           this.snackAlert(message.fetchError,'error')
     }

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from . import models as tj_model
-
+from frontend import serializers as view_serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -168,6 +168,8 @@ class GrupoSimilarSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class GrupoSimilarProcessosSerializer(serializers.ModelSerializer):
+    grupo = GrupoSimilarSerializer(read_only=True)
+    processo = view_serializers.ProcessoSimilarSerializer
     class Meta:
         model = tj_model.GrupoSimilarProcessos
         fields = '__all__'
@@ -179,7 +181,8 @@ class GrupoSimilarUsuariosSerializer(serializers.ModelSerializer):
 
 
 class GrupoSimilarUsuariosDetailSerializer(serializers.ModelSerializer):
-    grupo = GrupoSimilarSerializer()
+    grupo = GrupoSimilarSerializer(read_only=True)
+    processos_similares = view_serializers.ProcessoSimilarSerializer(read_only=True)
     class Meta:
         model = tj_model.GrupoSimilarUsuarios
-        fields = ('grupo',)
+        fields = ('__all__')

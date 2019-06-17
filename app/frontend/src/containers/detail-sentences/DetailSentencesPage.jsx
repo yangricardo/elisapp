@@ -6,7 +6,7 @@ import { withStyles, Typography,Box, Grid, List, ListItem, ListItemText, ListIte
 import SentencaDetail from './SentencaDetail.jsx';
 import { createMessage, returnError } from '../../actions/message';
 import { setLoadingTrue, setLoadingFalse } from '../../actions/loading';
-import { setSimilarProcess, setSearchedProcess, loadSimilarProcesses } from '../../actions/similarprocesses';
+import { setSimilarProcess, setSearchedProcess, loadSimilarProcesses, getSimilarGroups,selectSimilarProcesses } from '../../actions/similarprocesses';
 import { teal, amber, deepOrange, common } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
 import AvailSimilarProcess from './AvailSimilarProcess.jsx';
@@ -52,30 +52,33 @@ export const similarTheme = createMuiTheme({
 class DetailSentencesPage extends Component {
     constructor (props){
         super(props)
-        const {searchedProcess, similarProcess} = this.props
+        const {searchedProcess, similarProcess,getSimilarGroups} = this.props
         this.state = {
             loading : false,
             similarProcesses : searchedProcess.processos_similares.filter(similar => {
                 return similar.processo_similar_tj === similarProcess.processo_tj
             })[0]
         }
+        getSimilarGroups()
         this.props.setLoadingTrue()
     }
 
     componentDidMount(){
-        const {loadSimilarProcesses, searchedProcess} = this.props
-        loadSimilarProcesses(searchedProcess['processo_tj'], false)
+        const {loadSimilarProcesses, searchedProcess,selectSimilarProcesses} = this.props
+        selectSimilarProcesses(this.state.similarProcesses)
+        loadSimilarProcesses(searchedProcess.processo_tj, false)
     }
 
     onListClick = e => {
-        const { cachedProcesses, searchedProcess, setSimilarProcess, loadSimilarProcesses, createMessage } = this.props
+        const { cachedProcesses, searchedProcess, setSimilarProcess, loadSimilarProcesses, createMessage, selectSimilarProcesses } = this.props
         if (cachedProcesses.hasOwnProperty(e.processo_similar_tj) ){
             setSimilarProcess(cachedProcesses[e.processo_similar_tj]);
-            this.setState({
-                similarProcesses : searchedProcess.processos_similares.filter(similar => {
-                    return similar.processo_similar_tj === e.processo_similar_tj
-                })[0]
-            })
+            const similarProcesses = searchedProcess.processos_similares.filter(similar => {
+                return similar.processo_similar_tj === e.processo_similar_tj
+            })[0]
+            this.setState({similarProcesses})
+            selectSimilarProcesses(similarProcesses)
+
         } else {
             createMessage({loading: `Por favor aguarde enquanto os dados do processo ${e.processo_similar_tj} estão sendo carregados.`})
             loadSimilarProcesses(e.processo_similar_tj, false)
@@ -191,7 +194,9 @@ const mapDispatchToProps = {
     setSimilarProcess,
     setLoadingFalse,
     setLoadingTrue,
-    loadSimilarProcesses
+    loadSimilarProcesses,
+    getSimilarGroups,
+    selectSimilarProcesses
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailSentencesPage));
