@@ -236,8 +236,9 @@ const NewSimilarGroup = props => {
     const {similarProcesses, similarGroups, addSimilarProcessesToGroup} = props
     
     const toSelectSuggestions = similarGroups.map(suggestion => ({
-        value: suggestion,
+        value: suggestion.id,
         label: suggestion.descricao,
+        data: suggestion
       }));
     const [selectedGroups, setSelectedGroups] = useState([]);
    
@@ -295,13 +296,14 @@ const NewSimilarGroup = props => {
                             formatCreateLabel={function(inputValue) {
                                 return 'Criar grupo "'.concat(inputValue, '"');
                               }}
+                            
                         />
                     </DialogContent>
                     <DialogActions className={classes.root}>
                     <Button onClick={handleClose} color="primary">
                         Cancelar
                     </Button>
-                    <Button onClick={handleSubmitToSimilarGroup} color="primary">
+                    <Button onClick={handleSubmitToSimilarGroup} disabled={selectedGroups.length===0} color="primary">
                         Enviar
                     </Button>
                     </DialogActions>

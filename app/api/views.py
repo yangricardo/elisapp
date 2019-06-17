@@ -331,6 +331,9 @@ class GrupoSimilarProcessosViewSet(UserModelViewSet):
     queryset = tj_models.GrupoSimilarProcessos.objects.all()
     serializer_class = serializer.GrupoSimilarProcessosSerializer
 
+    def perform_create(self, serializer):
+        serializer.save()
+
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

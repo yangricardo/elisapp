@@ -274,8 +274,13 @@ class GrupoSimilarUsuarios(models.Model):
     administrador = models.ForeignKey(User, related_name='administrador',db_index=True,on_delete=models.DO_NOTHING)
     objects = models.Manager
 
+    class Meta:
+        unique_together = (('grupo', 'user'),)
 
 class GrupoSimilarProcessos(models.Model):
     grupo = models.ForeignKey(GrupoSimilar,db_index=True, on_delete=models.DO_NOTHING)
     processos_similares = models.ForeignKey(ProcessosSimilares,db_index=True, on_delete=models.DO_NOTHING)
     objects = models.Manager
+
+    class Meta:
+        unique_together = (('grupo', 'processos_similares'),)

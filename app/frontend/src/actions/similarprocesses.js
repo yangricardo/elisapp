@@ -171,27 +171,40 @@ export const getSimilarGroups = () => (dispatch,getState) => {
     })
 }
 
-const postProcessToGroup = (similarProcesses,group) => {
-    const id = similarProcessURLRE.exec(similarProcesses.id).groups[2]
-    console.log(id,group)
-    // axios.post('/api/models/processosgruposimilares/',{descricao:grupo.value},tokenConfig(getState))
-    //     .then(res => {
+export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch, getState) => {
 
-    //     })
-    //     .catch(err=>{
 
-    //     })
-}
-
-export const addSimilarProcessesToGroup = (similarProcesses,grupo) => (dispatch, getState) => {
-
+    const postProcessToGroup = (similarProcesses,group) => {
+        const id = similarProcessURLRE.exec(similarProcesses.id)[2]
+        const payload = {
+            grupo:group.id,
+            processos_similares:id
+        }
+        axios.post('/api/models/processosgruposimilares/',payload,tokenConfig(getState))
+            .then(res => {
+                // TODO RESOLVE BUG - não está notificando o usuário
+                dispatch({
+                    type: CREATE_MESSAGE,
+                    payload: { similarGroupCreated: `Processos similares ${similarProcesses.processo_base_tj} e ${similarProcesses.processo_similar_tj} adicionados ao grupo ${grupo.label} com sucesso` }
+                })      
+            })
+            .catch(err=>{
+                if (err.response.status === 400) {
+                    // TODO RESOLVE BUG - não está notificando o usuário
+                    dispatch({
+                        type: CREATE_MESSAGE,
+                        payload: { similarGroupFail: `Processos similares ${similarProcesses.processo_base_tj} e ${similarProcesses.processo_similar_tj} já pertencem ao grupo ${grupo.label}` }
+                    }) 
+                }
+                console.log(err.response)
+            })
+    }
     
     for (let grupo of grupos) {
         // console.log(grupo)
         if (grupo.label === grupo.value) {
-            axios.post('/api/models/gruposimilares/',{descricao:grupo.value},tokenConfig(getState))
+            axios.post('/api/models/gruposimilares/',{descricao:grupo.label},tokenConfig(getState))
             .then(res => {
-                console.log(res.data)
                 dispatch({
                     type: NEW_SIMILAR_GROUP,
                     payload : res.data
@@ -200,7 +213,14 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupo) => (dispatch,
                     type: CREATE_MESSAGE,
                     payload: { similarGroupCreated: `Grupo ${grupo.label} criado com sucesso` }
                 })
-                postProcessToGroup(similarProcesses,res.data)
+                if(similarProcesses.hasOwnProperty('id')){
+                    postProcessToGroup(similarProcesses,res.data)
+                }
+                else if (Array.isArray(similarProcesses)) {
+                    for(let similarProcess of similarProcesses){
+                        postProcessToGroup(similarProcess,res.data)
+                    }
+                }
             })
             .catch(err=>{
                 console.error(err)
@@ -210,7 +230,14 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupo) => (dispatch,
                 })
             })
         } else {
-            postProcessToGroup(similarProcesses,grupo.value)
+            if(similarProcesses.hasOwnProperty('id')){
+                postProcessToGroup(similarProcesses,grupo.data)
+            }
+            else if (Array.isArray(similarProcesses)) {
+                for(let similarProcess of similarProcesses){
+                    postProcessToGroup(similarProcess,grupo.data)
+                }
+            }
         }
     }
 }

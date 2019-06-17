@@ -168,8 +168,8 @@ class GrupoSimilarSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class GrupoSimilarProcessosSerializer(serializers.ModelSerializer):
-    grupo = GrupoSimilarSerializer(read_only=True)
-    processo = view_serializers.ProcessoSimilarSerializer
+    # grupo = GrupoSimilarSerializer(read_only=True)
+    # processos_similares = view_serializers.ProcessoSimilarSerializer(read_only=True)
     class Meta:
         model = tj_model.GrupoSimilarProcessos
         fields = '__all__'
@@ -185,4 +185,4 @@ class GrupoSimilarUsuariosDetailSerializer(serializers.ModelSerializer):
     processos_similares = view_serializers.ProcessoSimilarSerializer(read_only=True)
     class Meta:
         model = tj_model.GrupoSimilarUsuarios
-        fields = ('__all__')
+        fields = '__all__'
