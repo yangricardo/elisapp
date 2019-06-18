@@ -16,6 +16,7 @@ from django.views.decorators.cache import cache_page, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.vary import vary_on_cookie
 from django.db.models.functions import Coalesce
+from django.db.models import Q
 from knox.auth import TokenAuthentication
 from rest_framework import mixins, pagination, permissions, status, viewsets
 from rest_framework.response import Response
@@ -147,6 +148,93 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
         if processo_similar_cnj is not None:
             queryset = queryset.filter(processo_similar_cnj=processo_similar_cnj)
 
+
+        similaridade_minima = self.request.query_params.get('similaridade_minima',None)
+        if similaridade_minima is not None:
+            queryset = queryset.filter(similaridade__gte=similaridade_minima)
+        
+        
+        similaridade_maxima = self.request.query_params.get('similaridade_maxima',None)
+        if similaridade_maxima is not None:
+            queryset = queryset.filter(similaridade__lte=similaridade_maxima)
+
+
+        comarca = self.request.query_params.get('comarca',None)
+        if comarca is not None:
+            queryset = queryset.filter(
+                Q(processo_base_comarca__icontains=comarca) |
+                Q(processo_similar_comarca__icontains=comarca) 
+            )
+
+        serventia = self.request.query_params.get('serventia',None)
+        if serventia is not None:
+            queryset = queryset.filter(
+                Q(processo_base_serventia__icontains=serventia) |
+                Q(processo_similar_serventia__icontains=serventia) 
+            )
+
+        classe = self.request.query_params.get('classe',None)
+        if classe is not None:
+            queryset = queryset.filter(
+                Q(processo_base_classe__icontains=classe) |
+                Q(processo_similar_classe__icontains=classe) 
+            )
+
+        assunto = self.request.query_params.get('assunto',None)
+        if assunto is not None:
+            queryset = queryset.filter(
+                Q(processo_base_assunto__icontains=assunto) |
+                Q(processo_similar_assunto__icontains=assunto) 
+            )
+
+        serventia = self.request.query_params.get('serventia',None)
+        if serventia is not None:
+            queryset = queryset.filter(
+                Q(processo_base_serventia__icontains=serventia) |
+                Q(processo_similar_serventia__icontains=serventia) 
+            )
+
+        ano = self.request.query_params.get('ano',None)
+        if ano is not None:
+            queryset = queryset.filter(
+                Q(processo_base_tj__startswith=ano) |
+                Q(processo_similar_tj__startswith=ano) 
+            )
+
+        personagem = self.request.query_params.get('personagem',None)
+        if personagem is not None:
+            personagem_processos = list(map(lambda p : p.processo_id , 
+                tj_models.PersonagemProcesso.objects.filter(personagem__nome__icontains=personagem)))
+            queryset = queryset.filter(
+                Q(processo_base_tj__in=personagem_processos) | 
+                Q(processo_similar_tj__in=personagem_processos)
+            )
+
+        advogado = self.request.query_params.get('advogado',None)
+        if advogado is not None:
+            advogado_processos = list(map(lambda p : p.processo_id , 
+                tj_models.AdvogadoProcesso.objects.filter(
+                    Q(advogado__nome_adv__icontains=advogado)|
+                    Q(advogado__num_oab__icontains=advogado)
+                )))
+            queryset = queryset.filter(
+                Q(processo_base_tj__in=advogado_processos) | 
+                Q(processo_similar_tj__in=advogado_processos)
+            )
+
+        juiz = self.request.query_params.get('juiz',None)
+        if juiz is not None:
+            andamentos_processos = list(map(lambda p : p.processo_id , 
+                tj_models.AndamentoProcesso.objects.filter(
+                    Q(juiz__nome__icontains=juiz) |
+                    Q(txt_descr__icontains=juiz)
+                )
+            ))
+            queryset = queryset.filter(
+                Q(processo_base_tj__in=andamentos_processos) | 
+                Q(processo_similar_tj__in=andamentos_processos) 
+            )
+
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(instance=page, many=True)
@@ -167,6 +255,101 @@ class AvaliacaoSimilaridadeViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset()).filter(user=self.request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+@method_decorator(never_cache,name='list')
+class ListSearchViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return JsonResponse(json.loads(json.dumps(serializer.data)), safe=False)
+
+class AnosDisponiveisViewSet(ListSearchViewSet):
+    queryset = models.AnoDisponivel.objects.all()
+    serializer_class = serializers.AnoDisponivelSerializer
+
+    def filter_queryset(self, queryset):
+        ano = self.request.query_params.get('ano',None)
+        if ano is not None:
+            queryset = queryset.filter(anos=ano)
+        return queryset
+
+
+
+class ComarcasServentiasDisponiveisViewSet(ListSearchViewSet):
+    queryset = models.ComarcaServentiaDisponivel.objects.all()
+    serializer_class = serializers.ComarcaServentiaDisponivelSerializer
+
+    def filter_queryset(self, queryset):
+        comarca = self.request.query_params.get('comarca',None)
+        if comarca is not None:
+            queryset = queryset.filter(comarca__icontains=comarca)
+
+        serventia = self.request.query_params.get('serventia',None)
+        if serventia is not None:
+            queryset = queryset.filter(serventia__icontains=serventia)
+
+        return queryset
+
+
+class PersonagensDisponiveisViewSet(ListSearchViewSet):
+    queryset = models.PersonagemDisponivel.objects.all()
+    serializer_class = serializers.PersonagemDisponivelSerializer
+
+    def filter_queryset(self, queryset):
+        personagem = self.request.query_params.get('personagem',None)
+        if personagem is not None:
+            queryset = queryset.filter(nome_personagem__icontains=personagem)
+
+        return queryset
+
+
+class AdvogadosDisponiveisViewSet(ListSearchViewSet):
+    queryset = models.AdvogadoDisponivel.objects.all()
+    serializer_class = serializers.AdvogadoDisponivelSerializer
+
+    def filter_queryset(self, queryset):
+        advogado = self.request.query_params.get('advogado',None)
+        if advogado is not None:
+            queryset = queryset.filter(
+                Q(nome__icontains=advogado ) |
+                Q(oab__icontains=advogado)
+            )
+
+        return queryset
+
+class ClassesAssuntosDisponiveisViewSet(ListSearchViewSet):
+    queryset = models.ClasseAssuntoDisponivel.objects.all()
+    serializer_class = serializers.ClasseAssuntoDiponivelSerializer
+
+    def filter_queryset(self, queryset):
+        classe = self.request.query_params.get('classe',None)
+        if classe is not None:
+            queryset = queryset.filter(classe__icontains=classe)
+
+        assunto = self.request.query_params.get('assunto',None)
+        if assunto is not None:
+            queryset = queryset.filter(assunto__icontains=assunto)
+
+        return queryset
+
+
+class JuizesDisponiveisViewSet(ListSearchViewSet):
+    queryset = models.JuizDisponivel.objects.all()
+    serializer_class = serializers.JuizDisponivelSerializer
+    
+    def filter_queryset(self, queryset):
+        juiz = self.request.query_params.get('juiz',None)
+        if juiz is not None:
+            queryset = queryset.filter(nome_juiz__icontains=juiz)
+
+        return queryset
+
+
+
 
 # Create your views here.
 @ensure_csrf_cookie

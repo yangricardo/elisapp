@@ -17,6 +17,11 @@ class AssuntoDiponivelSerializer(serializers.ModelSerializer):
         model = views.AssuntoDisponivel
         fields = '__all__'
 
+class ClasseAssuntoDiponivelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = views.ClasseAssuntoDisponivel
+        fields = '__all__'
+
 
 class ClasseDisponivelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,6 +39,12 @@ class ComarcaDisponivelSerializer(serializers.ModelSerializer):
 class ServentiaDisponivelSerializer(serializers.ModelSerializer):
     class Meta:
         model = views.ServentiaDisponivel
+        fields = '__all__'
+
+
+class ComarcaServentiaDisponivelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = views.ComarcaServentiaDisponivel
         fields = '__all__'
 
 

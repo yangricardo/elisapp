@@ -10,13 +10,13 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Consulta por Processo" />
     </ListItem>
-    <ListItem button component={LinkRouter} to="/listarprocessos">
+    <ListItem button component={LinkRouter} to="/listarsimilaridades">
       <ListItemIcon>
         <List />
       </ListItemIcon>
       <ListItemText primary="Busca Paramétrica" />
     </ListItem>
-    <ListItem button component={LinkRouter} to="/gruposprocessos">
+    <ListItem button component={LinkRouter} to="/grupossimilares">
       <ListItemIcon>
         <GroupWork />
       </ListItemIcon>

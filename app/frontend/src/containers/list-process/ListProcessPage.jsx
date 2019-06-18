@@ -1,44 +1,21 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, Typography, TextField } from '@material-ui/core';
+import { withStyles, Typography, TextField, CssBaseline, Grid, Table } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
 import MaskedInput from 'react-text-mask';
 
 const styles = theme => ({
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-    },
+
 })
 
-function TextMaskCustom(props) {
-    const { inputRef, ...other } = props;
-  
-    return (
-    <MaskedInput
-        {...other}
-        ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-        }}
-        mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-        placeholderChar={'\u2000'}
-        showMask
-    />
-    );
-}
-  
-TextMaskCustom.propTypes = {
-inputRef: PropTypes.func.isRequired,
-};
 
 class ListProcessPage extends Component {
 
-    state = {}
+    constructor(props) {
+        super(props)
+        this.state = {}
+    }
 
     onChange = e => {
         this.setState({[e.target.name]: e.target.value})
@@ -51,9 +28,24 @@ class ListProcessPage extends Component {
         }
         const { classes } = this.props;
 
-        return (<Fragment>
-            <Typography>List Page</Typography>
-        </Fragment>)
+        return (
+            <div>
+            <Grid container direction="row" 
+                justify="center"
+                alignItems="baseline" 
+                spacing={2}
+            >
+                <Grid item md={2}>
+                    <Typography>Oi</Typography>
+                </Grid>
+                <Grid item md={10}>
+                    <Table></Table>
+                </Grid>
+
+            </Grid>
+            </div>
+
+        )
     }
 
 }

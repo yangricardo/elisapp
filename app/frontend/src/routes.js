@@ -25,8 +25,8 @@ export default props => (
         <Header>
           <Switch>
               <PrivateRoute exact path="/buscarprocesso" component={SearchProcessPage} />
-              <PrivateRoute exact path="/listarsentencas" component={ListProcessPage} />
-              <PrivateRoute exact path="/gruposanalise" component={GroupProcessPage} />
+              <PrivateRoute exact path="/listarsimilaridades" component={ListProcessPage} />
+              <PrivateRoute exact path="/grupossimilares" component={GroupProcessPage} />
               <PrivateRoute exact path="/detalharsentencas" component={DetailSentencesPage} />
               <Route exact path='/register' component={ Register } />
               <Route exact path='/login' component={ Login } />

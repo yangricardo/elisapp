@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 from api import models as tj_models
 # Create your models here.
 
+class NoPkModelManager(models.Manager):
+    def get_queryset(self):
+        return super(NoPkModelManager, self).get_queryset().defer('id')
+
+
 class DBView(models.Model):
     objects = models.Manager
 
@@ -113,10 +118,10 @@ class ProcessoSimilar(DBView):
 
 
 class AnoDisponivel(DBView):
-    ano = models.CharField(primary_key=True, max_length=4)
+    anos = models.CharField(primary_key=True, max_length=4)
 
     def __str__(self):
-        return f'{self.ano}'
+        return f'{self.anos}'
 
     class Meta:
         managed = False
@@ -144,7 +149,16 @@ class ClasseDisponivel(DBView):
         managed = False
         db_table = 'api_view_classes_disponiveis'
 
+class ClasseAssuntoDisponivel(DBView):
+    assunto = models.TextField()
+    classe = models.TextField()
 
+    def __str__(self):
+        return f'{self.assunto} - {self.classe}'
+
+    class Meta:
+        managed = False
+        db_table = 'api_view_classes_assuntos_disponiveis'
 
 class ComarcasDisponivel(DBView):
     comarca = models.TextField(primary_key=True)
@@ -178,14 +192,25 @@ class ServentiaDisponivel(DBView):
         managed = False
         db_table = 'api_view_serventias_disponiveis'
 
+class ComarcaServentiaDisponivel(DBView):
+    serventia = models.TextField()
+    comarca = models.TextField()
+    
+    def __str__(self):
+        return f'{self.serventia} - {self.comarca}'
+
+    class Meta:
+        managed = False
+        db_table = 'api_view_comarcas_serventias_disponiveis'
+
 
 class JuizDisponivel(DBView):
     matricula_juiz = models.TextField(primary_key=True)
-    juiz = models.TextField()
+    nome_juiz = models.TextField()
     cargo_juiz = models.TextField()
 
     def __str__(self):
-        return f'{self.juiz}'
+        return f'{self.nome_juiz}'
 
     class Meta:
         managed = False
@@ -194,10 +219,10 @@ class JuizDisponivel(DBView):
 
 class AdvogadoDisponivel(DBView):
     oab = models.TextField(primary_key=True)
-    advogado = models.TextField()
+    nome = models.TextField()
 
     def __str__(self):
-        return f'{self.advogado}'
+        return f'{self.nome}'
 
     class Meta:
         managed = False
@@ -213,7 +238,7 @@ class PersonagemDisponivel(DBView):
 
     class Meta:
         managed = False
-        db_table = 'api_views_personagens_disponiveis'
+        db_table = 'api_view_personagens_disponiveis'
 
 
 class ProcessoEstatistica(DBView):
