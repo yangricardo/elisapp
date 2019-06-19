@@ -48,6 +48,7 @@ const useStyles = makeStyles(theme => ({
     content: {
         width: '100vw',
         height: '100vh',
+        paddingTop: theme.spacing(1),
         overflowX: 'hidden'
     },
 }));

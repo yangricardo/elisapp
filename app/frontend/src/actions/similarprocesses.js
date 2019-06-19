@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {CREATE_MESSAGE,SELECT_SIMILAR_PROCESSES, CLEAR_SELECTED_SIMILAR_PROCESSES,SUBMIT_RATING_FAIL, 
     SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, 
-    LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS,NEW_SIMILAR_GROUP
+    LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS,
+    NEW_SIMILAR_GROUP, LIST_SIMILAR
 } from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
@@ -240,4 +241,29 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
             }
         }
     }
+}
+
+export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
+
+    var query = ""
+    query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
+    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca}&` : ''
+    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia}&` : ''
+    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano}&` : ''
+    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe}&` : ''
+    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto}&` : ''
+    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem}&` : ''
+    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado}&` : ''
+    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz}&` : ''
+
+    axios.get(`/api/models/processossimilaresreport/?${queryParams}`, tokenConfig(getState))
+    .then(res => {
+        dispatch({
+            type: LIST_SIMILAR,
+            payload: res.data.results
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
 }

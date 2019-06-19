@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, Typography, TextField, CssBaseline, Grid, Table } from '@material-ui/core';
+import { withStyles, Typography, Select,TextField, Grid, Table, Box } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
-import MaskedInput from 'react-text-mask';
+import { ThemeProvider } from '@material-ui/styles';
 
 const styles = theme => ({
 
@@ -29,22 +29,49 @@ class ListProcessPage extends Component {
         const { classes } = this.props;
 
         return (
-            <div>
+            
             <Grid container direction="row" 
-                justify="center"
-                alignItems="baseline" 
-                spacing={2}
+            justify="center"
+            alignItems="baseline" 
+            spacing={2}
             >
-                <Grid item md={2}>
-                    <Typography>Oi</Typography>
+                <Grid item md={3}>
+                <Grid container direction="column" 
+                    justify="center"
+                    alignItems="baseline" 
+                    spacing={2}
+                    >
+                        <Grid item >
+                        <TextField label='comarca' variant='outlined'/>
+                        </Grid>
+                        <Grid item >
+                        <TextField label='serventia' variant='outlined'/>
+                        </Grid>
+                        <Grid item >
+                        <TextField label='ano' variant='outlined'/>   
+                        </Grid>
+                        <Grid item >
+                        <TextField label='classe' variant='outlined'/>
+                        </Grid>
+                        <Grid item >
+                        <TextField label='assunto' variant='outlined'/>
+                        </Grid>
+                        <Grid item >
+                        <TextField label='advogado' variant='outlined'/>
+                        </Grid>
+                        <Grid item >
+                        <TextField label='personagem' variant='outlined'/>
+                        </Grid>
+                        <Grid item >
+                        <TextField label='juiz' variant='outlined'/>
+                        </Grid>
                 </Grid>
-                <Grid item md={10}>
+                </Grid>
+                <Grid item md={9}>
                     <Table></Table>
                 </Grid>
 
             </Grid>
-            </div>
-
         )
     }
 
