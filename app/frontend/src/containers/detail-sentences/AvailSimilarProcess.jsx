@@ -3,7 +3,11 @@ import {Typography,Button, TextField, Dialog, DialogActions, DialogContent, Dial
 import Slider from '@material-ui/lab/Slider';
 import { connect } from 'react-redux'
 import {submitRating} from '../../actions/similarprocesses'
+import { AddComment } from '@material-ui/icons';
+import { useTheme } from '@material-ui/core/styles';
+
 const AvailSimilarProcess = props => {
+    const theme = useTheme();
     const {submitRating,similarProcesses} = props
     const [open, setOpen] = useState(false);
     const [inicial, setInicial] = useState(5);
@@ -43,8 +47,8 @@ const AvailSimilarProcess = props => {
     
     return (
         <Fragment>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                Avaliar Similaridade
+            <Button variant="outlined" style={{width:'100%'}} color="primary" onClick={handleClickOpen}>
+                <AddComment style={{marginRight:theme.spacing(1)}}/>{'Avaliar'}
             </Button>
             {
                 similarProcesses.processo_base_tj !== undefined ?

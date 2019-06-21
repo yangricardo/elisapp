@@ -7,7 +7,8 @@ import { connect } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles';
 import {addSimilarProcessesToGroup} from '../../actions/similarprocesses';
 import CreatableSelect from 'react-select/creatable';
-import { components, useStyles } from '../../components/SelectComponents';
+import { dialogComponents, useStyles } from '../../components/SelectComponents';
+import { Add } from '@material-ui/icons';
 
 const NewSimilarGroup = props => {
     const classes = useStyles();
@@ -54,21 +55,21 @@ const NewSimilarGroup = props => {
     return (
         <Fragment>
             <Button variant="outlined" color="primary" disabled={similarProcesses.processo_base_tj === undefined} onClick={handleClickOpen}>
-                Salvar em Grupo
+                <Add style={{marginRight:theme.spacing(1)}}/> Grupo Similar
             </Button>
             {
                 similarProcesses.processo_base_tj !== undefined ?
-                <Dialog open={open} onClose={handleClose} className={classes.root} aria-labelledby="form-dialog-title">
-                    <DialogTitle variant='caption'>Salvar em Grupo sob Análise</DialogTitle>
-                    <DialogContent className={classes.root}>
+                <Dialog open={open} onClose={handleClose} className={classes.dialog} aria-labelledby="form-dialog-title">
+                    <DialogTitle variant='caption'>Salvar em Grupo Similar</DialogTitle>
+                    <DialogContent className={classes.dialog} >
                         <DialogContentText >
-                            Adicione os processos similares {similarProcesses.processo_base_tj} e {similarProcesses.processo_similar_tj} em um Grupo sob Análise.
+                            Adicione os processos similares {similarProcesses.processo_base_tj} e {similarProcesses.processo_similar_tj} em um Grupo Similar.
                         </DialogContentText>
                         <CreatableSelect
                             isMulti
                             placeholder='Crie ou selecione...'
                             TextFieldProps={{
-                              label: 'Grupo',
+                              label: 'Grupos de Processos Similares',
                               variant: 'outlined',
                               InputLabelProps: {
                                 htmlFor: 'react-select-single',
@@ -79,18 +80,17 @@ const NewSimilarGroup = props => {
                             options={toSelectSuggestions}
                             classes={classes}
                             styles={selectStyles}
-                            components={components}
+                            components={dialogComponents}
                             value={selectedGroups}
                             formatCreateLabel={function(inputValue) {
                                 return 'Criar grupo "'.concat(inputValue, '"');
                               }}
                             noOptionsMessage={function() {
                               return 'Digite o nome de um novo grupo e clique "enter"';
-                            }}
-                            
+							}}
                         />
                     </DialogContent>
-                    <DialogActions className={classes.root}>
+                    <DialogActions >
                     <Button onClick={handleClose} color="primary">
                         Cancelar
                     </Button>

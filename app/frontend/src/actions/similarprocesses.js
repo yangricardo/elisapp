@@ -2,7 +2,8 @@ import axios from 'axios';
 import {CREATE_MESSAGE,SELECT_SIMILAR_PROCESSES, CLEAR_SELECTED_SIMILAR_PROCESSES,SUBMIT_RATING_FAIL, 
     SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, 
     LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS,
-    NEW_SIMILAR_GROUP, LIST_SIMILAR
+    NEW_SIMILAR_GROUP, LIST_SIMILAR, GET_ADVOGADOS, GET_ANOS, GET_CLASSES_ASSUNTOS, GET_COMARCAS_SERVENTIAS,
+    GET_JUIZES, GET_PERSONAGENS
 } from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
@@ -260,6 +261,107 @@ export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
     .then(res => {
         dispatch({
             type: LIST_SIMILAR,
+            payload: res.data.results
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
+
+export const getComarcasServentias = (queryParams) => (dispatch,getState) => {
+    console.log(queryParams)
+    var query = ""
+    query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
+    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.label : queryParams.comarca}&` : ''
+    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia.hasOwnProperty('label')? queryParams.serventia.label : queryParams.serventia}&` : ''
+    axios.get(`/api/models/comarcasserventiasdisponiveis/?${query}`,tokenConfig(getState))
+    .then(res=>{
+        dispatch({
+            type: GET_COMARCAS_SERVENTIAS,
+            payload: res.data.results
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
+
+export const getClassesAssuntos = (queryParams) => (dispatch,getState) => {
+    var query = ""
+    query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
+    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe.hasOwnProperty('label')? queryParams.classe.label : queryParams.classe}&` : ''
+    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto.hasOwnProperty('label')? queryParams.assunto.label : queryParams.assunto}&` : ''
+    axios.get(`/api/models/classesassuntosdisponiveis/?${query}`,tokenConfig(getState))
+    .then(res=>{
+        dispatch({
+            type: GET_CLASSES_ASSUNTOS,
+            payload: res.data.results
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
+
+
+export const getAno = (queryParams) => (dispatch,getState) => {
+    var query = ""
+    query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
+    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano.hasOwnProperty('label')? queryParams.ano.label : queryParams.ano}&` : ''
+    axios.get(`/api/models/anosdisponiveis/?${query}`,tokenConfig(getState))
+    .then(res=>{
+        dispatch({
+            type: GET_ANOS,
+            payload: res.data.results
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
+
+
+export const getAdvogados = (queryParams) => (dispatch,getState) => {
+    var query = ""
+    query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
+    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado.hasOwnProperty('label')? queryParams.advogado.label : queryParams.advogado}&` : ''
+    axios.get(`/api/models/advogadossdisponiveis/?${query}`,tokenConfig(getState))
+    .then(res=>{
+        dispatch({
+            type: GET_ADVOGADOS,
+            payload: res.data.results
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
+
+export const getPersonagens = (queryParams) => (dispatch,getState) => {
+    var query = ""
+    query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
+    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem.hasOwnProperty('label')? queryParams.personagem.label : queryParams.personagem}&` : ''
+    axios.get(`/api/models/personagensdisponiveis/?${query}`,tokenConfig(getState))
+    .then(res=>{
+        dispatch({
+            type: GET_PERSONAGENS,
+            payload: res.data.results
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
+
+export const getJuizes = (queryParams) => (dispatch,getState) => {
+    var query = ""
+    query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
+    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz.hasOwnProperty('label')? queryParams.juiz.label : queryParams.juiz}&` : ''
+    axios.get(`/api/models/juizessdisponiveis/?${query}`,tokenConfig(getState))
+    .then(res=>{
+        dispatch({
+            type: GET_JUIZES,
             payload: res.data.results
         })
     })

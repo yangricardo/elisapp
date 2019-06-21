@@ -1,6 +1,7 @@
 import { CACHE_SIMILAR_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, CLEAR_SEARCHED_PROCESS, 
     SET_SIMILAR_PROCESS_RESULTS, CLEAR_SELECTED_SIMILAR_PROCESSES, SELECT_SIMILAR_PROCESSES,
-    GET_SIMILAR_GROUPS,MULTI_SELECT_SIMILAR_PROCESSES, NEW_SIMILAR_GROUP, LIST_SIMILAR
+    GET_SIMILAR_GROUPS,MULTI_SELECT_SIMILAR_PROCESSES, NEW_SIMILAR_GROUP, LIST_SIMILAR,
+    GET_CLASSES_ASSUNTOS, GET_ADVOGADOS, GET_ANOS, GET_COMARCAS_SERVENTIAS, GET_JUIZES, GET_PERSONAGENS
 } from "../actions/types";
 
 const initialState = {
@@ -10,7 +11,15 @@ const initialState = {
     listSimilar : [],
     selectedSimilarProcesses : [],
     cachedSimilarProcesses : {},
-    cachedProcesses : {}
+    cachedProcesses : {},
+    comarcas : [],
+    serventias: [],
+    anos : [],
+    classes : [],
+    assuntos : [],
+    advogados : [],
+    personagens : [],
+    juizes : [],
 }
 
 // const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
@@ -89,6 +98,54 @@ export default function(state = initialState, action) {
                 ...state,
                 listSimilar : payload
             }
+        case GET_COMARCAS_SERVENTIAS:
+            return {
+                ...state,
+                comarcas : [...new Set(payload.map((comarcaServentia)=>{
+                    return  comarcaServentia.comarca
+                }))],
+                serventias : [...new Set(payload.map((comarcaServentia)=>{
+                    return  comarcaServentia.serventia
+                }))],
+            }
+            case GET_CLASSES_ASSUNTOS:
+                return {
+                    ...state,
+                    classes : [...new Set(payload.map((classeAssunto)=>{
+                        return  classeAssunto.classe
+                    }))],
+                    assuntos : [...new Set(payload.map((classeAssunto)=>{
+                        return  classeAssunto.assunto
+                    }))],
+                }
+        case GET_ANOS:
+            return {
+                ...state,
+                anos : [...new Set(payload.map((anos)=>{
+                    return  anos.anos
+                }))],
+            }
+        case GET_ADVOGADOS:
+                return {
+                    ...state,
+                    advogados : [...new Set(payload.map((advogado)=>{
+                        return  advogado.nome
+                    }))],
+                }
+        case GET_JUIZES:
+            return {
+                ...state,
+                juizes :[...new Set(payload.map((juiz)=>{
+                    return  juiz.nome_juiz
+                }))],
+            }
+        case GET_PERSONAGENS:
+                return {
+                    ...state,
+                    personagens :[...new Set(payload.map((personagem)=>{
+                        return  personagem.nome_personagem
+                    }))],
+                }
         default:
             return state
     }

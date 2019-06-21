@@ -8,12 +8,12 @@ const middeware = [thunk];
 
 const actionSanitizer = (action) => (
     (
-      action.type === 'CACHE_SIMILAR_PROCESS' || 
-      action.type === 'SET_SIMILAR_PROCESS_RESULTS'  ||
-      action.type === 'SET_SIMILAR_PROCESS' || 
-      action.type === 'SET_SEARCHED_PROCESS' ||
-      action.type === 'GET_SIMILAR_GROUPS' ||
-      action.type === 'SELECT_SIMILAR_PROCESSES'
+      ['CREATE_MESSAGE','SELECT_SIMILAR_PROCESSES', 'CLEAR_SELECTED_SIMILAR_PROCESSES',
+      'SUBMIT_RATING_FAIL','SUBMIT_RATING_SUCCESS', 'CLEAR_SEARCHED_PROCESS', 'SET_SEARCHED_PROCESS', 
+      'SET_SIMILAR_PROCESS','LOAD_ASYNC', 'CACHE_SIMILAR_PROCESS', 'SET_SIMILAR_PROCESS_RESULTS', 
+      'GET_SIMILAR_GROUPS','NEW_SIMILAR_GROUP', 'LIST_SIMILAR', 'GET_ADVOGADOS', 'GET_ANOS', 
+      'GET_CLASSES_ASSUNTOS', 'GET_COMARCAS_SERVENTIAS', 'GET_JUIZES', 'GET_PERSONAGENS']
+      .includes(action.type)
       ) && action.payload ?
     { ...action, payload: '<<LONG_BLOB>>' } : action
 );
