@@ -137,7 +137,7 @@ class DetailSentencesPage extends Component {
                             </Box>
                         </Grid>
                         <Grid item xs className={classes.gridRow}>
-                            <NewSimilarGroup similarProcesses={this.state.similarProcesses}/>
+                            <NewSimilarGroup  similarProcesses={this.state.similarProcesses}/>
                         </Grid>
                         <Grid item xs>
                         <Typography variant='caption'>{`${processos_similares.length} processos similares`}</Typography>

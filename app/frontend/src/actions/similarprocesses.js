@@ -248,16 +248,19 @@ export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
 
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca}&` : ''
-    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia}&` : ''
-    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano}&` : ''
-    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe}&` : ''
-    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto}&` : ''
-    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem}&` : ''
-    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado}&` : ''
-    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz}&` : ''
-
-    axios.get(`/api/models/processossimilaresreport/?${queryParams}`, tokenConfig(getState))
+    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.label : queryParams.comarca}&` : ''
+    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia.hasOwnProperty('label')? queryParams.serventia.label : queryParams.serventia}&` : ''
+    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano.hasOwnProperty('label')? queryParams.ano.label : queryParams.ano}&` : ''
+    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe.hasOwnProperty('label')? queryParams.classe.label : queryParams.classe}&` : ''
+    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto.hasOwnProperty('label')? queryParams.assunto.label : queryParams.assunto}&` : ''
+    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem.hasOwnProperty('label')? queryParams.personagem.label : queryParams.personagem}&` : ''
+    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado.hasOwnProperty('label')? queryParams.advogado.label : queryParams.advogado}&` : ''
+    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz.hasOwnProperty('label')? queryParams.juiz.label : queryParams.juiz}&` : ''
+    query += `similaridade_minima=${queryParams.similaridade[0]}&`
+    query += `similaridade_maxima=${queryParams.similaridade[1]}&`
+    
+    
+    axios.get(`/api/models/processossimilaresreport/?${query}`, tokenConfig(getState))
     .then(res => {
         dispatch({
             type: LIST_SIMILAR,

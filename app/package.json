@@ -16,7 +16,7 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "webpack": "^4.34.0",
+    "webpack": "^4.35.0",
     "webpack-bundle-tracker": "^0.4.2-beta",
     "webpack-cli": "^3.3.4"
   },
@@ -35,7 +35,7 @@
     "react-router-dom": "^5.0.1",
     "react-select": "^3.0.4",
     "react-text-mask": "^5.4.3",
-    "react-window": "^1.8.2",
+    "react-window": "^1.8.3",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0"

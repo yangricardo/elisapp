@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => ({
         width: drawerWidth,
         flexShrink: 0,
         whiteSpace: 'nowrap',
+        marginRight: 0
     },
     drawerOpen: {
         width: drawerWidth,
@@ -49,7 +50,8 @@ const useStyles = makeStyles(theme => ({
         width: '100vw',
         height: '100vh',
         paddingTop: theme.spacing(1),
-        overflowX: 'hidden'
+        overflowX: 'hidden',
+        zIndex: 0
     },
 }));
 

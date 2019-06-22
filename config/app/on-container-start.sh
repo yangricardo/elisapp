@@ -12,8 +12,8 @@ python manage.py migrate
 gunicorn    \
     --reload    \
     -b 0.0.0.0:8000 \
-    -t 720  \
-    --graceful-timeout 180  \
+    -t 50000  \
+    --graceful-timeout 50000  \
     --workers 5 \
     --threads 5 \
     --worker-class gevent   \

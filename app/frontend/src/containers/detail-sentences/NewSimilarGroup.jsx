@@ -2,13 +2,11 @@ import React, { Component, Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
    } from '@material-ui/core';
-
 import { connect } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles';
 import {addSimilarProcessesToGroup} from '../../actions/similarprocesses';
 import CreatableSelect from 'react-select/creatable';
 import { dialogComponents, useStyles } from '../../components/SelectComponents';
-import { Add } from '@material-ui/icons';
 
 const NewSimilarGroup = props => {
     const classes = useStyles();
@@ -54,8 +52,11 @@ const NewSimilarGroup = props => {
 
     return (
         <Fragment>
-            <Button variant="outlined" color="primary" disabled={similarProcesses.processo_base_tj === undefined} onClick={handleClickOpen}>
-                <Add style={{marginRight:theme.spacing(1)}}/> Grupo Similar
+            <Button variant="outlined" style={{display:'flex', flexGrow:1}} color="primary" 
+                        disabled={similarProcesses.processo_base_tj === undefined} 
+                        onClick={handleClickOpen}
+            >
+                Adicionar em Grupo
             </Button>
             {
                 similarProcesses.processo_base_tj !== undefined ?

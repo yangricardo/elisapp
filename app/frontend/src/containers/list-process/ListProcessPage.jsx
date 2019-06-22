@@ -1,14 +1,18 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, Typography, TextField, Grid, Table, Box } from '@material-ui/core';
+import { withStyles, Typography, TextField, Grid, Table, Box, Button } from '@material-ui/core';
+import Slider from '@material-ui/lab/Slider';
 import { createMessage } from '../../actions/message';
-import { getClassesAssuntos, getComarcasServentias, getAno, getAdvogados, getJuizes, getPersonagens} from '../../actions/similarprocesses';
+import { getClassesAssuntos, getComarcasServentias, getAno, getAdvogados, getJuizes, getPersonagens,listSimilarProcesses} from '../../actions/similarprocesses';
 import { FilterSelect } from '../../components/SelectComponents';
 import { ThemeProvider } from '@material-ui/styles';
 
 const styles = theme => ({
-
+    root: {
+        paddingLeft: theme.spacing(1),
+        zIndex:1
+    }
 })
 
 
@@ -33,6 +37,7 @@ class ListProcessPage extends Component {
             personagemSelected : '',
             juizes : [],
             juizSelected : '',
+            similaridade : [90,100]
         }
     }
 
@@ -108,7 +113,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({anoSelected:newValue})
                 this.props.getAno({
-                    ano: this.state.anoSelected,
+                    ano: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({anoSelected:''})
@@ -121,7 +126,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({advogadoSelected:newValue})
                 this.props.getAdvogados({
-                    advogado: this.state.advogadoSelected,
+                    advogado: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({advogadoSelected:''})
@@ -134,7 +139,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({personagemSelected:newValue})
                 this.props.getPersonagens({
-                    personagem: this.state.personagemSelected,
+                    personagem: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({personagemSelected:''})
@@ -147,12 +152,26 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({juizSelected:newValue})
                 this.props.getJuizes({
-                    juiz: this.state.juizSelected,
+                    juiz: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({juizSelected:''})
             }
         }
+    }
+
+    onListSimilarClick = e => {
+        this.props.listSimilarProcesses({
+            comarca : this.state.comarcaSelected,
+            serventia: this.state.serventiaSelected,
+            classe: this.state.classeSelected,
+            ano: this.state.anoSelected,
+            assunto: this.state.assuntoSelected,
+            juiz : this.state.juizSelected,
+            advogado : this.state.advogadoSelected,
+            personagem : this.state.personagemSelected,
+            similaridade : this.state.similaridade,
+        })
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -352,6 +371,23 @@ class ListProcessPage extends Component {
                             htmlFor='select-juiz'
                         />
                         </Grid>
+                        <Grid item >
+                        <Typography variant='caption' id="range-slider" gutterBottom>
+                            Intervalo de Similaridade
+                        </Typography>
+                        <Slider
+                            value={this.state.similaridade}
+                            onChange={(event,value)=>{this.setState({similaridade:value})}}
+                            valueLabelDisplay="auto"
+                        />
+                        </Grid>
+                        <Grid item >
+                            <Button variant='contained' color='primary' fullWidth
+                                onClick={this.onListSimilarClick}
+                            >
+                                Listar Processos Similares
+                            </Button>
+                        </Grid>
                 </Grid>
                 </Grid>
                 <Grid item md={8}>
@@ -378,6 +414,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
+    listSimilarProcesses,
     getClassesAssuntos,  
     getComarcasServentias,
     getAno,

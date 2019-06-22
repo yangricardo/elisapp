@@ -131,7 +131,8 @@ export const buildTokenHeader = token => {
 	const config = {
 		headers: {
 			"Content-Type": "application/json",
-		}
+		},
+		timeout : 360000
 	};
 
 	// If token, add to headers config
