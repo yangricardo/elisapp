@@ -2,10 +2,10 @@
 python manage.py collectstatic
 
 # Create migrations based on django models
-python manage.py makemigrations
+# python manage.py makemigrations
 
 # Migrate created migrations to database
-python manage.py migrate
+# python manage.py migrate
 
 # Start gunicorn server at port 8000 and keep an eye for app code changes
 # If changes occur, kill worker and start a new one

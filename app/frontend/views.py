@@ -210,36 +210,23 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
 
         personagem = self.request.query_params.get('personagem', None)
         if personagem is not None:
-            personagem_processos = list(map(lambda p: p.processo_id,
-                                            tj_models.PersonagemProcesso.objects.filter(personagem__nome__icontains=personagem)))
             queryset = queryset.filter(
-                Q(processo_base_tj__in=personagem_processos) |
-                Q(processo_similar_tj__in=personagem_processos)
+                Q(processo_base_personagens__icontains=personagem) |
+                Q(processo_similar_personagens__icontains=personagem)
             )
 
         advogado = self.request.query_params.get('advogado', None)
         if advogado is not None:
-            advogado_processos = list(map(lambda p: p.processo_id,
-                                          tj_models.AdvogadoProcesso.objects.filter(
-                                              Q(advogado__nome_adv__icontains=advogado) |
-                                              Q(advogado__num_oab__icontains=advogado)
-                                          )))
             queryset = queryset.filter(
-                Q(processo_base_tj__in=advogado_processos) |
-                Q(processo_similar_tj__in=advogado_processos)
+                Q(processo_base_advogados__icontains=advogado) |
+                Q(processo_similar_advogados__icontains=advogado)
             )
 
         juiz = self.request.query_params.get('juiz', None)
         if juiz is not None:
-            andamentos_processos = list(map(lambda p: p.processo_id,
-                                            tj_models.AndamentoProcesso.objects.filter(
-                                                Q(juiz__nome__icontains=juiz) |
-                                                Q(txt_descr__icontains=juiz)
-                                            )
-                                            ))
             queryset = queryset.filter(
-                Q(processo_base_tj__in=andamentos_processos) |
-                Q(processo_similar_tj__in=andamentos_processos)
+                Q(processo_base_juizes__icontains=juiz) |
+                Q(processo_similar_juizes__icontains=juiz)
             )
 
         page = self.paginate_queryset(queryset)

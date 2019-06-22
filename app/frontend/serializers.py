@@ -11,34 +11,9 @@ class AnoDisponivelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-class AssuntoDiponivelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = views.AssuntoDisponivel
-        fields = '__all__'
-
 class ClasseAssuntoDiponivelSerializer(serializers.ModelSerializer):
     class Meta:
         model = views.ClasseAssuntoDisponivel
-        fields = '__all__'
-
-
-class ClasseDisponivelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = views.ClasseDisponivel
-        fields = '__all__'
-
-
-
-class ComarcaDisponivelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = views.ComarcasDisponivel
-        fields = '__all__'
-
-
-class ServentiaDisponivelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = views.ServentiaDisponivel
         fields = '__all__'
 
 

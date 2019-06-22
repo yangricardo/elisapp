@@ -108,6 +108,12 @@ class ProcessoSimilar(DBView):
     processo_similar_classe = models.TextField(null=True, blank=True)
     processo_base_competencia = models.TextField(null=True, blank=True)
     processo_similar_competencia = models.TextField(null=True, blank=True)
+    processo_base_personagens = models.TextField(null=True, blank=True)
+    processo_similar_personagens = models.TextField(null=True, blank=True)
+    processo_base_advogados = models.TextField(null=True, blank=True)
+    processo_similar_advogados = models.TextField(null=True, blank=True)
+    processo_base_juizes = models.TextField(null=True, blank=True)
+    processo_similar_juizes = models.TextField(null=True, blank=True)
     
     def __str__(self):
         return f'{self.similaridade} - {self.processo_base_tj} - {self.processo_similar_tj} - {self.processo_base_cnj} - {self.processo_similar_cnj}'
@@ -127,28 +133,6 @@ class AnoDisponivel(DBView):
         managed = False
         db_table = 'api_view_anos_disponiveis'
 
-
-class AssuntoDisponivel(DBView):
-    assunto = models.TextField(primary_key=True)
-
-    def __str__(self):
-        return f'{self.assunto}'
-
-    class Meta:
-        managed = False
-        db_table = 'api_view_assuntos_disponiveis'
-
-
-class ClasseDisponivel(DBView):
-    classe = models.TextField(primary_key=True)
-
-    def __str__(self):
-        return f'{self.classe}'
-
-    class Meta:
-        managed = False
-        db_table = 'api_view_classes_disponiveis'
-
 class ClasseAssuntoDisponivel(DBView):
     assunto = models.TextField()
     classe = models.TextField()
@@ -159,16 +143,6 @@ class ClasseAssuntoDisponivel(DBView):
     class Meta:
         managed = False
         db_table = 'api_view_classes_assuntos_disponiveis'
-
-class ComarcasDisponivel(DBView):
-    comarca = models.TextField(primary_key=True)
-
-    def __str__(self):
-        return f'{self.comarca}'
-
-    class Meta:
-        managed = False
-        db_table = 'api_view_comarcas_disponiveis'
 
 
 class CompetenciaDisponivel(DBView):
@@ -181,16 +155,6 @@ class CompetenciaDisponivel(DBView):
         managed = False
         db_table = 'api_view_competencias_disponiveis'
 
-
-class ServentiaDisponivel(DBView):
-    serventia = models.TextField(primary_key=True)
-
-    def __str__(self):
-        return f'{self.serventia}'
-
-    class Meta:
-        managed = False
-        db_table = 'api_view_serventias_disponiveis'
 
 class ComarcaServentiaDisponivel(DBView):
     serventia = models.TextField()
@@ -205,7 +169,6 @@ class ComarcaServentiaDisponivel(DBView):
 
 
 class JuizDisponivel(DBView):
-    matricula_juiz = models.TextField(primary_key=True)
     nome_juiz = models.TextField()
     cargo_juiz = models.TextField()
 
