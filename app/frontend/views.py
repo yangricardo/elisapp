@@ -121,6 +121,11 @@ class LargeResultsSetPagination(pagination.PageNumberPagination):
     max_page_size = 100
 
 
+class FilterResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 8
+    page_size_query_param = 'page_size'
+    max_page_size = 8
+
 class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -162,6 +167,9 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
         if processo_similar_cnj is not None:
             queryset = queryset.filter(
                 processo_similar_cnj=processo_similar_cnj)
+
+        if set(['similaridade_minima','similaridade_maxima']).intersection(self.request.query_params):
+            self.pagination_class = FilterResultsSetPagination
 
         similaridade_minima = self.request.query_params.get(
             'similaridade_minima', None)
@@ -251,12 +259,6 @@ class AvaliacaoSimilaridadeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-
-
-class FilterResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 10
 
 @method_decorator(never_cache, name='list')
 class ListSearchViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):

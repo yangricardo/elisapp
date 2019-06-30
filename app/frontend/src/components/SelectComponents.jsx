@@ -314,5 +314,5 @@ FilterSelect.propTypes = {
     onChange : PropTypes.func,
     onInputChange : PropTypes.func,
     options : PropTypes.array,
-    value : PropTypes.object,
+    value : PropTypes.object
 };

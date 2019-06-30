@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, Typography, TextField, Grid, Table, Box, Button } from '@material-ui/core';
+import { withStyles, Typography, TextField, Grid, Table, Box, Button, TableHead, TableCell, TableBody, TableRow, Checkbox, Paper, TablePagination } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import { createMessage } from '../../actions/message';
 import { getClassesAssuntos, getComarcasServentias, getAno, getAdvogados, getJuizes, getPersonagens,listSimilarProcesses} from '../../actions/similarprocesses';
@@ -22,22 +22,23 @@ class ListProcessPage extends Component {
         super(props)
         this.state = {
             comarcas : [],
-            comarcaSelected : '',
+            comarcaSelected : { label:"Sem filtro", value: ""},
             serventias : [],
-            serventiaSelected : '',
+            serventiaSelected : { label:"Sem filtro", value: ""},
             anos : [],
-            anoSelected : '',
+            anoSelected : { label:"Sem filtro", value: ""},
             classes : [],
-            classeSelected : '',
+            classeSelected : { label:"Sem filtro", value: ""},
             assuntos : [],
-            assuntoSelected : '',
+            assuntoSelected : { label:"Sem filtro", value: ""},
             advogados : [],
-            advogadoSelected : '',
+            advogadoSelected : { label:"Sem filtro", value: ""},
             personagens : [],
-            personagemSelected : '',
+            personagemSelected : { label:"Sem filtro", value: ""},
             juizes : [],
-            juizSelected : '',
-            similaridade : [90,100]
+            juizSelected : { label:"Sem filtro", value: ""},
+            similaridade : [90,100],
+            page:1,
         }
     }
 
@@ -56,7 +57,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({comarcaSelected: newValue})
                 this.props.getComarcasServentias({
-                    comarca: newValue ,
+                    comarca: newValue !== "Sem filtro" ? newValue : "",
                     serventia: this.state.serventiaSelected
                 })
             } else if(actionMeta.action !== 'input-blur'){
@@ -71,7 +72,7 @@ class ListProcessPage extends Component {
                 this.setState({serventiaSelected:newValue})
                 this.props.getComarcasServentias({
                     comarca: this.state.comarcaSelected,
-                    serventia: newValue
+                    serventia: newValue !== "Sem filtro" ? newValue : ""
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({serventiaSelected:''})
@@ -85,7 +86,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({classeSelected: newValue})
                 this.props.getClassesAssuntos({
-                    classe: newValue ,
+                    classe: newValue !== "Sem filtro" ? newValue : "" ,
                     assunto: this.state.assuntoSelected
                 })
             } else if(actionMeta.action !== 'input-blur'){
@@ -100,7 +101,7 @@ class ListProcessPage extends Component {
                 this.setState({assuntoSelected:newValue})
                 this.props.getClassesAssuntos({
                     classe: this.state.classeSelected,
-                    assunto: newValue
+                    assunto: newValue !== "Sem filtro" ? newValue : ""
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({assuntoSelected:''})
@@ -113,7 +114,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({anoSelected:newValue})
                 this.props.getAno({
-                    ano: newValue,
+                    ano: newValue !== "Sem filtro" ? newValue : "",
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({anoSelected:''})
@@ -126,7 +127,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({advogadoSelected:newValue})
                 this.props.getAdvogados({
-                    advogado: newValue,
+                    advogado: newValue !== "Sem filtro" ? newValue : "",
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({advogadoSelected:''})
@@ -139,7 +140,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({personagemSelected:newValue})
                 this.props.getPersonagens({
-                    personagem: newValue,
+                    personagem: newValue !== "Sem filtro" ? newValue : "",
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({personagemSelected:''})
@@ -152,7 +153,7 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({juizSelected:newValue})
                 this.props.getJuizes({
-                    juiz: newValue,
+                    juiz: newValue !== "Sem filtro" ? newValue : "",
                 })
             } else if(actionMeta.action !== 'input-blur'){
                 this.setState({juizSelected:''})
@@ -161,7 +162,9 @@ class ListProcessPage extends Component {
     }
 
     onListSimilarClick = e => {
+        this.setState({page:1})
         this.props.listSimilarProcesses({
+            page: 1,
             comarca : this.state.comarcaSelected,
             serventia: this.state.serventiaSelected,
             classe: this.state.classeSelected,
@@ -177,7 +180,7 @@ class ListProcessPage extends Component {
     static getDerivedStateFromProps(props, state) {
         const getComarcas = comarcas => {
             return comarcas !== undefined ?
-                [{label:'',value:''}].concat(
+                [{label:'Sem filtro',value:''}].concat(
                     comarcas.map((comarca)=>{
                     return { label:comarca, value:comarca}
                 })): []
@@ -185,7 +188,7 @@ class ListProcessPage extends Component {
     
         const getServentias = serventias => {
             return serventias !== undefined ?
-                [{label:'',value:''}].concat(
+                [{label:'Sem filtro',value:''}].concat(
                     serventias.map((serventia)=>{
                     return { label:serventia, value:serventia}
                 })): []
@@ -193,16 +196,15 @@ class ListProcessPage extends Component {
 
         const getAnos = anos => {
             return anos !== undefined ?
+            [{label:'Sem filtro',value:''}].concat(
                 anos.map((ano)=>{
                     return { label:ano, value:ano}
-            })
-            
-            : []
+            })): []
         }
 
         const getClasses = classes => {
             return classes !== undefined ?
-                [{label:'',value:''}].concat(
+                [{label:'Sem filtro',value:''}].concat(
                     classes.map((classe)=>{
                         return { label:classe, value:classe}
                 })): []
@@ -210,7 +212,7 @@ class ListProcessPage extends Component {
     
         const getAssuntos = assuntos => {
             return assuntos !== undefined ?
-                [{label:'',value:''}].concat(
+                [{label:'Sem filtro',value:''}].concat(
                     assuntos.map((assunto)=>{
                     return { label:assunto, value:assunto}
                 })): []
@@ -218,25 +220,25 @@ class ListProcessPage extends Component {
 
         const getAdvogados = advogados => {
             return advogados !== undefined ?
-                [{label:'',value:''}].concat(
+                [{label:'Sem filtro',value:''}].concat(
                     advogados.map((advogado)=>{
-                    return { label:advogado}
+                    return { label:advogado, value: advogado}
                 })): []
         }
 
         const getPersonagens = personagens => {
             return personagens !== undefined ?
-                [{label:'',value:''}].concat(
+                [{label:'Sem filtro',value:''}].concat(
                     personagens.map((personagem)=>{
-                    return { label:personagem}
+                    return { label:personagem, value: personagem}
                 })): []
         }
 
         const getJuizes = juizes => {
             return juizes !== undefined ?
-                [{label:'',value:''}].concat(
+                [{label:'Sem filtro',value:''}].concat(
                     juizes.map((juiz)=>{
-                    return { label:juiz}
+                    return { label:juiz, value: juiz}
                 })): []
         }
 
@@ -278,6 +280,8 @@ class ListProcessPage extends Component {
             return <Redirect to="/login"/>
         }
 
+        const {listSimilar} = this.props
+
         return (
             
             <Grid container direction="row" 
@@ -286,6 +290,8 @@ class ListProcessPage extends Component {
             spacing={2}
             >
                 <Grid item md={4}>
+                <Paper component={Box} p={1.2} borderColor="primary.main" border={2} 
+                        borderRadius={10}>
                 <Grid container direction="column" 
                     justify="flex-start"
                     alignItems="stretch" 
@@ -389,9 +395,67 @@ class ListProcessPage extends Component {
                             </Button>
                         </Grid>
                 </Grid>
+                </Paper>
                 </Grid>
                 <Grid item md={8}>
-                    <Table></Table>
+                    <Paper component={Box} p={1.2} borderColor="primary.main" border={2} 
+                        borderRadius={10}>
+                    <Table
+                        size={'small'}
+                    >
+                        <TableHead>
+                            <TableCell>
+                                <Checkbox
+                                    color='primary'
+                                />
+                            </TableCell>
+                            <TableCell>Similaridade</TableCell>
+                            <TableCell>Processo Referência</TableCell>
+                            <TableCell>Processo Similar</TableCell>
+                        </TableHead>
+                        <TableBody>
+                            {  listSimilar.results !== undefined ? listSimilar.results.map((value, index, self)=>{
+                                return (
+                                    <TableRow key={`${value.processo_base_tj}-${value.processo_similar_tj}`}>
+                                        <TableCell>
+                                            <Checkbox
+                                                color='primary'
+                                            />
+                                        </TableCell>
+                                        <TableCell>{value.similaridade}</TableCell>
+                                        <TableCell>
+                                        <Grid container direction='column'>
+                                        <Grid item>
+                                            <Typography variant='overline'>{value.processo_base_tj}</Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography variant='caption'>{value.processo_base_cnj}</Typography>
+                                        </Grid>
+                                        </Grid>
+                                        </TableCell>
+                                        <TableCell>
+                                        <Grid container direction='column'>
+                                        <Grid item>
+                                            <Typography variant='overline'>{value.processo_similar_tj}</Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography variant='caption'>{value.processo_similar_cnj}</Typography>
+                                        </Grid>
+                                        </Grid>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            }) : undefined
+                        }
+                        </TableBody>
+                    </Table>
+                    <TablePagination
+                        rowsPerPage={8}
+                        rowsPerPageOptions={[8]}
+                        labelRowsPerPage='Sentenças por Página'
+                        
+                    />
+                    </Paper>
                 </Grid>
 
             </Grid>
@@ -411,6 +475,7 @@ const mapStateToProps = (state) => ({
     personagens : state.similarProcessesReducer.personagens,
     juizes : state.similarProcessesReducer.juizes,
     anos : state.similarProcessesReducer.anos,
+    listSimilar : state.similarProcessesReducer.listSimilar,
 })
 
 const mapDispatchToProps = {

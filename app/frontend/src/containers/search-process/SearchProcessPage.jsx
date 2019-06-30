@@ -4,7 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types'
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
-import { withStyles, CssBaseline, Box, List, Typography, Divider,ListItem, ListItemText, TextField, Grid, Button } from '@material-ui/core';
+import { withStyles, CssBaseline, Box, List, Typography, Divider,ListItem, ListItemText, TextField, Grid, Button, Paper } from '@material-ui/core';
 import { createMessage, returnError } from '../../actions/message';
 import { setSimilarProcessResults, clearSearchedProcess, loadSimilarProcesses, cachedProcesses ,
     setSearchedProcess,setSimilarProcess} from '../../actions/similarprocesses';
@@ -149,9 +149,10 @@ class SearchProcessPage extends Component {
     }
 
     sugestionBox = sugestions =>{
+        const BoxList = props => <Box boxShadow={2} borderRadius={10} borderColor="primary.main" component={List} {...props}>{props.children}</Box>
         return (
             sugestions !== undefined ?
-            <Box boxShadow={2} borderRadius={10} component={List} dense>
+            <Paper  component={BoxList} dense>
             { sugestions !== undefined ?
                 sugestions.map((item,index)=>{
                 return (
@@ -166,7 +167,7 @@ class SearchProcessPage extends Component {
                 )})
                 : undefined
             }
-            </Box> : undefined
+            </Paper> : undefined
         )
     }
 
@@ -192,7 +193,7 @@ class SearchProcessPage extends Component {
                         alignItems="center" alignContent="center" spacing={5}>
                     <Grid item xs md/>
                     <Grid item md={10}>
-                    <Box borderColor="primary.main"
+                    <Paper component={Box} borderColor="primary.main"
                         border={2}
                         borderRadius={10}
                         boxShadow={5}
@@ -219,7 +220,7 @@ class SearchProcessPage extends Component {
                                     Consultar Processo 
                             </Button>
                         </form>
-                    </Box>
+                    </Paper>
                     </Grid>
                     <Grid item>
                         <Box mt={2} maxWidth={600}>

@@ -43,7 +43,6 @@ class TJModelViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
 
     @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)

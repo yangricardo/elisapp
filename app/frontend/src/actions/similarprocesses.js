@@ -3,7 +3,7 @@ import {CREATE_MESSAGE,SELECT_SIMILAR_PROCESSES, CLEAR_SELECTED_SIMILAR_PROCESSE
     SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, 
     LOAD_ASYNC, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS,
     NEW_SIMILAR_GROUP, LIST_SIMILAR, GET_ADVOGADOS, GET_ANOS, GET_CLASSES_ASSUNTOS, GET_COMARCAS_SERVENTIAS,
-    GET_JUIZES, GET_PERSONAGENS
+    GET_JUIZES, GET_PERSONAGENS, AUTH_ERROR
 } from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
@@ -28,6 +28,9 @@ export const searchProcess = (searchProcess,setSimilarProcessResults,loadSimilar
         dispatch({type:LOAD_ASYNC})
     })
     .catch(err => {
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         dispatch({type:LOAD_ASYNC})
         returnError(err.response.data, err.response.status);
     });
@@ -70,6 +73,9 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatc
                 }
             })
             .catch(err => {
+                if (err.status === 401){
+                    dispatch({type:AUTH_ERROR})
+                }
                 returnError(err.response.data, err.response.status);
                 dispatch({
                     type: CREATE_MESSAGE,
@@ -146,6 +152,9 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
         })
     })
     .catch(err =>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         dispatch({
 			type: CREATE_MESSAGE,
 			payload: { ratingFail: `Falha ao enviar Avaliação de Similaridade` }
@@ -166,6 +175,9 @@ export const getSimilarGroups = () => (dispatch,getState) => {
         })
     })
     .catch(err =>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         dispatch({
 			type: CREATE_MESSAGE,
 			payload: { fetchError: `Falha ao obter grupos de similaridade registrados` }
@@ -191,6 +203,9 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                 })      
             })
             .catch(err=>{
+                if (err.status === 401){
+                    dispatch({type:AUTH_ERROR})
+                }
                 if (err.response.status === 400) {
                     // TODO RESOLVE BUG - não está notificando o usuário
                     dispatch({
@@ -203,7 +218,6 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
     }
     
     for (let grupo of grupos) {
-        // console.log(grupo)
         if (grupo.label === grupo.value) {
             axios.post('/api/models/gruposimilares/',{descricao:grupo.label},tokenConfig(getState))
             .then(res => {
@@ -225,7 +239,9 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                 }
             })
             .catch(err=>{
-                console.error(err)
+                if (err.status === 401){
+                    dispatch({type:AUTH_ERROR})
+                }
                 dispatch({
                     type: CREATE_MESSAGE,
                     payload: { fetchError: `Falha ao criar grupos de similaridade` }
@@ -264,16 +280,18 @@ export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
     .then(res => {
         dispatch({
             type: LIST_SIMILAR,
-            payload: res.data.results
+            payload: res.data
         })
     })
     .catch(err=>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         console.log(err)
     })
 }
 
 export const getComarcasServentias = (queryParams) => (dispatch,getState) => {
-    console.log(queryParams)
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
     query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.label : queryParams.comarca}&` : ''
@@ -286,6 +304,9 @@ export const getComarcasServentias = (queryParams) => (dispatch,getState) => {
         })
     })
     .catch(err=>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         console.log(err)
     })
 }
@@ -303,6 +324,9 @@ export const getClassesAssuntos = (queryParams) => (dispatch,getState) => {
         })
     })
     .catch(err=>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         console.log(err)
     })
 }
@@ -320,6 +344,9 @@ export const getAno = (queryParams) => (dispatch,getState) => {
         })
     })
     .catch(err=>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         console.log(err)
     })
 }
@@ -337,6 +364,9 @@ export const getAdvogados = (queryParams) => (dispatch,getState) => {
         })
     })
     .catch(err=>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         console.log(err)
     })
 }
@@ -353,6 +383,9 @@ export const getPersonagens = (queryParams) => (dispatch,getState) => {
         })
     })
     .catch(err=>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         console.log(err)
     })
 }
@@ -369,6 +402,9 @@ export const getJuizes = (queryParams) => (dispatch,getState) => {
         })
     })
     .catch(err=>{
+        if (err.status === 401){
+            dispatch({type:AUTH_ERROR})
+        }
         console.log(err)
     })
 }
