@@ -295,13 +295,14 @@ export const FilterSelect = (props) => {
                 }
             }}
             isClearable
+            placeholder='Sem filtro'
             onChange={props.onChange}
             onInputChange={props.onInputChange}
             options={props.options}
             classes={classes}
             styles={selectStyles}
             components={components}
-            value={props.value}  
+            value={props.value}
             noOptionsMessage={function() {
                 return 'Obtendo sugestões de acordo com as buscas ou opções inexistentes...';
               }}

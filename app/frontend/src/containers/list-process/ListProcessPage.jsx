@@ -57,11 +57,11 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({comarcaSelected: newValue})
                 this.props.getComarcasServentias({
-                    comarca: newValue !== "Sem filtro" ? newValue : "",
+                    comarca: newValue,
                     serventia: this.state.serventiaSelected
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({comarcaSelected:''})
+                this.setState({comarcaSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }
@@ -72,10 +72,10 @@ class ListProcessPage extends Component {
                 this.setState({serventiaSelected:newValue})
                 this.props.getComarcasServentias({
                     comarca: this.state.comarcaSelected,
-                    serventia: newValue !== "Sem filtro" ? newValue : ""
+                    serventia: newValue
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({serventiaSelected:''})
+                this.setState({serventiaSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }
@@ -86,11 +86,11 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({classeSelected: newValue})
                 this.props.getClassesAssuntos({
-                    classe: newValue !== "Sem filtro" ? newValue : "" ,
+                    classe: newValue,
                     assunto: this.state.assuntoSelected
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({classeSelected:''})
+                this.setState({classeSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }
@@ -101,10 +101,10 @@ class ListProcessPage extends Component {
                 this.setState({assuntoSelected:newValue})
                 this.props.getClassesAssuntos({
                     classe: this.state.classeSelected,
-                    assunto: newValue !== "Sem filtro" ? newValue : ""
+                    assunto: newValue
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({assuntoSelected:''})
+                this.setState({assuntoSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }
@@ -114,10 +114,10 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({anoSelected:newValue})
                 this.props.getAno({
-                    ano: newValue !== "Sem filtro" ? newValue : "",
+                    ano: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({anoSelected:''})
+                this.setState({anoSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }
@@ -127,10 +127,10 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({advogadoSelected:newValue})
                 this.props.getAdvogados({
-                    advogado: newValue !== "Sem filtro" ? newValue : "",
+                    advogado: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({advogadoSelected:''})
+                this.setState({advogadoSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }
@@ -140,10 +140,10 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({personagemSelected:newValue})
                 this.props.getPersonagens({
-                    personagem: newValue !== "Sem filtro" ? newValue : "",
+                    personagem: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({personagemSelected:''})
+                this.setState({personagemSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }
@@ -153,10 +153,10 @@ class ListProcessPage extends Component {
             if(actionMeta.action === 'select-option' || actionMeta.action === 'input-change' ){
                 this.setState({juizSelected:newValue})
                 this.props.getJuizes({
-                    juiz: newValue !== "Sem filtro" ? newValue : "",
+                    juiz: newValue,
                 })
             } else if(actionMeta.action !== 'input-blur'){
-                this.setState({juizSelected:''})
+                this.setState({juizSelected:{ label:"Sem filtro", value: ""}})
             }
         }
     }

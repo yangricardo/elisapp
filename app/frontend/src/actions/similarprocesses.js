@@ -264,14 +264,14 @@ export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
 
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.label : queryParams.comarca}&` : ''
-    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia.hasOwnProperty('label')? queryParams.serventia.label : queryParams.serventia}&` : ''
-    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano.hasOwnProperty('label')? queryParams.ano.label : queryParams.ano}&` : ''
-    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe.hasOwnProperty('label')? queryParams.classe.label : queryParams.classe}&` : ''
-    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto.hasOwnProperty('label')? queryParams.assunto.label : queryParams.assunto}&` : ''
-    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem.hasOwnProperty('label')? queryParams.personagem.label : queryParams.personagem}&` : ''
-    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado.hasOwnProperty('label')? queryParams.advogado.label : queryParams.advogado}&` : ''
-    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz.hasOwnProperty('label')? queryParams.juiz.label : queryParams.juiz}&` : ''
+    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.value : queryParams.comarca}&` : ''
+    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia.hasOwnProperty('label')? queryParams.serventia.value : queryParams.serventia}&` : ''
+    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano.hasOwnProperty('label')? queryParams.ano.value : queryParams.ano}&` : ''
+    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe.hasOwnProperty('label')? queryParams.classe.value : queryParams.classe}&` : ''
+    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto.hasOwnProperty('label')? queryParams.assunto.value : queryParams.assunto}&` : ''
+    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem.hasOwnProperty('label')? queryParams.personagem.value : queryParams.personagem}&` : ''
+    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado.hasOwnProperty('label')? queryParams.advogado.value : queryParams.advogado}&` : ''
+    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz.hasOwnProperty('label')? queryParams.juiz.value : queryParams.juiz}&` : ''
     query += `similaridade_minima=${queryParams.similaridade[0]}&`
     query += `similaridade_maxima=${queryParams.similaridade[1]}&`
     
@@ -294,8 +294,8 @@ export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
 export const getComarcasServentias = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.label : queryParams.comarca}&` : ''
-    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia.hasOwnProperty('label')? queryParams.serventia.label : queryParams.serventia}&` : ''
+    query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.value : queryParams.comarca}&` : ''
+    query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia.hasOwnProperty('label')? queryParams.serventia.value : queryParams.serventia}&` : ''
     axios.get(`/api/models/comarcasserventiasdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
@@ -314,8 +314,8 @@ export const getComarcasServentias = (queryParams) => (dispatch,getState) => {
 export const getClassesAssuntos = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe.hasOwnProperty('label')? queryParams.classe.label : queryParams.classe}&` : ''
-    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto.hasOwnProperty('label')? queryParams.assunto.label : queryParams.assunto}&` : ''
+    query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe.hasOwnProperty('label')? queryParams.classe.value : queryParams.classe}&` : ''
+    query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto.hasOwnProperty('label')? queryParams.assunto.value : queryParams.assunto}&` : ''
     axios.get(`/api/models/classesassuntosdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
@@ -335,7 +335,7 @@ export const getClassesAssuntos = (queryParams) => (dispatch,getState) => {
 export const getAno = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano.hasOwnProperty('label')? queryParams.ano.label : queryParams.ano}&` : ''
+    query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano.hasOwnProperty('label')? queryParams.ano.value : queryParams.ano}&` : ''
     axios.get(`/api/models/anosdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
@@ -355,7 +355,7 @@ export const getAno = (queryParams) => (dispatch,getState) => {
 export const getAdvogados = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado.hasOwnProperty('label')? queryParams.advogado.label : queryParams.advogado}&` : ''
+    query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado.hasOwnProperty('label')? queryParams.advogado.value : queryParams.advogado}&` : ''
     axios.get(`/api/models/advogadossdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
@@ -374,7 +374,7 @@ export const getAdvogados = (queryParams) => (dispatch,getState) => {
 export const getPersonagens = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem.hasOwnProperty('label')? queryParams.personagem.label : queryParams.personagem}&` : ''
+    query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem.hasOwnProperty('label')? queryParams.personagem.value : queryParams.personagem}&` : ''
     axios.get(`/api/models/personagensdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
@@ -393,7 +393,7 @@ export const getPersonagens = (queryParams) => (dispatch,getState) => {
 export const getJuizes = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
-    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz.hasOwnProperty('label')? queryParams.juiz.label : queryParams.juiz}&` : ''
+    query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz.hasOwnProperty('label')? queryParams.juiz.value : queryParams.juiz}&` : ''
     axios.get(`/api/models/juizessdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
