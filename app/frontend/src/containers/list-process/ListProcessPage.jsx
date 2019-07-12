@@ -1,12 +1,14 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, Typography, TextField, Grid, Table, Box, Button, TableHead, TableCell, TableBody, TableRow, Checkbox, Paper, TablePagination } from '@material-ui/core';
-import Slider from '@material-ui/lab/Slider';
+import { withStyles, Typography, TextField, Grid, Table, Box, Button, TableHead, TableCell, TableBody, TableRow, Checkbox, Paper, TablePagination, Slider } from '@material-ui/core';
 import { createMessage } from '../../actions/message';
-import { getClassesAssuntos, getComarcasServentias, getAno, getAdvogados, getJuizes, getPersonagens,listSimilarProcesses} from '../../actions/similarprocesses';
+import { 
+    getSimilarGroups, getClassesAssuntos, getComarcasServentias, getAno, getAdvogados, getJuizes, getPersonagens,listSimilarProcesses} from '../../actions/similarprocesses';
 import { FilterSelect } from '../../components/SelectComponents';
 import { ThemeProvider } from '@material-ui/styles';
+import  ProcessTable from './ProcessTable';
+import { buildQueryListSimilarProcesses } from '../../actions/similarprocesses';
 
 const styles = theme => ({
     root: {
@@ -49,6 +51,7 @@ class ListProcessPage extends Component {
         this.props.getAdvogados({})
         this.props.getPersonagens({})
         this.props.getJuizes({})
+        this.props.getSimilarGroups()
     }
 
     onComarcaChange = (newValue,actionMeta) => {
@@ -161,10 +164,8 @@ class ListProcessPage extends Component {
         }
     }
 
-    onListSimilarClick = e => {
-        this.setState({page:1})
-        this.props.listSimilarProcesses({
-            page: 1,
+    buildQuery = () => {
+        return buildQueryListSimilarProcesses({
             comarca : this.state.comarcaSelected,
             serventia: this.state.serventiaSelected,
             classe: this.state.classeSelected,
@@ -174,7 +175,13 @@ class ListProcessPage extends Component {
             advogado : this.state.advogadoSelected,
             personagem : this.state.personagemSelected,
             similaridade : this.state.similaridade,
+            page : this.state.page,
         })
+    }
+
+    onListSimilarClick = e => {
+        this.setState({page:1})
+        this.props.listSimilarProcesses(this.buildQuery())
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -399,62 +406,8 @@ class ListProcessPage extends Component {
                 </Grid>
                 <Grid item md={8}>
                     <Paper component={Box} p={1.2} borderColor="primary.main" border={2} 
-                        borderRadius={10}>
-                    <Table
-                        size={'small'}
-                    >
-                        <TableHead>
-                            <TableCell>
-                                <Checkbox
-                                    color='primary'
-                                />
-                            </TableCell>
-                            <TableCell>Similaridade</TableCell>
-                            <TableCell>Processo Referência</TableCell>
-                            <TableCell>Processo Similar</TableCell>
-                        </TableHead>
-                        <TableBody>
-                            {  listSimilar.results !== undefined ? listSimilar.results.map((value, index, self)=>{
-                                return (
-                                    <TableRow key={`${value.processo_base_tj}-${value.processo_similar_tj}`}>
-                                        <TableCell>
-                                            <Checkbox
-                                                color='primary'
-                                            />
-                                        </TableCell>
-                                        <TableCell>{value.similaridade}</TableCell>
-                                        <TableCell>
-                                        <Grid container direction='column'>
-                                        <Grid item>
-                                            <Typography variant='overline'>{value.processo_base_tj}</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography variant='caption'>{value.processo_base_cnj}</Typography>
-                                        </Grid>
-                                        </Grid>
-                                        </TableCell>
-                                        <TableCell>
-                                        <Grid container direction='column'>
-                                        <Grid item>
-                                            <Typography variant='overline'>{value.processo_similar_tj}</Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography variant='caption'>{value.processo_similar_cnj}</Typography>
-                                        </Grid>
-                                        </Grid>
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            }) : undefined
-                        }
-                        </TableBody>
-                    </Table>
-                    <TablePagination
-                        rowsPerPage={8}
-                        rowsPerPageOptions={[8]}
-                        labelRowsPerPage='Sentenças por Página'
-                        
-                    />
+                        borderRadius={10} >
+                    <ProcessTable listSimilar={listSimilar} query={this.buildQuery()}/>
                     </Paper>
                 </Grid>
 
@@ -485,7 +438,8 @@ const mapDispatchToProps = {
     getAno,
     getAdvogados,
     getJuizes, 
-    getPersonagens
+    getPersonagens,
+    getSimilarGroups
 }
 
 

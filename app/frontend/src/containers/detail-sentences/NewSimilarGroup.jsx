@@ -4,7 +4,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogT
    } from '@material-ui/core';
 import { connect } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles';
-import {addSimilarProcessesToGroup} from '../../actions/similarprocesses';
+import {addSimilarProcessesToGroup, openGroupDialog} from '../../actions/similarprocesses';
 import CreatableSelect from 'react-select/creatable';
 import { dialogComponents, useStyles } from '../../components/SelectComponents';
 
@@ -12,13 +12,13 @@ const NewSimilarGroup = props => {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-    const {similarProcesses, similarGroups, addSimilarProcessesToGroup} = props
+    const {similarProcesses, similarGroups, addSimilarProcessesToGroup,onOpen,onClose, hideButton} = props
     
     const toSelectSuggestions = similarGroups.map(suggestion => ({
         value: suggestion.id,
         label: suggestion.descricao,
         data: suggestion
-      }));
+    }));
     const [selectedGroups, setSelectedGroups] = useState([]);
    
     const handleSelectChange = (newValue) => {
@@ -31,6 +31,7 @@ const NewSimilarGroup = props => {
 
     const handleClose = () => {
         setOpen(false);
+        if (hideButton) props.openGroupDialog()
         setSelectedGroups([]);
     }
 
@@ -40,31 +41,35 @@ const NewSimilarGroup = props => {
     }
 
 
-      const selectStyles = {
+    const selectStyles = {
         input: base => ({
-          ...base,
-          color: theme.palette.text.primary,
-          '& input': {
+        ...base,
+        color: theme.palette.text.primary,
+        '& input': {
             font: 'inherit',
-          },
+        },
         }),
-      };
-
+    };
+      
     return (
         <Fragment>
-            <Button variant="outlined" style={{display:'flex', flexGrow:1}} color="primary" 
-                        disabled={similarProcesses.processo_base_tj === undefined} 
-                        onClick={handleClickOpen}
-            >
-                Adicionar em Grupo
-            </Button>
             {
-                similarProcesses.processo_base_tj !== undefined ?
-                <Dialog open={open} onClose={handleClose} className={classes.dialog} aria-labelledby="form-dialog-title">
+                props.hideButton ? undefined :
+
+                <Button variant="outlined" style={{display:'flex', flexGrow:1}} color="primary" 
+                    disabled={similarProcesses.processo_base_tj === undefined} 
+                    onClick={handleClickOpen}
+                >
+                    Adicionar em Grupo
+                </Button>
+            }
+            {
+                similarProcesses.processo_base_tj !== undefined || similarProcesses[0] !== undefined ?
+                <Dialog open={hideButton? props.openDialog : open} onClose={handleClose} className={classes.dialog} aria-labelledby="form-dialog-title">
                     <DialogTitle variant='caption'>Salvar em Grupo Similar</DialogTitle>
                     <DialogContent className={classes.dialog} >
                         <DialogContentText >
-                            Adicione os processos similares {similarProcesses.processo_base_tj} e {similarProcesses.processo_similar_tj} em um Grupo Similar.
+                            Adicione os processos similares em um Grupo Similar.
                         </DialogContentText>
                         <CreatableSelect
                             isMulti
@@ -95,7 +100,7 @@ const NewSimilarGroup = props => {
                     <Button onClick={handleClose} color="primary">
                         Cancelar
                     </Button>
-                    <Button onClick={handleSubmitToSimilarGroup} disabled={selectedGroups[0] !== undefined || selectedGroups[0] !== null ? false : true} color="primary">
+                    <Button onClick={handleSubmitToSimilarGroup} disabled={selectedGroups!==null ? selectedGroups.length === 0 : true } color="primary">
                         Enviar
                     </Button>
                     </DialogActions>
@@ -107,11 +112,13 @@ const NewSimilarGroup = props => {
 }
 
 const mapStateToProps = (state) => ({
-    similarGroups : state.similarProcessesReducer.similarGroups
+    similarGroups : state.similarProcessesReducer.similarGroups,
+    openDialog : state.similarProcessesReducer.openGroupDialog
 })
 
 const mapDispatchToProps = {
-    addSimilarProcessesToGroup
+    addSimilarProcessesToGroup,
+    openGroupDialog
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewSimilarGroup)

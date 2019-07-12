@@ -30,6 +30,7 @@ export default props => (
               <PrivateRoute exact path="/detalharsentencas" component={DetailSentencesPage} />
               <Route exact path='/register' component={ Register } />
               <Route exact path='/login' component={ Login } />
+              <Route exact path='/' component={ Login } />
           </Switch>
         </Header>
         </ScrollToTop>

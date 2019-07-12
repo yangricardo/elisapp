@@ -143,6 +143,23 @@ export const buildTokenHeader = token => {
 	return config;
 }
 
+export const buildFetchRequest = (url,method,body={}) => getState => {
+	const headers = new Headers()
+	header.append("Content-Type", "application/json")
+	header.append("timeout",360000)
+	if (token) {
+		header.append("Authorization",`Token ${getState().authReducer.token}`)
+	}
+	const init = {
+		method,
+		headers,
+		body,
+		mode: 'cors',
+		cache: 'default'
+	};
+	return new Request(url,init)
+}
+
 // Setup config with token - helper function
 export const tokenConfig = getState => {
 	// Get token from state

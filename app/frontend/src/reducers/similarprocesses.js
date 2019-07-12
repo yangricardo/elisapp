@@ -1,14 +1,18 @@
 import { CACHE_SIMILAR_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, CLEAR_SEARCHED_PROCESS, 
     SET_SIMILAR_PROCESS_RESULTS, CLEAR_SELECTED_SIMILAR_PROCESSES, SELECT_SIMILAR_PROCESSES,
     GET_SIMILAR_GROUPS,MULTI_SELECT_SIMILAR_PROCESSES, NEW_SIMILAR_GROUP, LIST_SIMILAR,
-    GET_CLASSES_ASSUNTOS, GET_ADVOGADOS, GET_ANOS, GET_COMARCAS_SERVENTIAS, GET_JUIZES, GET_PERSONAGENS
+    GET_CLASSES_ASSUNTOS, GET_ADVOGADOS, GET_ANOS, GET_COMARCAS_SERVENTIAS, GET_JUIZES, GET_PERSONAGENS,
+    OPEN_GROUP_DIALOG
+
 } from "../actions/types";
 
 const initialState = {
     searchedProcess : {},
     similarProcess : {},
     similarGroups : [],
-    listSimilar : {},
+    listSimilar : {
+        results: []
+    },
     selectedSimilarProcesses : [],
     cachedSimilarProcesses : {},
     cachedProcesses : {},
@@ -20,6 +24,7 @@ const initialState = {
     advogados : [],
     personagens : [],
     juizes : [],
+    openGroupDialog : false,
 }
 
 // const similarProcessIDRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
@@ -153,6 +158,11 @@ export default function(state = initialState, action) {
                         return  personagem.nome_personagem
                     }))],
                 }
+        case OPEN_GROUP_DIALOG:
+            return {
+                ...state,
+                openGroupDialog:payload
+            }
         default:
             return state
     }

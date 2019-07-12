@@ -35,4 +35,5 @@ export const GET_ANOS = 'GET_ANOS';
 export const GET_JUIZES = 'GET_JUIZES';
 export const GET_ADVOGADOS = 'GET_ADVOGADOS';
 export const GET_PERSONAGENS = 'GET_PERSONAGENS';
+export const OPEN_GROUP_DIALOG = 'OPEN_GROUP_DIALOG';
 

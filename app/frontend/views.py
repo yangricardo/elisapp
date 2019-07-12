@@ -78,7 +78,7 @@ def get_estatistica_serializer(processo):
 
 
 def get_processos_similares_serializer(processo, request):
-    return json.loads(json.dumps(serializers.ProcessoSimilarSerializer(
+    return json.loads(json.dumps(serializers.ListaSimilaresSerializer(
         models.ProcessoSimilar.objects.filter(
             processo_base_tj=processo).order_by('-similaridade'),
         many=True, context={'request': request}
@@ -116,21 +116,21 @@ def build_processo_similar(processo_base, processo_similar, request):
 
 
 class LargeResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 100
+    page_size = 500
     page_size_query_param = 'page_size'
-    max_page_size = 100
+    max_page_size = 500
 
 
 class FilterResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 8
+    page_size = 10
     page_size_query_param = 'page_size'
-    max_page_size = 8
+    max_page_size = 10
 
 class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = models.ProcessoSimilar.objects.all()
-    serializer_class = serializers.ProcessoSimilarSerializer
+    serializer_class = serializers.ListaSimilaresSerializer
     pagination_class = LargeResultsSetPagination
 
     @method_decorator(cache_page(CACHE_TTL))
@@ -168,8 +168,8 @@ class ProcessosSimilaresViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMix
             queryset = queryset.filter(
                 processo_similar_cnj=processo_similar_cnj)
 
-        if set(['similaridade_minima','similaridade_maxima']).intersection(self.request.query_params):
-            self.pagination_class = FilterResultsSetPagination
+        # if set(['similaridade_minima','similaridade_maxima']).intersection(self.request.query_params):
+        #     self.pagination_class = FilterResultsSetPagination
 
         similaridade_minima = self.request.query_params.get(
             'similaridade_minima', None)

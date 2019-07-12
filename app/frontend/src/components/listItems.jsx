@@ -14,13 +14,13 @@ export const mainListItems = (
       <ListItemIcon>
         <List />
       </ListItemIcon>
-      <ListItemText primary="Busca Paramétrica" />
+      <ListItemText primary="Listar Processos" />
     </ListItem>
     <ListItem button component={LinkRouter} to="/grupossimilares">
       <ListItemIcon>
         <GroupWork />
       </ListItemIcon>
-      <ListItemText primary="Grupos de Sentenças" />
+      <ListItemText primary="Grupos Similares" />
     </ListItem>
   </Fragment>
 );
