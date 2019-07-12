@@ -141,6 +141,7 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
         sentenca,
         comentario,
     }
+    dispatch({type:LOAD_ASYNC})
     axios.post('/api/models/avaliacoes/',rating, tokenConfig(getState))
     .then( res =>{
         dispatch({
@@ -150,6 +151,7 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
         dispatch({
             type : SUBMIT_RATING_SUCCESS
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err =>{
         if (err.status === 401){
@@ -163,16 +165,19 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
             type : SUBMIT_RATING_FAIL
         })
         dispatch(returnError(err.response.data, err.response.status))
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
 export const getSimilarGroups = () => (dispatch,getState) => {
+    dispatch({type:LOAD_ASYNC})
     axios.get('/api/models/gruposimilares/', tokenConfig(getState))
     .then( res =>{
         dispatch({
             type: GET_SIMILAR_GROUPS,
             payload: res.data.map(data=>data.grupo)
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err =>{
         if (err.status === 401){
@@ -181,13 +186,20 @@ export const getSimilarGroups = () => (dispatch,getState) => {
         dispatch({
 			type: CREATE_MESSAGE,
 			payload: { fetchError: `Falha ao obter grupos de similaridade registrados` }
-		})
+        })
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
 export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch, getState) => {
-    console.log(grupos)
+    dispatch({type:LOAD_ASYNC})
     for (let grupo of grupos) {
+        if (_similarProcesses.length>1){
+            dispatch({
+                type: CREATE_MESSAGE,
+                payload: { similarGroupCreated: `Adicionando processos similares ao grupo ${grupo.label} com sucesso` }
+            })      
+        }
         if (grupo.label === grupo.value) {
             axios.post('/api/models/gruposimilares/',{descricao:grupo.label},tokenConfig(getState))
             .then(res => {
@@ -239,6 +251,12 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
             })
         }else {
             const _similarProcesses = similarProcesses.hasOwnProperty('id') ? [similarProcesses] : similarProcesses
+            if (_similarProcesses.length>1){
+                dispatch({
+                    type: CREATE_MESSAGE,
+                    payload: { similarGroupCreated: `Adicionando processos similares ao grupo ${grupo.label} com sucesso` }
+                })      
+            }
             for(let similarProcess of _similarProcesses){
                 const id = similarProcessURLRE.exec(similarProcess.id)[2]
                 const payload = {
@@ -247,10 +265,12 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                 }
                 axios.post('/api/models/processosgruposimilares/',payload,tokenConfig(getState))
                 .then(res => {
-                    dispatch({
-                        type: CREATE_MESSAGE,
-                        payload: { similarGroupCreated: `Processos similares ${similarProcess.processo_base_tj} e ${similarProcess.processo_similar_tj} adicionados ao grupo ${grupo.label} com sucesso` }
-                    })      
+                    if (_similarProcesses.length==1){
+                        dispatch({
+                            type: CREATE_MESSAGE,
+                            payload: { similarGroupCreated: `Processos similares ${similarProcess.processo_base_tj} e ${similarProcess.processo_similar_tj} adicionados ao grupo ${grupo.label} com sucesso` }
+                        })      
+                    } 
                 })
                 .catch(err=>{
                     if (err.status === 401){
@@ -267,7 +287,7 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                 })
             }
         } 
-        
+        dispatch({type:LOAD_ASYNC})
     }
 }
 
@@ -288,7 +308,7 @@ export const buildQueryListSimilarProcesses = (queryParams) => {
 }
 
 export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
-
+    dispatch({type:LOAD_ASYNC})
     // let query = buildQueryListSimilarProcesses(queryParams)    
     axios.get(`/api/models/processossimilaresreport/?${queryParams}`, tokenConfig(getState))
     .then(res => {
@@ -302,12 +322,14 @@ export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
                 payload: { loading: `Foram encontrados ${res.data.count} resultados, reduza o intervalo de similaridade!` }
             })
         }
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err=>{
         if (err.status === 401){
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
@@ -316,18 +338,21 @@ export const getComarcasServentias = (queryParams) => (dispatch,getState) => {
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
     query += queryParams.hasOwnProperty('comarca')?`comarca=${queryParams.comarca.hasOwnProperty('label')? queryParams.comarca.value : queryParams.comarca}&` : ''
     query += queryParams.hasOwnProperty('serventia')?`serventia=${queryParams.serventia.hasOwnProperty('label')? queryParams.serventia.value : queryParams.serventia}&` : ''
+    dispatch({type:LOAD_ASYNC})
     axios.get(`/api/models/comarcasserventiasdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
             type: GET_COMARCAS_SERVENTIAS,
             payload: res.data.results
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err=>{
         if (err.status === 401){
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
@@ -336,18 +361,21 @@ export const getClassesAssuntos = (queryParams) => (dispatch,getState) => {
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
     query += queryParams.hasOwnProperty('classe')?`classe=${queryParams.classe.hasOwnProperty('label')? queryParams.classe.value : queryParams.classe}&` : ''
     query += queryParams.hasOwnProperty('assunto')?`assunto=${queryParams.assunto.hasOwnProperty('label')? queryParams.assunto.value : queryParams.assunto}&` : ''
+    dispatch({type:LOAD_ASYNC})
     axios.get(`/api/models/classesassuntosdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
             type: GET_CLASSES_ASSUNTOS,
             payload: res.data.results
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err=>{
         if (err.status === 401){
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
@@ -356,18 +384,21 @@ export const getAno = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
     query += queryParams.hasOwnProperty('ano')?`ano=${queryParams.ano.hasOwnProperty('label')? queryParams.ano.value : queryParams.ano}&` : ''
+    dispatch({type:LOAD_ASYNC})
     axios.get(`/api/models/anosdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
             type: GET_ANOS,
             payload: res.data.results
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err=>{
         if (err.status === 401){
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
@@ -376,18 +407,21 @@ export const getAdvogados = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
     query += queryParams.hasOwnProperty('advogado')?`advogado=${queryParams.advogado.hasOwnProperty('label')? queryParams.advogado.value : queryParams.advogado}&` : ''
+    dispatch({type:LOAD_ASYNC})
     axios.get(`/api/models/advogadossdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
             type: GET_ADVOGADOS,
             payload: res.data.results
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err=>{
         if (err.status === 401){
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
@@ -395,18 +429,21 @@ export const getPersonagens = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
     query += queryParams.hasOwnProperty('personagem')?`personagem=${queryParams.personagem.hasOwnProperty('label')? queryParams.personagem.value : queryParams.personagem}&` : ''
+    dispatch({type:LOAD_ASYNC})
     axios.get(`/api/models/personagensdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
             type: GET_PERSONAGENS,
             payload: res.data.results
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err=>{
         if (err.status === 401){
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
@@ -414,18 +451,21 @@ export const getJuizes = (queryParams) => (dispatch,getState) => {
     var query = ""
     query += queryParams.hasOwnProperty('page')?`page=${queryParams.page}&` : ''
     query += queryParams.hasOwnProperty('juiz')?`juiz=${queryParams.juiz.hasOwnProperty('label')? queryParams.juiz.value : queryParams.juiz}&` : ''
+    dispatch({type:LOAD_ASYNC})
     axios.get(`/api/models/juizessdisponiveis/?${query}`,tokenConfig(getState))
     .then(res=>{
         dispatch({
             type: GET_JUIZES,
             payload: res.data.results
         })
+        dispatch({type:LOAD_ASYNC})
     })
     .catch(err=>{
         if (err.status === 401){
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        dispatch({type:LOAD_ASYNC})
     })
 }
 
