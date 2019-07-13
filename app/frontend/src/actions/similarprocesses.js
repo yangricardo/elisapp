@@ -50,7 +50,12 @@ export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,ge
             payload : cachedProcesses[processo_similar_tj]
         })
     } else {
-        const similarProcessURL = similarProcessesData.id.replace(urlRE,"")
+        var similarProcessURL;
+        try {
+            similarProcessURL = similarProcessesData.id.replace(urlRE,"")
+        } catch{
+            similarProcessURL = `/api/models/processossimilaresreport/${similarProcessesData.processos_similares}`
+        }
         axios.get(similarProcessURL, tokenConfig(getState))
         .then(res => {
             if (res.data !== undefined){
@@ -362,7 +367,10 @@ export const getGroupProcesses = group => (dispatch, getState) => {
     console.log(group)
     axios.get(`/api/models/processosgruposimilares/?grupo=${group.id}`,tokenConfig(getState))
     .then(res=>{
-        console.log(res.data)
+        dispatch({
+            type: LIST_SIMILAR,
+            payload: res.data
+        })
     }).catch(err=>console.log(err))
 }
 

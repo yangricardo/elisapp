@@ -49,12 +49,13 @@ class ProcessTable extends Component {
                 this.setState({redirect:false})
                 return <Redirect to='/detalharsentencas'/>
         }
+        const listSimilar = this.props.listSimilar.hasOwnProperty('results') ? this.props.listSimilar.results : Object.values(this.props.listSimilar)
         return (
             <Fragment>
                 <NewSimilarGroup similarProcesses={this.state.similarProcesses}  hideButton/>
                 <MaterialTable
                     style={{zIndex:10}}
-                    title="Processos Similares"
+                    title={this.props.hasOwnProperty('title')? this.props.title : "Processos Similares"}
                     columns={[
                         {title: 'Processo Referência', field:this.state.codigo==='TJ'?'processo_base_tj':'processo_base_cnj'},
                         // {title: 'Processo Referência', field:'processo_base_cnj'},
@@ -69,7 +70,7 @@ class ProcessTable extends Component {
                         pageSize:9,
                         initialPage:1
                     }}
-                    data={this.props.listSimilar.results}
+                    data={listSimilar}
                     localization={{
                         pagination: {
                             labelDisplayedRows: '{from}-{to} de {count}'
@@ -120,6 +121,7 @@ const mapStateToProps = (state) => ({
     cachedProcesses : state.similarProcessesReducer.cachedProcesses,
     searchedProcess : state.similarProcessesReducer.searchedProcess,
     similarProcess : state.similarProcessesReducer.similarProcess,
+    listSimilar : state.similarProcessesReducer.listSimilar,
 })
 
 const mapDispatchToProps = {

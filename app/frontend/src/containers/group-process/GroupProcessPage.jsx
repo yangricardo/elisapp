@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withStyles, Typography, TextField, Grid, Paper, Box, List, ListItem, ListItemText, Divider } from '@material-ui/core'
 import { createMessage } from '../../actions/message'
 import { getSimilarGroups,getGroupProcesses } from '../../actions/similarprocesses'
+import ProcessTable from '../list-process/ProcessTable';
 
 const styles = theme => ({
     container: {
@@ -29,6 +30,7 @@ class GroupProcessPage extends Component {
 
     onListClick = item => {
         this.props.getGroupProcesses(item)
+        this.setState({grupo:item.descricao})
     }
 
     render() {
@@ -36,16 +38,16 @@ class GroupProcessPage extends Component {
             this.props.createMessage({ loginRequired: "Login Required" });
             return <Redirect to="/login"/>
         }
-        const { classes,similarGroups } = this.props;
+        const { classes,similarGroups,listSimilar } = this.props;
 
         const BoxList = props => <Box 
-                style={{maxHeight:500, overflowY:'auto'}} boxShadow={2} borderRadius={10} 
+                style={{maxHeight:900, overflowY:'auto'}} boxShadow={2} borderRadius={10} 
                 borderColor="primary.main" component={List} {...props}>
                     {props.children}
                 </Box>
 
         return (
-            <Grid container direction="column" 
+            <Grid container direction="row" 
             justify="flex-start"
             alignItems="stretch" 
             spacing={2}>
@@ -65,7 +67,7 @@ class GroupProcessPage extends Component {
                     </Paper>
                 </Grid>
                 <Grid item md={8}>
-
+                <ProcessTable title={this.state.grupo} />
                 </Grid>
             </Grid>
         )
@@ -76,7 +78,8 @@ class GroupProcessPage extends Component {
 
 const mapStateToProps = (state) => ({
     isAuthenticated: state.authReducer.isAuthenticated,
-    similarGroups : state.similarProcessesReducer.similarGroups
+    similarGroups : state.similarProcessesReducer.similarGroups,
+    listSimilar : state.similarProcessesReducer.listSimilar,
 })
 
 const mapDispatchToProps = {

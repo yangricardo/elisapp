@@ -407,7 +407,7 @@ class ListProcessPage extends Component {
                 <Grid item md={8}>
                     <Paper component={Box} p={1.2} borderColor="primary.main" border={2} 
                         borderRadius={10} >
-                    <ProcessTable listSimilar={listSimilar} query={this.buildQuery()}/>
+                    <ProcessTable title={'Resultados da Listagem'}/>
                     </Paper>
                 </Grid>
 
