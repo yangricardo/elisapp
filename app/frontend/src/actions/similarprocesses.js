@@ -36,6 +36,59 @@ export const searchProcess = (searchProcess,setSimilarProcessResults,loadSimilar
     });
 }
 
+export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,getState) => {
+    const {cachedProcesses} = getState().similarProcessesReducer
+    const {processo_base_tj,processo_similar_tj} = similarProcessesData
+    if(cachedProcesses.hasOwnProperty(processo_base_tj) && cachedProcesses.hasOwnProperty(processo_similar_tj) ){
+        dispatch({
+            type : SET_SEARCHED_PROCESS,
+            payload : cachedProcesses[processo_base_tj]
+        })
+        dispatch({
+            type : SET_SIMILAR_PROCESS,
+            payload : cachedProcesses[processo_similar_tj]
+        })
+    } else {
+        const similarProcessURL = similarProcessesData.id.replace(urlRE,"")
+        axios.get(similarProcessURL, tokenConfig(getState))
+        .then(res => {
+            if (res.data !== undefined){
+                const {processo_base, processo_similar} = res.data
+                dispatch({
+                    type : SET_SEARCHED_PROCESS,
+                    payload : processo_base
+                })
+                dispatch({
+                    type : SET_SIMILAR_PROCESS,
+                    payload : processo_similar
+                })
+                dispatch ({
+                    type : CACHE_SIMILAR_PROCESS,
+                    payload : processo_base
+                })
+                dispatch ({
+                    type : CACHE_SIMILAR_PROCESS,
+                    payload : processo_similar
+                })
+                dispatch({
+                    type : SET_SIMILAR_PROCESS_RESULTS,
+                    payload : processo_similar.processos_similares
+                })
+            }
+        })
+        .catch(err => {
+            if (err.status === 401){
+                dispatch({type:AUTH_ERROR})
+            }
+            returnError(err.response.data, err.response.status);
+            dispatch({
+                type: CREATE_MESSAGE,
+                payload: { loadingFail: `Falha ao carregar dados do processo similar ${processo.processo_similar_tj}` }
+            })
+        })
+    }
+}
+
 export const loadSimilarProcesses = (processoBaseTJ, onSearch=false) => (dispatch, getState) => {
     const {cachedSimilarProcesses,cachedProcesses} = getState().similarProcessesReducer
     const similarProcesses = cachedSimilarProcesses[processoBaseTJ]
