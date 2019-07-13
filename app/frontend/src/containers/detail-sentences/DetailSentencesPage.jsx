@@ -64,9 +64,10 @@ class DetailSentencesPage extends Component {
     }
 
     componentDidMount(){
-        const {loadSimilarProcesses, searchedProcess,selectSimilarProcesses} = this.props
+        const {loadSimilarProcesses, searchedProcess, similarProcess,selectSimilarProcesses} = this.props
         selectSimilarProcesses(this.state.similarProcesses)
         loadSimilarProcesses(searchedProcess.processo_tj, false)
+        loadSimilarProcesses(similarProcess.processo_tj, false)
     }
 
     onListClick = e => {
@@ -81,7 +82,7 @@ class DetailSentencesPage extends Component {
 
         } else {
             createMessage({loading: `Por favor aguarde enquanto os dados do processo ${e.processo_similar_tj} estão sendo carregados.`})
-            loadSimilarProcesses(e.processo_similar_tj, false)
+            loadSimilarProcesses(e.processo_similar_tj,false)
         }
     }
 
