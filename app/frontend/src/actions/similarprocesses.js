@@ -193,6 +193,7 @@ export const getSimilarGroups = () => (dispatch,getState) => {
 
 export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch, getState) => {
     dispatch({type:LOAD_ASYNC})
+    const _similarProcesses = similarProcesses.hasOwnProperty('id') ? [similarProcesses] : similarProcesses
     for (let grupo of grupos) {
         if (_similarProcesses.length>1){
             dispatch({
@@ -211,7 +212,6 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                     type: CREATE_MESSAGE,
                     payload: { similarGroupCreated: `Grupo ${grupo.label} criado com sucesso` }
                 })
-                const _similarProcesses = similarProcesses.hasOwnProperty('id') ? [similarProcesses] : similarProcesses
                 for(let similarProcess of _similarProcesses){
                     const id = similarProcessURLRE.exec(similarProcess.id)[2]
                     const payload = {
@@ -250,7 +250,6 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                 })
             })
         }else {
-            const _similarProcesses = similarProcesses.hasOwnProperty('id') ? [similarProcesses] : similarProcesses
             if (_similarProcesses.length>1){
                 dispatch({
                     type: CREATE_MESSAGE,
