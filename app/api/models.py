@@ -304,7 +304,6 @@ class GrupoSimilarUsuarios(ManagedModel):
     class Meta:
         unique_together = (('grupo', 'user'),)
 
-
 class GrupoSimilarProcessos(ManagedModel):
     grupo = models.ForeignKey(
         GrupoSimilar, db_index=True, on_delete=models.DO_NOTHING)
@@ -313,3 +312,19 @@ class GrupoSimilarProcessos(ManagedModel):
 
     class Meta:
         unique_together = (('grupo', 'processos_similares'),)
+
+
+class GrupoSimilarProcessosView(ManagedModel):
+    grupo = models.ForeignKey(
+        GrupoSimilar, to_field='id', db_index=True, on_delete=models.DO_NOTHING)
+    processos_similares = models.ForeignKey(
+        ProcessosSimilares, to_field='id', db_index=True, on_delete=models.DO_NOTHING)
+    similaridade = models.FloatField(blank=False, null=False)
+    processo_base_tj = models.CharField(max_length=18, db_index=True,null=True, blank=True)
+    processo_base_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
+    processo_similar_tj = models.CharField(max_length=18, db_index=True,null=True, blank=True)
+    processo_similar_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'api_view_gruposimilar_processos'

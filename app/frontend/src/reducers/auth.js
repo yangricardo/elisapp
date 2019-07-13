@@ -50,7 +50,7 @@ export default (state = initialState, action) => {
             }
         case LOGIN_SUCCESS:
         case REGISTER_SUCCESS:
-            setCookie('token', action.payload.token, 1)
+            setCookie('token', action.payload.token, 30)
             return {
                 ...state,
                 ...action.payload,

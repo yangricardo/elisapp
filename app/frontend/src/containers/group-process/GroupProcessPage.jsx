@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withStyles, Typography, TextField } from '@material-ui/core';
-import { createMessage } from '../../actions/message';
-import MaskedInput from 'react-text-mask';
+import { withStyles, Typography, TextField, Grid, Paper, Box, List, ListItem, ListItemText, Divider } from '@material-ui/core'
+import { createMessage } from '../../actions/message'
+import { getSimilarGroups,getGroupProcesses } from '../../actions/similarprocesses'
 
 const styles = theme => ({
     container: {
@@ -16,32 +16,19 @@ const styles = theme => ({
     },
 })
 
-function TextMaskCustom(props) {
-    const { inputRef, ...other } = props;
-  
-    return (
-    <MaskedInput
-        {...other}
-        ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-        }}
-        mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-        placeholderChar={'\u2000'}
-        showMask
-    />
-    );
-}
-  
-TextMaskCustom.propTypes = {
-inputRef: PropTypes.func.isRequired,
-};
-
 class GroupProcessPage extends Component {
 
-    state = {}
+    constructor(props) {
+        super(props)
+        this.state = {}
+    }
 
-    onChange = e => {
-        this.setState({[e.target.name]: e.target.value})
+    componentDidMount() {
+        this.props.getSimilarGroups()
+    }
+
+    onListClick = item => {
+        this.props.getGroupProcesses(item)
     }
 
     render() {
@@ -49,18 +36,54 @@ class GroupProcessPage extends Component {
             this.props.createMessage({ loginRequired: "Login Required" });
             return <Redirect to="/login"/>
         }
-        const { classes } = this.props;
+        const { classes,similarGroups } = this.props;
 
-        return (<Fragment>
-            <Typography>List Page</Typography>
-        </Fragment>)
+        const BoxList = props => <Box 
+                style={{maxHeight:500, overflowY:'auto'}} boxShadow={2} borderRadius={10} 
+                borderColor="primary.main" component={List} {...props}>
+                    {props.children}
+                </Box>
+
+        return (
+            <Grid container direction="column" 
+            justify="flex-start"
+            alignItems="stretch" 
+            spacing={2}>
+                <Grid item md={4}>
+                    <Paper component={BoxList}  dense>
+                        {similarGroups.map((item,index)=>{
+                        return (
+                        <Fragment key={index} >
+                            <ListItem button onClick={this.onListClick.bind(this, item)}>
+                                <ListItemText primary={
+                                    <Typography variant="button">{item.descricao}</Typography>
+                                }/>
+                            </ListItem>
+                            <Divider component="li"  light />
+                        </Fragment>
+                        )})}
+                    </Paper>
+                </Grid>
+                <Grid item md={8}>
+
+                </Grid>
+            </Grid>
+        )
     }
 
 }
 
 
 const mapStateToProps = (state) => ({
-    isAuthenticated: state.authReducer.isAuthenticated
+    isAuthenticated: state.authReducer.isAuthenticated,
+    similarGroups : state.similarProcessesReducer.similarGroups
 })
 
-export default connect(mapStateToProps, { createMessage })(withStyles(styles)(GroupProcessPage));
+const mapDispatchToProps = {
+    createMessage,
+    getSimilarGroups,
+    getGroupProcesses
+}
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(withStyles(styles)(GroupProcessPage));

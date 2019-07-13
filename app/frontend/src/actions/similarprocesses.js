@@ -81,7 +81,9 @@ export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,ge
             if (err.status === 401){
                 dispatch({type:AUTH_ERROR})
             }
-            returnError(err.response.data, err.response.status);
+            if (err.response !== undefined){ 
+                returnError(err.response.data, err.response.status)
+            }
             dispatch({
                 type: CREATE_MESSAGE,
                 payload: { loadingFail: `Falha ao carregar dados do processo similar ${processo.processo_similar_tj}` }
@@ -354,6 +356,14 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
             }
         } 
     }
+}
+
+export const getGroupProcesses = group => (dispatch, getState) => {
+    console.log(group)
+    axios.get(`/api/models/processosgruposimilares/?grupo=${group.id}`,tokenConfig(getState))
+    .then(res=>{
+        console.log(res.data)
+    }).catch(err=>console.log(err))
 }
 
 export const buildQueryListSimilarProcesses = (queryParams) => {

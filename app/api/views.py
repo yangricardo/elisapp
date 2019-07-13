@@ -335,14 +335,14 @@ class GrupoSimilarProcessosViewSet(UserModelViewSet):
 
     @method_decorator(never_cache)
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = tj_models.GrupoSimilarProcessosView.objects.all()
 
         grupo = self.request.query_params.get('grupo', None)
         if grupo is not None:
             queryset = queryset.filter(grupo=grupo)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        gspv_serializer = serializer.GrupoSimilarProcessosViewSerializer(queryset, many=True)
+        return Response(gspv_serializer.data)
     
 
 class GrupoSimilarUsuariosViewSet(UserModelViewSet):

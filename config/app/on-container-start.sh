@@ -18,4 +18,13 @@ gunicorn    \
     --threads 5 \
     --worker-class gevent   \
     --worker-connections 1024   \
+    backend.wsgi:application && gunicorn    \
+    --reload    \
+    -b 0.0.0.0:8000 \
+    -t 50000  \
+    --graceful-timeout 50000  \
+    --workers 5 \
+    --threads 5 \
+    --worker-class gevent   \
+    --worker-connections 1024   \
     backend.wsgi:application
