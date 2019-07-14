@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import MaterialTable from 'material-table'
 import { useTheme } from '@material-ui/core/styles';
-import {addSimilarProcessesToGroup,openGroupDialog,setSearchedProcess,setSimilarProcess, loadSimilarProcessFromList} from '../../actions/similarprocesses';
+import {addSimilarProcessesToGroup,openGroupDialog,setSearchedProcess,setSimilarProcess, 
+    loadSimilarProcessFromList, deleteSimilarProcessesFromGroup, deleteSimilarGroup} from '../../actions/similarprocesses';
 import CreatableSelect from 'react-select/creatable';
 import { dialogComponents, useStyles } from '../../components/SelectComponents';
 import NewSimilarGroup from '../detail-sentences/NewSimilarGroup';
@@ -50,12 +51,44 @@ class ProcessTable extends Component {
                 return <Redirect to='/detalharsentencas'/>
         }
         const listSimilar = this.props.listSimilar.hasOwnProperty('results') ? this.props.listSimilar.results : Object.values(this.props.listSimilar)
+
+        const mainActions = [
+            {
+                icon: 'find_replace',
+                tooltip: `Visualizar Código do ${this.state.codigo==='TJ'?'CNJ':'TJ'}`,
+                isFreeAction: true,
+                onClick: (event) => this.setState({codigo:this.state.codigo==='TJ'?'CNJ':'TJ'})
+            },
+            {
+                icon: 'group_work',
+                tooltip: `Agrupar processos selecionados`,
+                onClick: (event,data) => this.onOpenGroupProcessesDialog(data)
+            },
+        ]
+
+        const groupActions = [
+            {
+                icon: 'delete',
+                tooltip: `Deletar processos selecionados`,
+                onClick: (event,data) => this.props.deleteSimilarProcessesFromGroup(data)
+            },
+            {
+                icon: 'delete_forever',
+                tooltip: `Deletar grupo`,
+                isFreeAction: true,
+                disabled: !this.props.group.hasOwnProperty('id'),
+                onClick: (event) => this.props.deleteSimilarGroup(this.props.group)
+            },
+        ]
+
+
+        const actions = this.props.isGroup ? mainActions.concat(groupActions) : mainActions
         return (
             <Fragment>
                 <NewSimilarGroup similarProcesses={this.state.similarProcesses}  hideButton/>
                 <MaterialTable
                     style={{zIndex:10}}
-                    title={this.props.hasOwnProperty('title')? this.props.title : "Processos Similares"}
+                    title={this.props.isGroup && this.props.group.hasOwnProperty('descricao')? this.props.group.descricao : "Processos Similares"}
                     columns={[
                         {title: 'Processo Referência', field:this.state.codigo==='TJ'?'processo_base_tj':'processo_base_cnj'},
                         // {title: 'Processo Referência', field:'processo_base_cnj'},
@@ -93,19 +126,7 @@ class ProcessTable extends Component {
                             placeholder: 'Arraste aqui para agrupar por Processo Referência ou Processo Similar'
                         }
                     }}
-                    actions={[
-                        {
-                            icon: 'find_replace',
-                            tooltip: `Visualizar Código do ${this.state.codigo==='TJ'?'CNJ':'TJ'}`,
-                            isFreeAction: true,
-                            onClick: (event) => this.setState({codigo:this.state.codigo==='TJ'?'CNJ':'TJ'})
-                        },
-                        {
-                            icon: 'group_work',
-                            tooltip: `Agrupar processos selecionados`,
-                            onClick: (event,data) => this.onOpenGroupProcessesDialog(data)
-                        },
-                    ]}
+                    actions={actions}
                     onRowClick={(
                         (event,rowData)=>this.onRowClick(rowData)
                     )}
@@ -129,7 +150,9 @@ const mapDispatchToProps = {
     openGroupDialog,
     setSimilarProcess,
     setSearchedProcess,
-    loadSimilarProcessFromList
+    loadSimilarProcessFromList,
+    deleteSimilarProcessesFromGroup,
+    deleteSimilarGroup
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProcessTable)

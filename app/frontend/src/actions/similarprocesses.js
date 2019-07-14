@@ -3,7 +3,7 @@ import {CREATE_MESSAGE,SELECT_SIMILAR_PROCESSES, CLEAR_SELECTED_SIMILAR_PROCESSE
     SUBMIT_RATING_SUCCESS, CLEAR_SEARCHED_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, 
     LOAD_ASYNC_TRUE, LOAD_ASYNC_FALSE, CACHE_SIMILAR_PROCESS, SET_SIMILAR_PROCESS_RESULTS, GET_SIMILAR_GROUPS,
     NEW_SIMILAR_GROUP, LIST_SIMILAR, GET_ADVOGADOS, GET_ANOS, GET_CLASSES_ASSUNTOS, GET_COMARCAS_SERVENTIAS,
-    GET_JUIZES, GET_PERSONAGENS, AUTH_ERROR, OPEN_GROUP_DIALOG
+    GET_JUIZES, GET_PERSONAGENS, AUTH_ERROR, OPEN_GROUP_DIALOG,DELETE_PROCESS_FROM_GROUP,DELETE_SIMILAR_GROUP
 } from './types';
 import { tokenConfig } from './auth';
 import { returnError } from './message';
@@ -33,7 +33,9 @@ export const searchProcess = (searchProcess,setSimilarProcessResults,loadSimilar
             dispatch({type:AUTH_ERROR})
         }
         dispatch({type:LOAD_ASYNC_FALSE})
-        returnError(err.response.data, err.response.status);
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
     });
 }
 
@@ -56,6 +58,7 @@ export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,ge
         } catch{
             similarProcessURL = `/api/models/processossimilaresreport/${similarProcessesData.processos_similares}`
         }
+        dispatch({type:LOAD_ASYNC_TRUE})
         axios.get(similarProcessURL, tokenConfig(getState))
         .then(res => {
             if (res.data !== undefined){
@@ -80,6 +83,7 @@ export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,ge
                     type : SET_SIMILAR_PROCESS_RESULTS,
                     payload : processo_similar.processos_similares
                 })
+                dispatch({type:LOAD_ASYNC_FALSE})
             }
         })
         .catch(err => {
@@ -93,6 +97,7 @@ export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,ge
                 type: CREATE_MESSAGE,
                 payload: { loadingFail: `Falha ao carregar dados do processo similar ${processo.processo_similar_tj}` }
             })
+            dispatch({type:LOAD_ASYNC_FALSE})
         })
     }
 }
@@ -138,7 +143,9 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false, onList=fals
                 if (err.status === 401){
                     dispatch({type:AUTH_ERROR})
                 }
-                returnError(err.response.data, err.response.status);
+                if (err.response !== undefined){ 
+                    returnError(err.response.data, err.response.status)
+                }
                 dispatch({
                     type: CREATE_MESSAGE,
                     payload: { loadingFail: `Falha ao carregar dados do processo similar ${processo.processo_similar_tj}` }
@@ -230,7 +237,9 @@ export const submitRating = (processo_similar, inicial, contestacao, sentenca, c
         dispatch({
             type : SUBMIT_RATING_FAIL
         })
-        dispatch(returnError(err.response.data, err.response.status))
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -254,6 +263,9 @@ export const getSimilarGroups = () => (dispatch,getState) => {
 			payload: { fetchError: `Falha ao obter grupos de similaridade registrados` }
         })
         dispatch({type:LOAD_ASYNC_FALSE})
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
     })
 }
 
@@ -319,6 +331,9 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                     payload: { fetchError: `Falha ao criar grupos de similaridade` }
                 })
                 dispatch({type:LOAD_ASYNC_FALSE})
+                if (err.response !== undefined){ 
+                    returnError(err.response.data, err.response.status)
+                }
             })
         }else {
             if (_similarProcesses.length>1){
@@ -348,12 +363,15 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                     if (err.status === 401){
                         dispatch({type:AUTH_ERROR})
                     }
-                    if (err.response.status === 400) {
+                    else if (err.status === 400) {
                         // TODO RESOLVE BUG - não está notificando o usuário
                         dispatch({
                             type: CREATE_MESSAGE,
                             payload: { similarGroupFail: `Processos similares ${similarProcess.processo_base_tj} e ${similarProcess.processo_similar_tj} já pertencem ao grupo ${grupo.label}` }
                         }) 
+                    }
+                    if (err.response !== undefined){ 
+                        returnError(err.response.data, err.response.status)
                     }
                     dispatch({type:LOAD_ASYNC_FALSE})
                     console.log(err.response)
@@ -371,7 +389,12 @@ export const getGroupProcesses = group => (dispatch, getState) => {
             type: LIST_SIMILAR,
             payload: res.data
         })
-    }).catch(err=>console.log(err))
+    }).catch(err=>{
+        console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
+    })
 }
 
 export const buildQueryListSimilarProcesses = (queryParams) => {
@@ -412,6 +435,9 @@ export const listSimilarProcesses = (queryParams) => (dispatch, getState) => {
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -435,6 +461,9 @@ export const getComarcasServentias = (queryParams) => (dispatch,getState) => {
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -458,6 +487,9 @@ export const getClassesAssuntos = (queryParams) => (dispatch,getState) => {
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -481,6 +513,9 @@ export const getAno = (queryParams) => (dispatch,getState) => {
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -504,6 +539,9 @@ export const getAdvogados = (queryParams) => (dispatch,getState) => {
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -526,6 +564,9 @@ export const getPersonagens = (queryParams) => (dispatch,getState) => {
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -548,6 +589,9 @@ export const getJuizes = (queryParams) => (dispatch,getState) => {
             dispatch({type:AUTH_ERROR})
         }
         console.log(err)
+        if (err.response !== undefined){ 
+            returnError(err.response.data, err.response.status)
+        }
         dispatch({type:LOAD_ASYNC_FALSE})
     })
 }
@@ -559,6 +603,54 @@ export const openGroupDialog = () => (dispatch,getState)=>{
     })
 }
 
+export const deleteSimilarGroup = (grupo) => (dispatch, getState)=>{
+    
+    axios.delete(`/api/models/gruposimilares/${grupo.id}/`,tokenConfig(getState))
+        .then(res=>{
+            dispatch({
+                type: DELETE_SIMILAR_GROUP,
+                payload: res.data
+            })
+            dispatch({
+                type: CREATE_MESSAGE,
+                payload: { similarGroupCreated: `Grupo ${grupo.descricao} apagado com sucesso` }
+            })  
+        })
+        .catch(err=>{
+            dispatch({
+                type: CREATE_MESSAGE,
+                payload: { similarGroupFail: `Erro ao deletar grupo ${grupo.descricao}` }
+            })  
+            if (err.response !== undefined){ 
+                returnError(err.response.data, err.response.status)
+            }
+        })
+}
+ 
+export const deleteSimilarProcessesFromGroup = (selectedGroupProcesses) => (dispatch,getState)=>{
+    // codigo abaixo pode apresentar inconsitencias
+    for(let groupProcess of selectedGroupProcesses){
+        axios.delete(`/api/models/processosgruposimilares/${groupProcess.id}/`,tokenConfig(getState))
+        .then(res=>{})
+        .catch(err=>{
+            dispatch({
+                type: CREATE_MESSAGE,
+                payload: { similarGroupFail: `Removendo processos selecionados do grupo ${grupo.label} com sucesso` }
+            })  
+            if (err.response !== undefined){ 
+                returnError(err.response.data, err.response.status)
+            }
+        })
+    }
+    dispatch({
+        type: DELETE_PROCESS_FROM_GROUP,
+        payload:selectedGroupProcesses
+    })
+    dispatch({
+        type: CREATE_MESSAGE,
+        payload: { loading: `Removendo processos selecionados do grupo ${grupo.label} com sucesso` }
+    })  
+}
 
 const postProcessToGroup = (similarProcesses,group,dispatch,getState) => {
     const id = similarProcessURLRE.exec(similarProcesses.id)[2]
@@ -589,5 +681,9 @@ const postProcessToGroup = (similarProcesses,group,dispatch,getState) => {
             }
             dispatch({type:LOAD_ASYNC_FALSE})
             console.log(err.response)
+            if (err.response !== undefined){ 
+                returnError(err.response.data, err.response.status)
+            }
         })
 }
+

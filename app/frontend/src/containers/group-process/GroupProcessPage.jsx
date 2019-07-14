@@ -21,7 +21,9 @@ class GroupProcessPage extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            grupo:{}
+        }
     }
 
     componentDidMount() {
@@ -30,7 +32,7 @@ class GroupProcessPage extends Component {
 
     onListClick = item => {
         this.props.getGroupProcesses(item)
-        this.setState({grupo:item.descricao})
+        this.setState({grupo:item})
     }
 
     render() {
@@ -41,7 +43,7 @@ class GroupProcessPage extends Component {
         const { classes,similarGroups,listSimilar } = this.props;
 
         const BoxList = props => <Box 
-                style={{maxHeight:900, overflowY:'auto'}} boxShadow={2} borderRadius={10} 
+                style={{maxHeight:1000, overflowY:'auto'}} boxShadow={2} borderRadius={10} 
                 borderColor="primary.main" component={List} {...props}>
                     {props.children}
                 </Box>
@@ -67,7 +69,7 @@ class GroupProcessPage extends Component {
                     </Paper>
                 </Grid>
                 <Grid item md={8}>
-                <ProcessTable title={this.state.grupo} />
+                <ProcessTable isGroup group={this.state.grupo} groupSelected={this.state.groupSelected} />
                 </Grid>
             </Grid>
         )

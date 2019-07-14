@@ -2,7 +2,7 @@ import { CACHE_SIMILAR_PROCESS, SET_SEARCHED_PROCESS, SET_SIMILAR_PROCESS, CLEAR
     SET_SIMILAR_PROCESS_RESULTS, CLEAR_SELECTED_SIMILAR_PROCESSES, SELECT_SIMILAR_PROCESSES,
     GET_SIMILAR_GROUPS,MULTI_SELECT_SIMILAR_PROCESSES, NEW_SIMILAR_GROUP, LIST_SIMILAR,
     GET_CLASSES_ASSUNTOS, GET_ADVOGADOS, GET_ANOS, GET_COMARCAS_SERVENTIAS, GET_JUIZES, GET_PERSONAGENS,
-    OPEN_GROUP_DIALOG
+    OPEN_GROUP_DIALOG,DELETE_PROCESS_FROM_GROUP,DELETE_SIMILAR_GROUP
 
 } from "../actions/types";
 
@@ -105,10 +105,7 @@ export default function(state = initialState, action) {
             // const page = next !== null ? parseInt(pageRE.exec(next)[1])-1 : previous !== null ? parseInt(pageRE.exec(previous)[1])+1 : 0
             return {
                 ...state,
-                listSimilar : {
-                    ...payload,
-                    // page
-                }
+                listSimilar : payload
             }
         case GET_COMARCAS_SERVENTIAS:
             return {
@@ -162,6 +159,17 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 openGroupDialog:payload
+            }
+        case DELETE_PROCESS_FROM_GROUP:
+            return {
+                ...state,
+                listSimilar:state.listSimilar.filter(e=>!payload.includes(e))
+            }
+        case DELETE_SIMILAR_GROUP:
+            return {
+                ...state,
+                listSimilar:[],
+                similarGroups : state.similarGroups.filter(e=>e!==payload)
             }
         default:
             return state

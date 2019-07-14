@@ -296,19 +296,19 @@ class GrupoSimilar(ManagedModel):
 
 class GrupoSimilarUsuarios(ManagedModel):
     grupo = models.ForeignKey(
-        GrupoSimilar, db_index=True, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(User, db_index=True, on_delete=models.DO_NOTHING)
+        GrupoSimilar, db_index=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     administrador = models.ForeignKey(
-        User, related_name='administrador', db_index=True, on_delete=models.DO_NOTHING)
+        User, related_name='administrador', db_index=True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (('grupo', 'user'),)
 
 class GrupoSimilarProcessos(ManagedModel):
     grupo = models.ForeignKey(
-        GrupoSimilar, db_index=True, on_delete=models.DO_NOTHING)
+        GrupoSimilar, db_index=True, on_delete=models.CASCADE)
     processos_similares = models.ForeignKey(
-        ProcessosSimilares, db_index=True, on_delete=models.DO_NOTHING)
+        ProcessosSimilares, db_index=True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (('grupo', 'processos_similares'),)
@@ -316,9 +316,9 @@ class GrupoSimilarProcessos(ManagedModel):
 
 class GrupoSimilarProcessosView(ManagedModel):
     grupo = models.ForeignKey(
-        GrupoSimilar, to_field='id', db_index=True, on_delete=models.DO_NOTHING)
+        GrupoSimilar, to_field='id', db_index=True, on_delete=models.CASCADE)
     processos_similares = models.ForeignKey(
-        ProcessosSimilares, to_field='id', db_index=True, on_delete=models.DO_NOTHING)
+        ProcessosSimilares, to_field='id', db_index=True, on_delete=models.CASCADE)
     similaridade = models.FloatField(blank=False, null=False)
     processo_base_tj = models.CharField(max_length=18, db_index=True,null=True, blank=True)
     processo_base_cnj = models.CharField(max_length=25, db_index=True, blank=True, null=True)
