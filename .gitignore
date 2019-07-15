@@ -2,8 +2,7 @@
 # Created by https://www.gitignore.io/api/node,linux,macos,django,python,windows,jupyternotebook,visualstudiocode,jupyternotebooks
 # Edit at https://www.gitignore.io/?templates=node,linux,macos,django,python,windows,jupyternotebook,visualstudiocode,jupyternotebooks
 
-elisdb.sql
-elisdb.*data.sql
+elisdb.1.data.sql
 
 ### Django ###
 *.log

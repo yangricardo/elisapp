@@ -55,17 +55,20 @@ class GroupProcessPage extends Component {
             spacing={2}>
                 <Grid item md={4}>
                     <Paper component={BoxList}  dense>
-                        {similarGroups.map((item,index)=>{
-                        return (
-                        <Fragment key={index} >
-                            <ListItem button onClick={this.onListClick.bind(this, item)}>
-                                <ListItemText primary={
-                                    <Typography variant="button">{item.descricao}</Typography>
-                                }/>
-                            </ListItem>
-                            <Divider component="li"  light />
-                        </Fragment>
-                        )})}
+                        {
+                            similarGroups.length ?
+                            similarGroups.map((item,index)=>{
+                            return (
+                            <Fragment key={index} >
+                                <ListItem button onClick={this.onListClick.bind(this, item)}>
+                                    <ListItemText primary={
+                                        <Typography variant="button">{item.descricao}</Typography>
+                                    }/>
+                                </ListItem>
+                                <Divider component="li"  light />
+                            </Fragment>
+                            )}) : <ListItem><ListItemText>Não existem grupos criados</ListItemText></ListItem>
+                        }
                     </Paper>
                 </Grid>
                 <Grid item md={8}>

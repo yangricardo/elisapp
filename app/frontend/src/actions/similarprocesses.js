@@ -55,7 +55,7 @@ export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,ge
             payload : cachedProcesses[processo_similar_tj]
         })
     } else {
-        const similarProcessURL = buildSimilarProcessURL(similarProcess)
+        const similarProcessURL = buildSimilarProcessURL(similarProcessesData)
         dispatch({type:LOAD_ASYNC_TRUE})
         axios.get(similarProcessURL, tokenConfig(getState))
         .then(res => {
@@ -609,7 +609,7 @@ export const deleteSimilarGroup = (grupo) => (dispatch, getState)=>{
         .then(res=>{
             dispatch({
                 type: DELETE_SIMILAR_GROUP,
-                payload: res.data
+                payload: grupo
             })
             dispatch({
                 type: CREATE_MESSAGE,
