@@ -39,7 +39,7 @@ export const searchProcess = (searchProcess,setSimilarProcessResults,loadSimilar
     });
 }
 
-export const buildSimilarProcessURL = (data) => data.hasOwnProperty('id') ? data.id.replace(urlRE,"") : `/api/models/processossimilaresreport/${data.processos_similares}/`
+export const buildSimilarProcessURL = (data) => data.hasOwnProperty('processos_similares') ?  `/api/models/processossimilaresreport/${data.processos_similares}/` :  data.id.replace(urlRE,"")
 
 
 export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,getState) => {

@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'webpack_loader',
     'knox',
     'django_extensions',
-    'celery',
 ]
 
 MIDDLEWARE = [
@@ -241,10 +240,6 @@ LOGGING = {
             'level': 'DEBUG',
             'handlers': ['debug']
         },
-        'celery': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
         'info': {
             'level': 'INFO',
             'handlers': ['console']
@@ -287,13 +282,6 @@ LOGGING = {
         # }
     }
 }
-
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'America/Sao_Paulo'
 
 CACHES = {
     "default": {

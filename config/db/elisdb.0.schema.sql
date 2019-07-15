@@ -482,6 +482,10 @@ CREATE MATERIALIZED VIEW public.api_mview_processo AS
      JOIN public.api_serventia serventia ON ((serventia.cod_serv = p1.serventia_id)))
      JOIN public.api_comarca comarca ON ((comarca.cod_coma = serventia.comarca_id)))
      JOIN public.api_competencia competencia ON ((competencia.cod_comp = p1.competencia_id)))
+     WHERE p2.processo_tj IN (
+	 	SELECT processo_id FROM public.api_andamentoprocesso ap
+		WHERE ap.tipo_ato_juiz_id = 2 AND ap.txt_descr !~~ 'Projeto em Revisão'::text 
+	 )
   WITH NO DATA;
 
 

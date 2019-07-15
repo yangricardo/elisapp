@@ -21,12 +21,10 @@ django-extensions = "*"
 jupyter = "*"
 ptvsd = "*"
 requests = "*"
-celery = "*"
 django-redis = "*"
 redis = "*"
 pip = "*"
 ftfy = "*"
-gensim = "*"
 autopep8 = "*"
 
 [requires]

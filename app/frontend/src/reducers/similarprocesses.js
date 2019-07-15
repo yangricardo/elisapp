@@ -99,10 +99,6 @@ export default function(state = initialState, action) {
                 ]
             }
         case LIST_SIMILAR:
-            // const pageRE = new RegExp('\\?page=(\\d+)')
-            // const {previous, next} = payload
-            // const pageNext = pageRE.exec(next) !== null ? par
-            // const page = next !== null ? parseInt(pageRE.exec(next)[1])-1 : previous !== null ? parseInt(pageRE.exec(previous)[1])+1 : 0
             return {
                 ...state,
                 listSimilar : payload

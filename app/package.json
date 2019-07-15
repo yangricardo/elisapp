@@ -18,7 +18,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "webpack": "^4.35.3",
     "webpack-bundle-tracker": "^0.4.2-beta",
-    "webpack-cli": "^3.3.5"
+    "webpack-cli": "^3.3.6"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.0",
@@ -37,7 +37,7 @@
     "react-select": "^3.0.4",
     "react-text-mask": "^5.4.3",
     "react-window": "^1.8.5",
-    "redux": "^4.0.3",
+    "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0"
   }

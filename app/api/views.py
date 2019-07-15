@@ -20,8 +20,6 @@ from knox.auth import TokenAuthentication
 from rest_framework import mixins, pagination, permissions, status, viewsets
 from rest_framework.response import Response
 
-from backend.celery import app
-
 from . import models as tj_models
 from . import serializer
 from frontend import permissions as api_permissions
