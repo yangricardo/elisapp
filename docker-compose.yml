@@ -6,7 +6,7 @@ services:
   postgres:
     restart: always
     shm_size: '512MB'
-    image: postgres:latest #yangricardo/elisdb:latest
+    image: yangricardo/elisdb:latest #postgres:latest 
     container_name: elisapp_postgres
     hostname: postgres
     expose:

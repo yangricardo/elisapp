@@ -839,6 +839,25 @@ UNION
 ALTER TABLE public.api_view_competencias_disponiveis OWNER TO elisdbadmin;
 
 --
+-- Name: api_view_gruposimilar_processos; Type: VIEW; Schema: public; Owner: elisdbadmin
+--
+
+CREATE VIEW public.api_view_gruposimilar_processos AS
+ SELECT gps.id,
+    gps.grupo_id,
+    gps.processos_similares_id,
+    ps.similaridade,
+    ps.processo_base_tj,
+    ps.processo_similar_tj,
+    ps.processo_base_cnj,
+    ps.processo_similar_cnj
+   FROM (public.api_mview_processossimilares ps
+     JOIN public.api_gruposimilarprocessos gps ON ((gps.processos_similares_id = ps.id)));
+
+
+ALTER TABLE public.api_view_gruposimilar_processos OWNER TO elisdbadmin;
+
+--
 -- Name: api_view_juizes_disponiveis; Type: VIEW; Schema: public; Owner: elisdbadmin
 --
 
@@ -2549,6 +2568,14 @@ CREATE INDEX leads_lead_email_93d5b817_like ON public.leads_lead USING btree (em
 --
 
 CREATE INDEX leads_lead_owner_id_1f4568d0 ON public.leads_lead USING btree (owner_id);
+
+
+--
+-- Name: api_view_gruposimilar_processos api_view_gruposimilar_processos_on_delete_instead_rule; Type: RULE; Schema: public; Owner: elisdbadmin
+--
+
+CREATE RULE api_view_gruposimilar_processos_on_delete_instead_rule AS
+    ON DELETE TO public.api_view_gruposimilar_processos DO INSTEAD NOTHING;
 
 
 --

@@ -106,7 +106,7 @@ backup-db-schema:
 
 backup-db-views:
 	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin -s -t 'api_mview*' elisdb > config/db/elisdb.2.api_mviews.sql
-	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin -s -t 'api_view*' elisdb > config/db/elisdb.4.api_views.sql
+	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin -s -t 'api_view*' elisdb > config/db/elisdb.3.api_views.sql
 
 restore-db:
 	docker exec -e PGPASSWORD=elisdbpassword elisapp_postgres pg_dump -U elisdbadmin elisdb < config/db/elisdb.sql

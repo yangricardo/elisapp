@@ -143,7 +143,8 @@ class SearchProcessPage extends Component {
                 setLoadingFalse();
                 this.setState({loading:false, canSearch:true})
                 createMessage({ notFound: "Código de Processo Não Disponível" });
-                returnError(err.response.data, err.response.status);
+                console.log(err)
+                // returnError(err.response.data, err.response.status);
             });
         }
     }

@@ -10,7 +10,7 @@ import { returnError } from './message';
 
 
 export const urlRE = new RegExp('https?:\\/\\/(\\w\\.?)+');
-export const similarProcessURLRE = new RegExp('https?:\\/\\/(\\w\\.?)+\\/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
+export const similarProcessURLRE = new RegExp('/api\\/models\\/processossimilaresreport\\/(\\d+)\\/');
 
 
 export const searchProcess = (searchProcess,setSimilarProcessResults,loadSimilarProcesses,clearSearchedProcess,setLoading,returnError) => (dispatch, getState)=>{
@@ -39,6 +39,9 @@ export const searchProcess = (searchProcess,setSimilarProcessResults,loadSimilar
     });
 }
 
+export const buildSimilarProcessURL = (data) => data.hasOwnProperty('id') ? data.id.replace(urlRE,"") : `/api/models/processossimilaresreport/${data.processos_similares}/`
+
+
 export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,getState) => {
     const {cachedProcesses} = getState().similarProcessesReducer
     const {processo_base_tj,processo_similar_tj} = similarProcessesData
@@ -52,12 +55,7 @@ export const loadSimilarProcessFromList = (similarProcessesData) => (dispatch,ge
             payload : cachedProcesses[processo_similar_tj]
         })
     } else {
-        var similarProcessURL;
-        try {
-            similarProcessURL = similarProcessesData.id.replace(urlRE,"")
-        } catch{
-            similarProcessURL = `/api/models/processossimilaresreport/${similarProcessesData.processos_similares}`
-        }
+        const similarProcessURL = buildSimilarProcessURL(similarProcess)
         dispatch({type:LOAD_ASYNC_TRUE})
         axios.get(similarProcessURL, tokenConfig(getState))
         .then(res => {
@@ -107,8 +105,8 @@ export const loadSimilarProcesses = (processoBaseTJ, onSearch=false, onList=fals
     const similarProcesses = cachedSimilarProcesses[processoBaseTJ]
     
     const fetchProcessData = (processo) =>{
-        const similarProcessURL = processo.id.replace(urlRE,"")
-        const id = similarProcessURLRE.exec(processo.id)[2]
+        const similarProcessURL = buildSimilarProcessURL(processo)
+        const id = similarProcessURLRE.exec(similarProcessURL)[1]
         if (!(id in cachedSimilarProcesses) || !(id in cachedProcesses) ){
             axios.get(similarProcessURL, tokenConfig(getState))
             .then(res => {
@@ -208,7 +206,7 @@ export const clearSelectedSimilarProcesses = () => (dispatch) => {
 
 export const submitRating = (processo_similar, inicial, contestacao, sentenca, comentario) => (dispatch, getState) => {
     const rating = {
-        processo_similar : similarProcessURLRE.exec(processo_similar.id)[2],
+        processo_similar : similarProcessURLRE.exec(buildSimilarProcessURL(processo_similar))[1],
         inicial,
         contestacao,
         sentenca,
@@ -292,7 +290,8 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                 })
                 dispatch({type:LOAD_ASYNC_FALSE})
                 for(let similarProcess of _similarProcesses){
-                    const id = similarProcessURLRE.exec(similarProcess.id)[2]
+                    const similarProcessURL = buildSimilarProcessURL(similarProcess)
+                    const id = similarProcessURLRE.exec(similarProcessURL)[1]
                     const payload = {
                         grupo:res.data.id,
                         processos_similares:id
@@ -343,7 +342,8 @@ export const addSimilarProcessesToGroup = (similarProcesses,grupos) => (dispatch
                 })      
             }
             for(let similarProcess of _similarProcesses){
-                const id = similarProcessURLRE.exec(similarProcess.id)[2]
+                const similarProcessURL = buildSimilarProcessURL(similarProcess)
+                const id = similarProcessURLRE.exec(similarProcessURL)[1]
                 const payload = {
                     grupo:grupo.value,
                     processos_similares:id
@@ -653,7 +653,7 @@ export const deleteSimilarProcessesFromGroup = (selectedGroupProcesses) => (disp
 }
 
 const postProcessToGroup = (similarProcesses,group,dispatch,getState) => {
-    const id = similarProcessURLRE.exec(similarProcesses.id)[2]
+    const id = similarProcessURLRE.exec(similarProcesses.id)[1]
     const payload = {
         grupo:group.id,
         processos_similares:id

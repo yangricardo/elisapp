@@ -76,7 +76,7 @@ class ProcessTable extends Component {
                 icon: 'delete_forever',
                 tooltip: `Deletar grupo`,
                 isFreeAction: true,
-                disabled: !this.props.group.hasOwnProperty('id'),
+                disabled: this.props.isGroup ? !this.props.group.hasOwnProperty('id') : true,
                 onClick: (event) => this.props.deleteSimilarGroup(this.props.group)
             },
         ]

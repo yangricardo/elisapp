@@ -79,6 +79,25 @@ UNION
 ALTER TABLE public.api_view_competencias_disponiveis OWNER TO elisdbadmin;
 
 --
+-- Name: api_view_gruposimilar_processos; Type: VIEW; Schema: public; Owner: elisdbadmin
+--
+
+CREATE VIEW public.api_view_gruposimilar_processos AS
+ SELECT gps.id,
+    gps.grupo_id,
+    gps.processos_similares_id,
+    ps.similaridade,
+    ps.processo_base_tj,
+    ps.processo_similar_tj,
+    ps.processo_base_cnj,
+    ps.processo_similar_cnj
+   FROM (public.api_mview_processossimilares ps
+     JOIN public.api_gruposimilarprocessos gps ON ((gps.processos_similares_id = ps.id)));
+
+
+ALTER TABLE public.api_view_gruposimilar_processos OWNER TO elisdbadmin;
+
+--
 -- Name: api_view_juizes_disponiveis; Type: VIEW; Schema: public; Owner: elisdbadmin
 --
 
