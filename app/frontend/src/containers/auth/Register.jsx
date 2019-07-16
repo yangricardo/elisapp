@@ -74,7 +74,7 @@ class Register extends Component {
 
     render() {
         if(this.props.isAuthenticated){
-            return <Redirect to="/leads"/>
+            return <Redirect to="/buscarprocesso"/>
         }
         const {username, email, password, password2} = this.state
         const {classes} = this.props
