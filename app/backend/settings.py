@@ -27,7 +27,7 @@ SECRET_KEY = 'tv4!=t*7wb_t@q0tebo9f3389uz1pw9-nbj*&l-ta4baj&5g%$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost',
+ALLOWED_HOSTS = ['139.82.24.188','0.0.0.0', '127.0.0.1', 'localhost',
                  'elisapp.dev', '192.168.0.27', '192.168.1.105','172.16.1.3']
 
 
