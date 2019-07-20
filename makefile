@@ -16,6 +16,9 @@ deploy:
 run:
 	docker-compose up -d
 
+run-prod:
+	docker-compose -f docker-compose-prod.yml up -d
+
 stop:
 	docker-compose stop
 
@@ -56,7 +59,7 @@ app-logs:
 	docker-compose logs app
 
 db-logs:
-	docker-compose logs db
+	docker-compose logs postgres
 
 nginx-logs:
 	docker-compose logs nginx

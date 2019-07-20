@@ -1,0 +1,96 @@
+# File structure version
+version: '3.7'
+
+services:
+  
+  postgres:
+    restart: always
+    shm_size: '512MB'
+    image: yangricardo/elisdb:latest #postgres:latest 
+    container_name: elisapp_postgres
+    hostname: postgres
+    expose:
+      - 5432
+    env_file:
+      - ${PWD}/config/db/.env
+    networks:
+      - db
+    volumes:
+      - postgres:/data
+
+  redis:
+    restart: always
+    container_name: elisapp_redis
+    hostname: redis
+    image: redis
+    volumes:
+      - redis:/data
+    expose:
+      - 6379
+    networks: 
+      - db
+
+  app:
+    restart: always
+    container_name: elisapp_app
+    image: yangricardo/elisapp:latest
+    command : sh /config/on-container-start.sh
+    hostname: app
+    env_file:
+      - ${PWD}/config/app/.env
+    volumes:
+      - ${PWD}/app:/app
+      - ${HOME}/TJ_FILES:/tj_files
+      - static:/srv/static
+      - media:/srv/media
+    expose:
+      - 8000
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
+      nginx:
+          ipv4_address: 172.16.1.2
+      db:
+    depends_on:
+      - postgres
+      - redis
+
+  nginx:
+    image: nginx
+    container_name: elisapp_nginx
+    restart:  always
+    hostname: nginx
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    ports:
+      - 80:80
+      - 443:443
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    volumes:
+      - ${PWD}/config/nginx:/etc/nginx/conf.d
+      - ${PWD}/config/nginx/elisapp.dev.crt:/etc/nginx/elisapp.dev.crt # New Line!
+      - ${PWD}/config/nginx/elisapp.dev.key:/etc/nginx/elisapp.dev.key # New Line!
+      - static:/srv/static:ro
+      - media:/srv/media:ro
+    depends_on:
+      - app
+    networks: 
+      nginx:
+        ipv4_address: 172.16.1.3
+
+networks:
+  nginx:
+    external:
+      name: elisapp_network
+  db:
+    driver: bridge
+
+volumes:
+  postgres:
+  redis:
+  redis-commander:
+  pgadmin:
+  static:
+  media:
