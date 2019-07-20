@@ -26,6 +26,7 @@ redis = "*"
 pip = "*"
 ftfy = "*"
 autopep8 = "*"
+awsebcli = "*"
 
 [requires]
 python_version = "3.7"
