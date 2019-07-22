@@ -95,7 +95,7 @@ class Header extends React.Component {
                         Explorador de Litígios Similares
                     </Typography>
                     <Fragment>
-                        <Typography variant="subtitle1" color="inherit" >{user ? `Welcome ${user.username}` : ""}</Typography>
+                        <Typography variant="subtitle1" color="inherit" >{user ? `${user.username}` : ""}</Typography>
                         <IconButton aria-owns={open ? 'menu-appbar' : undefined}
                                     aria-haspopup="true"
                                     onClick={this.handleMenu}
