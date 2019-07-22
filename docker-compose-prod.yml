@@ -70,7 +70,7 @@ services:
       - 8.8.4.4
     volumes:
       - ${PWD}/config/nginx:/etc/nginx/conf.d
-      - ${PWD}/config/nginx/elisapp.dev.crt:/etc/nginx/elisapp.dev.crt # New Line!
+      - ${PWD}/config/nginx/elisapp.dev.cert:/etc/nginx/elisapp.dev.cert # New Line!
       - ${PWD}/config/nginx/elisapp.dev.key:/etc/nginx/elisapp.dev.key # New Line!
       - static:/srv/static:ro
       - media:/srv/media:ro
