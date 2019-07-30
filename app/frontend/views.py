@@ -372,5 +372,6 @@ class JuizesDisponiveisViewSet(ListSearchViewSet):
 
 
 # Create your views here.
+@method_decorator(cache_page(CACHE_TTL))
 def index(request):
     return render(request, 'frontend/index.html')

@@ -627,7 +627,7 @@ export const deleteSimilarGroup = (grupo) => (dispatch, getState)=>{
         })
 }
  
-export const deleteSimilarProcessesFromGroup = (selectedGroupProcesses) => (dispatch,getState)=>{
+export const deleteSimilarProcessesFromGroup = (selectedGroupProcesses,groupDescription) => (dispatch,getState)=>{
     // codigo abaixo pode apresentar inconsitencias
     for(let groupProcess of selectedGroupProcesses){
         axios.delete(`/api/models/processosgruposimilares/${groupProcess.id}`,tokenConfig(getState))
@@ -644,7 +644,7 @@ export const deleteSimilarProcessesFromGroup = (selectedGroupProcesses) => (disp
     })
     dispatch({
         type: CREATE_MESSAGE,
-        payload: { loading: `Removendo processos selecionados do grupo ${selectedGroupProcesses[0].label} com sucesso` }
+        payload: { loading: `Removendo processos selecionados do grupo ${groupDescription} com sucesso` }
     })  
 }
 

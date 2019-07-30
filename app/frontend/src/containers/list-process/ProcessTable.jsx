@@ -60,7 +60,7 @@ class ProcessTable extends Component {
                 onClick: (event) => this.setState({codigo:this.state.codigo==='TJ'?'CNJ':'TJ'})
             },
             {
-                icon: 'group_work',
+                icon: 'library_add',
                 tooltip: `Agrupar processos selecionados`,
                 onClick: (event,data) => this.onOpenGroupProcessesDialog(data)
             },
@@ -70,7 +70,7 @@ class ProcessTable extends Component {
             {
                 icon: 'delete',
                 tooltip: `Deletar processos selecionados`,
-                onClick: (event,data) => this.props.deleteSimilarProcessesFromGroup(data)
+                onClick: (event,data) => this.props.deleteSimilarProcessesFromGroup(data,this.props.group.descricao)
             },
             {
                 icon: 'delete_forever',

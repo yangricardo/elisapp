@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { Search, List, GroupWork } from '@material-ui/icons';
+import { Search, List, LibraryBooks } from '@material-ui/icons';
 import { Link as LinkRouter } from 'react-router-dom'
 export const mainListItems = (
   <Fragment>
@@ -18,7 +18,7 @@ export const mainListItems = (
     </ListItem>
     <ListItem button component={LinkRouter} to="/grupossimilares">
       <ListItemIcon>
-        <GroupWork />
+        <LibraryBooks />
       </ListItemIcon>
       <ListItemText primary="Grupos Similares" />
     </ListItem>
