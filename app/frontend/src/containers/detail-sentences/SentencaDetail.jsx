@@ -145,9 +145,9 @@ class SentencaDetail extends Component {
                             alignItems="center"
                             spacing={2}
                         >
-                            <Grid item>
+                            {/* <Grid item>
                                 <ButtonToolTip bgcolor={bgcolor}  button='Ato' text={sentencas[sentenca].ato_juiz !== null ? `${sentencas[sentenca].ato_juiz}` : ''} />
-                            </Grid>
+                            </Grid> */}
                             <Grid item>
                                 <Fab variant="extended" size="small" color={bgcolor} disabled={iniciais[0]===undefined} target="_blank" href={`http://gedweb.tjrj.jus.br/gedcacheweb/default.aspx?gedid=${iniciais[0]}`}>
                                     <LinkIcon/>&nbsp;Inicial
